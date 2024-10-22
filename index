@@ -7,13 +7,15 @@
 </head>
 <body>
 
-<h1>
+<h1 style = "text-align : center">
+  BEER
+</h1>
+<p style = "text-align : center"><br>
   Bilal Khateeb <br>
   Elena Martino <br>
   Elisa Calza <br>
   Roberto Lazzarini <br>
-</h1>
-<p></p>
+</p>
 
 </body>
 </html>
