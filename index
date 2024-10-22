@@ -7,16 +7,11 @@
 </head>
 <body>
 
-<h1>
-  BEER
-</h1>
-<p>
-  <br>
-  Bilal Khateeb <br>
-  Elena Martino <br>
-  Elisa Calza <br>
-  Roberto Lazzarini <br>
-</p>
+<h1>BEER</h1>
+<p> Bilal Khateeb </p>
+<p> Elena Martino </p>
+<p> Elisa Calza </p>
+<p> Roberto Lazzarini </p>
 
 </body>
 </html>
