@@ -1,1 +1,19 @@
-cia
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+  <meta charset = "UTF-8">
+  <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>BEER group</title>
+</head>
+<body>
+
+<h1>
+  Bilal Khateeb <br>
+  Elena Martino <br>
+  Elisa Calza <br>
+  Roberto Lazzarini <br>
+</h1>
+<p></p>
+
+</body>
+</html>
