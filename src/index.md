@@ -5,7 +5,7 @@ toc: false
 
 <div class="hero">
   <h1>DataVisualization</h1>
-  <h1>Welcome in our app! We are the BEER group!.</h1>
+  <h1 style="font-size: 70px;">Welcome in our app! We are the BEER group!.</h1>
   <h2>Member of the group are:</h2>
   <div class="card">Elisa Calza S4700104.</div>
   <div class="card">Bilal Khateeb S5835711.</div>
