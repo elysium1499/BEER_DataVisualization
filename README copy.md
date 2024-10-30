@@ -52,3 +52,10 @@ A typical Framework project looks like this:
 | `npm run deploy`     | Deploy your app to Observable                            |
 | `npm run clean`      | Clear the local data loader cache                        |
 | `npm run observable` | Run commands like `observable help`                      |
+
+
+
+## Elisa Advice 
+finish to modify your file .md do:
+- delete folder dir
+- do 'npm run build' on command line
