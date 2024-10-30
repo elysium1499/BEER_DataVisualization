@@ -4,8 +4,12 @@ toc: false
 
 <div class="hero">
   <h1>DataVisualization</h1>
-  <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+  <h1>Welcome in this our app! We are the BEER group!.</h1>
+  <h2>Member of the group are:</h2>
+  <div class="card">Elisa Calza S4700104.</div>
+  <div class="card">Bilal Khateeb S5835711.</div>
+  <div class="card">Roberto Lazzarini S.</div>
+  <div class="card">Elena Martino S.</div>
 </div>
 
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
