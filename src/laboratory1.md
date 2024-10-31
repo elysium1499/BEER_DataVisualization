@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Example dashboard
+title: Laboratory One
 toc: false
 ---
 
