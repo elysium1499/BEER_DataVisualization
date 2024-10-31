@@ -2,18 +2,32 @@
 title: Introduction
 toc: false
 ---
-
 <div class="hero">
   <h1>DataVisualization</h1>
-  <h1 style="font-size: 70px;">Welcome in our app! We are the BEER group!.</h1>
-  <h2>Member of the group are:</h2>
-  <div class="card">Elisa Calza S4700104.</div>
-  <div class="card">Bilal Khateeb S5835711.</div>
-  <div class="card">Roberto Lazzarini S.</div>
-  <div class="card">Elena Martino S.</div>
+  <h1 style="font-size: 30px;">Welcome to our app! We are the BEER group!</h1>
+  <h2>Members of the group are:</h2>
+  <div class="cards-container">
+    <div class="card">Elisa Calza S4700104</div>
+    <div class="card">Bilal Khateeb S5835711</div>
+    <div class="card">Roberto Lazzarini S.</div>
+    <div class="card">Elena Martino S.</div>
+  </div>
 </div>
 
 <style>
+  .cards-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #00000;   
+  }
+
   .hero {
     display: flex;
     flex-direction: column;

@@ -32,15 +32,33 @@ import "./_observablehq/client.94f44b7f.js";
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
 <div class="hero">
-  <h1>DataVisualization</h1>
-  <h1 style="font-size: 70px;">Welcome in our app! We are the BEER group!.</h1>
+  <h1>DataVisualization</h1> 
+  <h1 style="font-size: 30px;">Welcome in our app! We are the BEER group!.</h1>
   <h2>Member of the group are:</h2>
-  <div class="card">Elisa Calza S4700104.</div>
-  <div class="card">Bilal Khateeb S5835711.</div>
-  <div class="card">Roberto Lazzarini S.</div>
-  <div class="card">Elena Martino S.</div>
+  <div class="cards-container">
+    <div class="card">Elisa Calza S4700104.</div>
+    <div class="card">Bilal Khateeb S5835711.</div>
+    <div class="card">Roberto Lazzarini S.</div>
+    <div class="card">Elena Martino S.</div>
+  </div>
 </div>
+
 <style>
+  .cards-container {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
   .hero {
     display: flex;
     flex-direction: column;
