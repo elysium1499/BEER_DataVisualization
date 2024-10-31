@@ -62,29 +62,131 @@ const dataset = FileAttachment("./data/co-emissions-per-capita.csv").csv({typed:
 return {dataset};
 }});
 
-define({id: "49987db4", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
-function EmissionsByCapital(data, {width} = {}) {
-    const data2000 = data.filter(d => d.year === 2000);
+define({id: "035194e8", inputs: ["Plot"], outputs: ["EmissionsByCapitalYear"], body: (Plot) => {
+function EmissionsByCapitalYear(data, {width = 800} = {}) {
+  const filteredData = data
+    .filter(d => d.Year === 2000)
+    .map(d => ({
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]
+    }))
+    .sort((a, b) => a.co2Emissions - b.co2Emissions)
+    .slice(0, 20);
 
-    return Plot.plot({
-    title: "State and his emission in this year",
+  return Plot.plot({
+    height: 400,
     width,
-    height: 300,
-    x: {label: "Capital Cities"},
-    y: {grid: true, label: "CO₂ Emissions"},
-    color: { legend: true},
+    marginLeft: 60,
+    marginBottom: 100,
+    x: {
+      label: "City",
+      domain: filteredData.map(d => d.city),
+      tickRotate: -45,
+      tickSize: 10 
+    },
+    y: {
+      label: "Annual CO₂ Emissions (per capita)",
+      grid: true
+    },
     marks: [
-        //Plot.rectY(data, Plot.binX({y: "count"}, {x: "date", fill: "state", interval: "year", tip: true})),
-        Plot.barY(data2000, {x: "Entity", y: "Annual CO₂ emissions (per capita)", fill: "capital", tip: true}),
-        Plot.ruleY([0])]
-    });
+      Plot.barY(filteredData, {x: "city", y: "co2Emissions", fill: "steelblue"})
+    ]
+  });
 }
-return {EmissionsByCapital};
+
+return {EmissionsByCapitalYear};
 }});
 
-define({id: "a24953ee", mode: "inline", inputs: ["resize","EmissionsByCapital","dataset","display"], body: async (resize,EmissionsByCapital,dataset,display) => {
+define({id: "202f5536", mode: "inline", inputs: ["resize","EmissionsByCapitalYear","dataset","display"], body: async (resize,EmissionsByCapitalYear,dataset,display) => {
 display(await(
-resize((width) => EmissionsByCapital(dataset, {width}))
+resize((width) => EmissionsByCapitalYear(dataset, {width}))
+))
+}});
+
+define({id: "a640dc1b", inputs: ["Plot"], outputs: ["EmissionsByCapitalDecade"], body: (Plot) => {
+function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
+    const totalEmissions = data.reduce((acc, d) => {
+        const city = d.Entity;
+        const emissions = +d["Annual CO₂ emissions (per capita)"];
+
+        if (!acc[city]) {
+            acc[city] = { city, co2Emissions: 0 };
+        }
+        acc[city].co2Emissions += emissions;
+        return acc;
+    }, {});
+
+    const topCities = Object.values(totalEmissions)
+        .sort((a, b) => b.co2Emissions - a.co2Emissions)
+        .slice(0, 20);
+
+    const uniqueEmissions = [...new Set(topCities.map(d => d.co2Emissions))];
+
+    const colorPalette = [
+        "#FFE5B4", // Light Apricot
+        "#FFD700", // Gold
+        "#FF8C00", // Dark Orange
+        "#FF4500", // Orange Red
+        "#6B8E23", // Olive Drab
+        "#3CB371", // Medium Sea Green
+        "#2E8B57", // Sea Green
+        "#20B2AA", // Light Sea Green
+        "#4682B4", // Steel Blue
+        "#4169E1", // Royal Blue
+        "#6A5ACD", // Slate Blue
+        "#8A2BE2", // Blue Violet
+        "#7B68EE", // Medium Slate Blue
+        "#A0522D", // Sienna
+        "#D2691E", // Chocolate
+        "#B22222", // Firebrick
+        "#696969", // Dim Gray
+        "#A9A9A9", // Dark Gray
+    ];
+
+    const emissionColorMap = {};
+    uniqueEmissions.forEach((emission, index) => {
+        emissionColorMap[emission] = colorPalette[index % colorPalette.length];
+    });
+
+    const coloredCities = topCities.map(cityData => ({
+        ...cityData,
+        color: emissionColorMap[cityData.co2Emissions]
+    }));
+
+    console.log(coloredCities);
+
+    return Plot.plot({
+        height: 400,
+        width,
+        marginLeft: 150,
+        marginBottom: 60,
+        x: {
+            label: "Total CO₂ Emissions (per capita)",
+            grid: true,
+            nice: true
+        },
+        y: {
+            label: "",
+            labelPosition: "top",
+            domain: coloredCities.map(d => d.city),
+            tickRotate: 0
+        },
+        marks: [
+            Plot.barX(coloredCities, { 
+                x: "co2Emissions", 
+                y: "city", 
+                fill: "color"
+            })
+        ]
+    });
+}
+
+return {EmissionsByCapitalDecade};
+}});
+
+define({id: "d6e727b4", mode: "inline", inputs: ["resize","EmissionsByCapitalDecade","dataset","display"], body: async (resize,EmissionsByCapitalDecade,dataset,display) => {
+display(await(
+resize((width) => EmissionsByCapitalDecade(dataset, {width}))
 ))
 }});
 
@@ -103,22 +205,24 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 <script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
+<h3 id="best-20-capita-with-low-co-emissions-in-2000" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-low-co-emissions-in-2000">Best 20 Capita with low CO₂ Emissions in 2000 🌍</a></h3>
 <!-- Load and transform the data -->
 <div class="observablehq observablehq--block"><!--:e914798c:--></div>
-<!-- Bar Plot 1 using year -->
-<div class="observablehq observablehq--block"><!--:49987db4:--></div>
-<div class="grid grid-cols-1">
-  <div class="card">
-    <observablehq-loading></observablehq-loading><!--:a24953ee:-->
-  </div>
+<!-- BarPlot that show the emission and the country in one year -->
+<div class="observablehq observablehq--block"><!--:035194e8:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:202f5536:--> </div> 
 </div>
-<!-- Bar Plot 2 using decade -->
-<!-- Bar Plot 3  -->
-<!-- Bar Plot 4  -->
-<!-- HeatMap Plot 5  -->
+<!-- BarPlot that show the emission and the country in one decade -->
+<!-- BarPlot that show the emission and the country with high emission -->
+<h3 id="best-20-capita-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-high-co-emissions">Best 20 Capita with high CO₂ Emissions 🌍</a></h3>
+<div class="observablehq observablehq--block"><!--:a640dc1b:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:d6e727b4:--> </div> 
+</div>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-10-31T09:50:33">Oct 31, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-10-31T13:39:19">Oct 31, 2024</a>.</div>
 </footer>
 </div>
