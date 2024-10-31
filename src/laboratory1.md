@@ -14,7 +14,9 @@ const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: t
 
 <!-- Bar Plot 1 using year -->
 
+
 ```js
+
 function EmissionsByCapital(data, {width} = {}) {
     const data2000 = data.filter(d => d.year === 2000);
 
@@ -24,7 +26,7 @@ function EmissionsByCapital(data, {width} = {}) {
     height: 300,
     x: {label: "Capital Cities"},
     y: {grid: true, label: "CO₂ Emissions"},
-    color: {...color, legend: true},
+    color: { legend: true},
     marks: [
         //Plot.rectY(data, Plot.binX({y: "count"}, {x: "date", fill: "state", interval: "year", tip: true})),
         Plot.barY(data2000, {x: "Entity", y: "Annual CO₂ emissions (per capita)", fill: "capital", tip: true}),
