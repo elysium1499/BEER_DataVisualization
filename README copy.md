@@ -59,3 +59,5 @@ A typical Framework project looks like this:
 finish to modify your file .md do:
 - delete folder dir
 - do 'npm run build' on command line
+- remame the new /dir to /docs
+- remember to add jekill file to new /docs
