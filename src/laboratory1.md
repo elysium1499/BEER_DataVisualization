@@ -17,6 +17,7 @@ const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: tru
 
 <!-- BarPlot that show the emission and the country in one year -->
 
+# First Part
 ### Best 20 Capita with high CO₂ Emissions in the Years 🌍
 
 ```js
@@ -94,6 +95,7 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
 
 
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
+<br>
 
 ### Best 20 Capita with high CO₂ Emissions in nearest decade (2011 to 2022) 🌍
 
@@ -179,6 +181,10 @@ function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
 
 
 <!-- BarPlot that show the emission and the country with high emission -->
+<br>
+<br>
+
+# Second Part
 
 ### Region with high CO₂ Emissions 🌍
 
@@ -267,3 +273,120 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 <div class="grid grid-cols-1"> 
   <div class="card"> ${resize((width) => EmissionsByCapital(dataset, {width}))} </div> 
 </div>
+
+
+<br>
+<br>
+
+```js
+function prepareStackedData(data, regionsData) {
+  const mergedData = data.map(d => {
+    const regionData = regionsData.find(region => region.Entity === d.Entity);
+    return {
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"],
+      region: regionData ? regionData.Region : "Unknown"
+    };
+  });
+
+  return mergedData;
+}
+
+function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
+  const preparedData = prepareStackedData(data, regionsData);
+
+  const totalEmissionsByEntity = preparedData.reduce((acc, d) => {
+    if (!acc[d.city]) {
+      acc[d.city] = { co2Emissions: 0, region: d.region };
+    }
+    acc[d.city].co2Emissions += d.co2Emissions;
+    return acc;
+  }, {});
+
+  const topCities = Object.entries(totalEmissionsByEntity)
+    .map(([city, { co2Emissions, region }]) => ({ city, co2Emissions, region }))
+    .sort((a, b) => b.co2Emissions - a.co2Emissions)
+    .slice(0, 50);
+
+  const colorPalette = [
+    "#FFDFBA", "#FFD700", "#FF8C00", "#FF4500", "#6B8E23",
+    "#3CB371", "#2E8B57", "#20B2AA", "#4682B4", "#4169E1",
+    "#6A5ACD", "#8A2BE2", "#7B68EE", "#A0522D", "#D2691E",
+    "#B22222", "#696969", "#A9A9A9"
+  ];
+
+  // Mappa dei colori per le città
+  const cityColorMap = {};
+  const cities = [...new Set(topCities.map(d => d.city))];
+  cities.forEach((city, index) => {
+    cityColorMap[city] = colorPalette[index % colorPalette.length];
+  });
+
+  // Associa le città alle regioni senza duplicati
+  const regionData = {};
+
+  topCities.forEach(d => {
+    if (!regionData[d.region]) {
+      // Crea una nuova voce per la regione se non esiste
+      regionData[d.region] = {
+        region: d.region,
+        co2Emissions: 0,
+        cities: []
+      };
+    }
+    // Aggiorna le emissioni totali per la regione
+    regionData[d.region].co2Emissions += d.co2Emissions;
+
+    // Aggiungi la città solo se non è già presente
+    if (!regionData[d.region].cities.some(city => city.city === d.city)) {
+      regionData[d.region].cities.push({
+        city: d.city,
+        co2Emissions: d.co2Emissions,
+        color: cityColorMap[d.city]
+      });
+    }
+  });
+
+  const finalData = Object.values(regionData);
+
+  return Plot.plot({
+    width,
+    height: 500,
+    marginLeft: 100,
+    marginBottom: 60,
+    x: {
+      label: "Total Annual CO₂ Emissions (per capita)",
+      grid: true,
+      tickFormat: "s",
+      tickSpacing: 50
+    },
+    y: {
+      label: null,
+      domain: finalData.map(d => d.region),
+      labelPosition: "top"
+    },
+    marks: [
+      Plot.barX(finalData, {
+        x: "co2Emissions",
+        y: "region",
+        fill: "color",
+        title: d => `${d.region}: ${d.co2Emissions} CO₂`,
+      }),
+      Plot.barX(topCities, {
+        x: "co2Emissions",
+        y: d => d.region,
+        fill: d => cityColorMap[d.city],
+        title: d => `${d.city}: ${d.co2Emissions} CO₂`,
+        tooltip: {
+          delay: 0
+        }
+      })
+    ]
+  });
+}
+
+```
+<div class="grid grid-cols-1">
+  <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
+</div>
+

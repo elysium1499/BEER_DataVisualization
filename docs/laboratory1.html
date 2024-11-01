@@ -315,6 +315,122 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
+define({id: "579c3558", inputs: ["Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (Plot) => {
+function prepareStackedData(data, regionsData) {
+  const mergedData = data.map(d => {
+    const regionData = regionsData.find(region => region.Entity === d.Entity);
+    return {
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"],
+      region: regionData ? regionData.Region : "Unknown"
+    };
+  });
+
+  return mergedData;
+}
+
+function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
+  const preparedData = prepareStackedData(data, regionsData);
+
+  const totalEmissionsByEntity = preparedData.reduce((acc, d) => {
+    if (!acc[d.city]) {
+      acc[d.city] = { co2Emissions: 0, region: d.region };
+    }
+    acc[d.city].co2Emissions += d.co2Emissions;
+    return acc;
+  }, {});
+
+  const topCities = Object.entries(totalEmissionsByEntity)
+    .map(([city, { co2Emissions, region }]) => ({ city, co2Emissions, region }))
+    .sort((a, b) => b.co2Emissions - a.co2Emissions)
+    .slice(0, 50);
+
+  const colorPalette = [
+    "#FFDFBA", "#FFD700", "#FF8C00", "#FF4500", "#6B8E23",
+    "#3CB371", "#2E8B57", "#20B2AA", "#4682B4", "#4169E1",
+    "#6A5ACD", "#8A2BE2", "#7B68EE", "#A0522D", "#D2691E",
+    "#B22222", "#696969", "#A9A9A9"
+  ];
+
+  // Mappa dei colori per le città
+  const cityColorMap = {};
+  const cities = [...new Set(topCities.map(d => d.city))];
+  cities.forEach((city, index) => {
+    cityColorMap[city] = colorPalette[index % colorPalette.length];
+  });
+
+  // Associa le città alle regioni senza duplicati
+  const regionData = {};
+
+  topCities.forEach(d => {
+    if (!regionData[d.region]) {
+      // Crea una nuova voce per la regione se non esiste
+      regionData[d.region] = {
+        region: d.region,
+        co2Emissions: 0,
+        cities: []
+      };
+    }
+    // Aggiorna le emissioni totali per la regione
+    regionData[d.region].co2Emissions += d.co2Emissions;
+
+    // Aggiungi la città solo se non è già presente
+    if (!regionData[d.region].cities.some(city => city.city === d.city)) {
+      regionData[d.region].cities.push({
+        city: d.city,
+        co2Emissions: d.co2Emissions,
+        color: cityColorMap[d.city]
+      });
+    }
+  });
+
+  const finalData = Object.values(regionData);
+
+  return Plot.plot({
+    width,
+    height: 500,
+    marginLeft: 100,
+    marginBottom: 60,
+    x: {
+      label: "Total Annual CO₂ Emissions (per capita)",
+      grid: true,
+      tickFormat: "s",
+      tickSpacing: 50
+    },
+    y: {
+      label: null,
+      domain: finalData.map(d => d.region),
+      labelPosition: "top"
+    },
+    marks: [
+      Plot.barX(finalData, {
+        x: "co2Emissions",
+        y: "region",
+        fill: "color",
+        title: d => `${d.region}: ${d.co2Emissions} CO₂`,
+      }),
+      Plot.barX(topCities, {
+        x: "co2Emissions",
+        y: d => d.region,
+        fill: d => cityColorMap[d.city],
+        title: d => `${d.city}: ${d.co2Emissions} CO₂`,
+        tooltip: {
+          delay: 0
+        }
+      })
+    ]
+  });
+}
+
+return {prepareStackedData,EmissionsByRegionStacked};
+}});
+
+define({id: "0f6b3f90", mode: "inline", inputs: ["resize","EmissionsByRegionStacked","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStacked,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
+))
+}});
+
 </script>
 <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
 <label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
@@ -333,26 +449,37 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 <!-- Load and transform the data -->
 <div class="observablehq observablehq--block"><!--:2a7bd73d:--></div>
 <!-- BarPlot that show the emission and the country in one year -->
+<h1 id="first-part" tabindex="-1"><a class="observablehq-header-anchor" href="#first-part">First Part</a></h1>
 <h3 id="best-20-capita-with-high-co-emissions-in-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-high-co-emissions-in-the-years">Best 20 Capita with high CO₂ Emissions in the Years 🌍</a></h3>
 <div class="observablehq observablehq--block"><!--:a09b1a19:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
 </div>
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
+<br>
 <h3 id="best-20-capita-with-high-co-emissions-in-nearest-decade-2011-to-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-high-co-emissions-in-nearest-decade-2011-to-2022">Best 20 Capita with high CO₂ Emissions in nearest decade (2011 to 2022) 🌍</a></h3>
 <div class="observablehq observablehq--block"><!--:6ec7d6e2:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:d6e727b4:--> </div> 
 </div>
 <!-- BarPlot that show the emission and the country with high emission -->
+<br>
+<br>
+<h1 id="second-part" tabindex="-1"><a class="observablehq-header-anchor" href="#second-part">Second Part</a></h1>
 <h3 id="region-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#region-with-high-co-emissions">Region with high CO₂ Emissions 🌍</a></h3>
 <div class="observablehq observablehq--block"><!--:b189ff71:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
 </div>
+<br>
+<br>
+<div class="observablehq observablehq--block"><!--:579c3558:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
+</div>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-01T11:58:32">Nov 1, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-01T15:37:10">Nov 1, 2024</a>.</div>
 </footer>
 </div>
