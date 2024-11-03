@@ -11,11 +11,10 @@ toc: false
 const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: true});
 ```
 
-
 <!-- BarPlot that show the emission and the country in one year -->
 
 ```js
-function EmissionsByCapitalYear(data, {width = 800} = {}) {
+function EmissionsByCapitalYear(data, {width = 800} = {}) { 
   const filteredData = data
     .filter(d => d.Year === 2000)
     .map(d => ({
