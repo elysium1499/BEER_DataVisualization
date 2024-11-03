@@ -63,8 +63,6 @@ function EmissionsByCapitalYear(data, {width = 800} = {}) {
 ### Best 20 Capita with high CO₂ Emissions 🌍
 
 ```js
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-
 // Function for Best 20 Capita with high CO₂ Emissions 🌍
 function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
     const totalEmissionsMap = data.reduce((acc, d) => {
@@ -131,3 +129,85 @@ function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
 <div class="grid grid-cols-1"> 
   <div class="card"> ${resize((width) => EmissionsByCapitalDecade(dataset, { width }))} </div> 
 </div>
+
+### CO₂ Emissions Heatmap 🌍
+
+```js
+// Prepare the data for heatmap visualization with the top 20 countries by emissions
+function prepareHeatmapData(data, yearRange = [2000, 2022]) {
+  // Filter data to only include years within the specified range
+  const filteredData = data
+    .filter(d => d.Year >= yearRange[0] && d.Year <= yearRange[1])
+    .map(d => ({
+      country: d.Entity,
+      year: d.Year,
+      emissions: +d["Annual CO₂ emissions (per capita)"]
+    }));
+  
+  // Aggregate emissions per country over the selected years
+  const totalEmissionsByCountry = d3.rollup(
+    filteredData,
+    v => d3.sum(v, d => d.emissions),
+    d => d.country
+  );
+
+  // Sort countries by total emissions and keep only the top 20
+  const topCountries = Array.from(totalEmissionsByCountry)
+    .sort((a, b) => b[1] - a[1]) // Sort descending by emissions
+    .slice(0, 20)                 // Keep only the top 20 countries
+    .map(d => d[0]);              // Extract the country names
+
+  // Filter original data to include only the top 20 countries
+  return filteredData.filter(d => topCountries.includes(d.country));
+}
+
+
+// Heatmap visualization function
+function EmissionsHeatmap(data, { width = 800 } = {}) {
+  // Prepare the data specifically for the heatmap
+  const heatmapData = prepareHeatmapData(data);
+
+  return Plot.plot({
+    width,      // Set width of plot (default is 800)
+    height: 800, // Set height of plot to 600
+    marginLeft: 100,   // Add left margin for y-axis labels
+    marginBottom: 100, // Add bottom margin for x-axis labels
+    style: {
+      fontSize: "14px"  // Set global font size (adjust as needed)
+    },
+    x: {
+      label: "Year",  // Label for x-axis
+      domain: Array.from(new Set(heatmapData.map(d => d.year))).sort(), // Unique years for x-axis
+    },
+    y: {
+      label: "Country",  // Label for y-axis
+      domain: Array.from(new Set(heatmapData.map(d => d.country))), // Unique countries for y-axis
+      tickRotate: -45,    // Rotate y-axis tick labels for readability
+      tickFontSize: 24,   // Increase font size for country names
+    },
+    color: {
+      type: "linear",  // Linear color scale for emissions values
+      domain: [0, d3.max(heatmapData, d => d.emissions)], // Range of colors based on min-max emissions
+      scheme: "reds", // Color scheme for emissions intensity (light to dark red)
+      label: "CO₂ Emissions (per capita)" // Label for color legend
+    },
+    marks: [
+      // Create a heatmap grid using rectangles for each (country, year) pair
+      Plot.rect(heatmapData, { 
+        x: "year",         // x-axis represents the year
+        y: "country",      // y-axis represents the country
+        fill: "emissions", // Fill color intensity based on emissions level
+        inset: -1,       // Decrease space between boxes (adjust as needed)
+        title: d => `${d.country} (${d.year}): ${d.emissions} tons` // Tooltip text for each cell
+      })
+    ]
+  });
+}
+
+// Render the heatmap with the dataset
+EmissionsHeatmap(dataset)
+```
+<div class="grid grid-cols-1"> 
+  <div class="card"> ${resize((width) => EmissionsHeatmap(dataset, { width }))} </div> 
+</div>
+
