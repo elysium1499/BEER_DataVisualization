@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Bilal Trial | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="modulepreload" href="./_observablehq/client.0d99af51.js">
+<link rel="modulepreload" href="./_observablehq/runtime.8eb97cbb.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.8048ec16.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
+
+import {define} from "./_observablehq/client.0d99af51.js";
+import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
+
+registerFile("./data/co-emissions-per-capita.csv", {"name":"./data/co-emissions-per-capita.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita.d61721b8.csv","lastModified":1730299695221,"size":800024});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.1ce7b3e4.csv","lastModified":1730714261353,"size":1628264});
+
+define({id: "eddafb04", inputs: ["FileAttachment"], outputs: ["d3","dataset"], body: async (FileAttachment) => {
+const d3 = await import("https://cdn.jsdelivr.net/npm/d3@7/+esm");
+const dataset = FileAttachment("./data/co-emissions-per-capita.csv").csv({typed: true});
+return {d3,dataset};
+}});
+
+define({id: "82101e0a", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
+function EmissionsByCapital(data, {width = 800} = {}) { 
+  const filteredData = data
+    .filter(d => d.Year === 2000)
+    .map(d => ({
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]
+    }))
+    .sort((a, b) => a.co2Emissions - b.co2Emissions)
+    .slice(0, 20);
+
+  return Plot.plot({
+    height: 400,
+    width,
+    marginLeft: 60,
+    marginBottom: 100,
+    x: {
+      label: "City",
+      domain: filteredData.map(d => d.city),
+      tickRotate: -45,
+      tickSize: 10 
+    },
+    y: {
+      label: "Annual CO₂ Emissions (per capita)",
+      grid: true
+    },
+    marks: [
+      Plot.barY(filteredData, {x: "city", y: "co2Emissions", fill: "steelblue"})
+    ]
+  });
+}
+
+return {EmissionsByCapital};
+}});
+
+define({id: "a24953ee", mode: "inline", inputs: ["resize","EmissionsByCapital","dataset","display"], body: async (resize,EmissionsByCapital,dataset,display) => {
+display(await(
+resize((width) => EmissionsByCapital(dataset, {width}))
+))
+}});
+
+define({id: "82ffc018", inputs: ["d3","Plot"], outputs: ["EmissionsByCapitalDecade"], body: (d3,Plot) => {
+// Function for Best 20 Capita with high CO₂ Emissions 🌍
+function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
+    const totalEmissionsMap = data.reduce((acc, d) => {
+        const city = d.Entity;
+        const emissions = +d["Annual CO₂ emissions (per capita)"];
+        if (!acc[city]) acc[city] = 0;
+        acc[city] += emissions;
+        return acc;
+    }, {});
+
+    const topCities = Object.entries(totalEmissionsMap)
+        .map(([city, co2Emissions]) => ({ city, co2Emissions }))
+        .sort((a, b) => b.co2Emissions - a.co2Emissions)
+        .slice(0, 20);
+
+    const colorScale = d3.scaleSequential(d3.interpolateSpectral)
+        .domain([Math.max(...topCities.map(d => d.co2Emissions)), Math.min(...topCities.map(d => d.co2Emissions))]);
+
+    return Plot.plot({
+        height: 400,
+        width,
+        marginLeft: 150,
+        marginBottom: 60,
+        x: {
+            label: "Total CO₂ Emissions (per capita)",
+            grid: true,
+            nice: true
+        },
+        y: {
+            domain: topCities.map(d => d.city),
+            label: null
+        },
+        marks: [
+            Plot.barX(topCities, {
+                x: "co2Emissions",
+                y: "city",
+                fill: d => colorScale(d.co2Emissions),
+                className: "hover-bar"
+            }),
+            Plot.text(topCities, {
+                x: d => d.co2Emissions / 2, // Position text in the middle of the bar
+                y: "city",
+                text: d => d.co2Emissions.toFixed(2),
+                textAnchor: "middle",
+                fill: "#000",
+                opacity: 0,
+                fontSize: 20,
+                className: "hover-label"
+            })
+        ],
+        // Function to handle hover interactions
+        decorate(svg) {
+            const labels = svg.querySelectorAll(".hover-label");
+            svg.querySelectorAll(".hover-bar").forEach((bar, i) => {
+                bar.addEventListener("mouseenter", () => labels[i].setAttribute("opacity", 1)); // Show text on hover
+                bar.addEventListener("mouseleave", () => labels[i].setAttribute("opacity", 0)); // Hide text on mouse out
+            });
+        }
+    });
+}
+
+return {EmissionsByCapitalDecade};
+}});
+
+define({id: "ef6d0a4b", mode: "inline", inputs: ["resize","EmissionsByCapitalDecade","dataset","display"], body: async (resize,EmissionsByCapitalDecade,dataset,display) => {
+display(await(
+resize((width) => EmissionsByCapitalDecade(dataset, { width }))
+))
+}});
+
+define({id: "e4f50494", inputs: ["FileAttachment"], outputs: ["dataset2"], body: (FileAttachment) => {
+// Load the new data file
+const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
+return {dataset2};
+}});
+
+define({id: "2565d7c2", inputs: ["d3","Plot","dataset2"], outputs: ["prepareHeatmapData","EmissionsHeatmap"], body: (d3,Plot,dataset2) => {
+// Prepare the data for heatmap visualization with total, fossil, and land-use emissions
+function prepareHeatmapData(data, yearRange = [2011, 2022]) {
+  // Filter data to only include years within the specified range
+  const filteredData = data
+    .filter(d => d.Year >= yearRange[0] && d.Year <= yearRange[1])
+    .map(d => ({
+      country: d.Entity,
+      year: d.Year,
+      totalEmissions: +d["Annual CO₂ emissions including land-use change"], // Total emissions
+      fossilEmissions: +d["Annual CO₂ emissions"],                          // Fossil fuel emissions
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]     // Land-use emissions
+    }));
+
+  // Aggregate total emissions by country to find the top 20 emitters
+  const totalEmissionsByCountry = d3.rollup(
+    filteredData,
+     v => d3.sum(v, d => d.fossilEmissions + d.landUseEmissions),
+    d => d.country
+  );
+
+  // Get the top 20 countries by total emissions
+  const topCountries = Array.from(totalEmissionsByCountry)
+    .sort((a, b) => b[1] - a[1]) // Sort by descending total emissions
+    .slice(0, 10)                 // Keep only the top 20 countries
+    .map(d => d[0]);              // Extract country names
+
+  // Filter to include only the top 20 countries
+  return filteredData.filter(d => topCountries.includes(d.country));
+}
+
+// Heatmap visualization function for selected emission type
+function EmissionsHeatmap(data, type = "totalEmissions", { width = 1000 } = {}) {
+  // Prepare the data specifically for the heatmap
+  const heatmapData = prepareHeatmapData(data);
+
+  return Plot.plot({
+    width,
+    height: 500,
+    marginLeft: 100,
+    marginBottom: 50,
+    style: {
+      fontSize: "12px" // Set global font size
+    },
+    x: {
+      label: "Year",
+      domain: Array.from(new Set(heatmapData.map(d => d.year))).sort(),
+    },
+    y: {
+      label: "Country",
+      labelAnchor: "top",
+      domain: Array.from(new Set(heatmapData.map(d => d.country))),
+      tickRotate: -45,
+    },
+    color: {
+      type: "linear",
+      domain: [0, d3.max(heatmapData, d => d[type])], // Set color domain based on selected type
+      scheme: "reds",
+      label: `CO₂ Emissions (${type})`
+    },
+    marks: [
+      Plot.rect(heatmapData, { 
+        x: "year",
+        y: "country",
+        fill: d => d[type], // Choose the emission type for color intensity
+        title: d => `${d.country} (${d.year}): ${d[type]} tons`
+      })
+    ]
+  });
+}
+
+// Render the heatmap with total emissions
+EmissionsHeatmap(dataset2, "totalEmissions");
+return {prepareHeatmapData,EmissionsHeatmap};
+}});
+
+define({id: "74b4f11a", mode: "inline", inputs: ["resize","EmissionsHeatmap","dataset2","display"], body: async (resize,EmissionsHeatmap,dataset2,display) => {
+display(await(
+resize((width) => EmissionsHeatmap(dataset2,"totalEmissions", { width }))
+))
+}});
+
+define({id: "f0ecb57f", inputs: ["d3","Plot","dataset2"], outputs: ["prepareComparisonHeatmapData","EmissionsComparisonHeatmap"], body: (d3,Plot,dataset2) => {
+// Prepare the data for the vertically stacked heatmap visualization
+function prepareComparisonHeatmapData(data, yearRange = [2011, 2022]) {
+  // Filter data within the selected year range
+  const filteredData = data
+    .filter(d => d.Year >= yearRange[0] && d.Year <= yearRange[1])
+    .map(d => ({
+      country: d.Entity,
+      year: d.Year,
+      fossilEmissions: +d["Annual CO₂ emissions"],                         // Fossil fuel emissions
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]    // Land-use emissions
+    }));
+
+  // Aggregate total fossil + land-use emissions by country to find the top 20 emitters
+  const totalEmissionsByCountry = d3.rollup(
+    filteredData,
+    v => d3.sum(v, d => d.fossilEmissions + d.landUseEmissions),
+    d => d.country
+  );
+
+  // Get the top 20 countries by combined emissions
+  const topCountries = Array.from(totalEmissionsByCountry)
+    .sort((a, b) => b[1] - a[1])  // Sort descending by total emissions
+    .slice(0, 10)                 // Keep only the top 20 countries
+    .map(d => d[0]);              // Extract country names
+
+  // Filter original data to include only the top 20 countries
+  return filteredData.filter(d => topCountries.includes(d.country));
+}
+
+// Comparative Heatmap visualization function for fossil vs land-use emissions
+function EmissionsComparisonHeatmap(data, { width = 800 } = {}) {
+  // Prepare the data specifically for the heatmap
+  const heatmapData = prepareComparisonHeatmapData(data);
+
+  // Map years and emission types for heatmap arrangement with stacking
+  const expandedData = [];
+  heatmapData.forEach(d => {
+    expandedData.push(
+      { country: d.country, year: d.year, emissionType: "Fossil Fuel", emissions: d.fossilEmissions },
+      { country: d.country, year: d.year, emissionType: "Land-Use", emissions: d.landUseEmissions }
+    );
+  });
+
+  return Plot.plot({
+    width,
+    height: 700,
+    marginLeft: 100,
+    marginBottom: 50,
+    style: {
+      fontSize: "10px" // Set global font size
+    },
+    x: {
+      label: "Year",
+      paddingInner: 0.05,
+      domain: Array.from(new Set(expandedData.map(d => d.year))).sort(),
+      tickRotate: -45,
+    },
+    y: {
+      label: "Country (Emission Type)",
+      labelAnchor: "top",
+      paddingInner: 0.05,
+      domain: Array.from(new Set(expandedData.map(d => `${d.country} (${d.emissionType})`))), // Stack vertically
+    },
+    color: {
+      type: "linear",
+      domain: [0, d3.max(expandedData, d => d.emissions)], // Set color intensity range based on emissions
+      scheme: "reds",
+      label: "CO₂ Emissions (tons per capita)"
+    },
+    marks: [
+      // Rectangles for fossil and land-use emissions stacked vertically for each year
+      Plot.rect(expandedData, { 
+        x: "year",
+        y: d => `${d.country} (${d.emissionType})`, // Stack by combining country and emissionType
+        fill: "emissions", // Set color intensity based on emissions value
+        title: d => `${d.country} (${d.year}, ${d.emissionType}): ${d.emissions.toFixed(2)} tons`, // Tooltip
+        stroke: "black",
+        strokeWidth: 0.1
+      })
+    ]
+  });
+}
+
+// Render the comparative heatmap with stacking
+EmissionsComparisonHeatmap(dataset2, { width: 800 });
+
+return {prepareComparisonHeatmapData,EmissionsComparisonHeatmap};
+}});
+
+define({id: "7c4a29c4", mode: "inline", inputs: ["resize","EmissionsComparisonHeatmap","dataset2","display"], body: async (resize,EmissionsComparisonHeatmap,dataset2,display) => {
+display(await(
+resize((width) => EmissionsComparisonHeatmap(dataset2, { width }))
+))
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link observablehq-link-active"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
+    <li class="observablehq-link"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h3 id="best-20-capita-with-low-co-emissions-in-2000" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-low-co-emissions-in-2000">Best 20 Capita with low CO₂ Emissions in 2000 🌍</a></h3>
+<!-- Load and transform the data -->
+<div class="observablehq observablehq--block"><!--:eddafb04:--></div>
+<!-- BarPlot that show the emission and the country in one year -->
+<div class="observablehq observablehq--block"><!--:82101e0a:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
+</div>
+<!-- BarPlot that show the emission and the country in one decade -->
+<!-- BarPlot that show the emission and the country with high emission -->
+<h3 id="best-20-capita-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-high-co-emissions">Best 20 Capita with high CO₂ Emissions 🌍</a></h3>
+<div class="observablehq observablehq--block"><!--:82ffc018:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:ef6d0a4b:--> </div> 
+</div>
+<h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
+<div class="observablehq observablehq--block"><!--:e4f50494:--></div>
+<div class="observablehq observablehq--block"><!--:2565d7c2:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:74b4f11a:--> </div> 
+</div>
+<div class="observablehq observablehq--block"><!--:f0ecb57f:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:7c4a29c4:--> </div> 
+</div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Laboratory One</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-04T11:30:26">Nov 4, 2024</a>.</div>
+</footer>
+</div>

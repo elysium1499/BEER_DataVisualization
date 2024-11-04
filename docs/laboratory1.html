@@ -71,20 +71,20 @@ const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: t
 return {dataset,RegionDataset};
 }});
 
-define({id: "a09b1a19", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
+define({id: "1b6a547d", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
 const uniqueEntities = [...new Set(dataset.map(d => d.Year.toString()))].sort((a, b) => b - a);
 const year = view(Inputs.select(uniqueEntities, {label: "📅 Choose Year"}));
 
 
-function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
-    const filteredData = data
-        .filter(d => d.Year.toString() === year)
-        .map(d => ({
-            city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"]
-        }))
-        .sort((a, b) => b.co2Emissions - a.co2Emissions)
-        .slice(0, 20);
+function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
+  const filteredData = data
+    .filter(d => d.Year.toString() === year)
+    .map(d => ({
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]
+    }))
+    .sort((a, b) => b.co2Emissions - a.co2Emissions)
+    .slice(0, 20);
 
     const colorPalette = [
         "#FFDFBA", // Light Apricot
@@ -440,7 +440,9 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
     <li class="observablehq-link"><a href="./">DataVisualization</a></li>
   </ol>
   <ol>
+    <li class="observablehq-link"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
     <li class="observablehq-link observablehq-link-active"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
   </ol>
 </nav>
 <script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
@@ -451,7 +453,7 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 <!-- BarPlot that show the emission and the country in one year -->
 <h1 id="first-part" tabindex="-1"><a class="observablehq-header-anchor" href="#first-part">First Part</a></h1>
 <h3 id="best-20-capita-with-high-co-emissions-in-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#best-20-capita-with-high-co-emissions-in-the-years">Best 20 Capita with high CO₂ Emissions in the Years 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:a09b1a19:--></div>
+<div class="observablehq observablehq--block"><!--:1b6a547d:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
 </div>
@@ -479,7 +481,7 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 </div>
 </main>
 <footer id="observablehq-footer">
-<nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-01T15:37:10">Nov 1, 2024</a>.</div>
+<nav><a rel="prev" href="./lab%20bilal%20trial"><span>Bilal Trial</span></a><a rel="next" href="./laboratory_lazzarini"><span>Laboratory Lazzarini</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-04T11:30:26">Nov 4, 2024</a>.</div>
 </footer>
 </div>

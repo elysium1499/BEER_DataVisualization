@@ -15,7 +15,7 @@ const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: t
 <!-- BarPlot that show the emission and the country in one year -->
 
 ```js
-function EmissionsByCapitalYear(data, {width = 800} = {}) { 
+function EmissionsByCapital(data, {width = 800} = {}) { 
   const filteredData = data
     .filter(d => d.Year === 2000)
     .map(d => ({
@@ -49,7 +49,7 @@ function EmissionsByCapitalYear(data, {width = 800} = {}) {
 ```
 
 <div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapitalYear(dataset, {width}))} </div> 
+  <div class="card"> ${resize((width) => EmissionsByCapital(dataset, {width}))} </div> 
 </div>
 
 

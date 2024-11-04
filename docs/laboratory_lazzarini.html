@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Laboratory Lazzarini | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="modulepreload" href="./_observablehq/client.0d99af51.js">
+<link rel="modulepreload" href="./_observablehq/runtime.8eb97cbb.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.8048ec16.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
+
+import {define} from "./_observablehq/client.0d99af51.js";
+import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
+
+registerFile("./data/co-emissions-per-capita.csv", {"name":"./data/co-emissions-per-capita.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita.d61721b8.csv","lastModified":1730299695221,"size":800024});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.7f82b29f.csv","lastModified":1730391401269,"size":4552});
+
+define({id: "dd8709b0", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset"], body: (FileAttachment) => {
+//column: Entity,Code,Year,Annual CO₂ emissions (per capita)
+const dataset = FileAttachment("./data/co-emissions-per-capita.csv").csv({typed: true});
+//column: Entity,Region
+const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
+return {dataset,RegionDataset};
+}});
+
+define({id: "e4e2e85f", inputs: ["Plot"], outputs: ["prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPalette","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultipleMini"], body: (Plot) => {
+// Step 1: Data Preparation
+function prepareData(data, regionsData) {
+    return data.map(d => {
+        const regionData = regionsData.find(region => region.Entity === d.Entity);
+        return {
+            city: d.Entity,
+            co2Emissions: +d["Annual CO₂ emissions (per capita)"],
+            region: regionData ? regionData.Region : "Unknown"
+        };
+    });
+}
+
+// Step 2: Calculate total CO₂ emissions for each city within a region
+function calculateRegionalEmissions(preparedData) {
+    return preparedData.reduce((acc, record) => {
+        const { region, city, co2Emissions } = record;
+
+        if (!acc[region]) {
+            acc[region] = {};
+        }
+        if (!acc[region][city]) {
+            acc[region][city] = 0;
+        }
+        acc[region][city] += co2Emissions;
+        return acc;
+    }, {});
+}
+
+// Step 3: Select top N cities with optional 'Other' and 'Total' categories
+function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, includeTotal = false) {
+    const topCitiesByRegion = {};
+
+    for (const region in totalEmissionsByRegion) {
+        const sortedCities = Object.entries(totalEmissionsByRegion[region])
+            .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
+            .sort((a, b) => b.co2Emissions - a.co2Emissions);
+
+        topCitiesByRegion[region] = sortedCities.slice(0, topN);
+
+        if (includeOther && sortedCities.length > topN) {
+            const otherEmissions = sortedCities.slice(topN).reduce((sum, city) => sum + city.co2Emissions, 0);
+            topCitiesByRegion[region].push({ city: "Other", co2Emissions: otherEmissions, region });
+        }
+
+        if (includeTotal) {
+            const totalEmissions = sortedCities.reduce((sum, city) => sum + city.co2Emissions, 0);
+            topCitiesByRegion[region].push({ city: "Total", co2Emissions: totalEmissions, region });
+        }
+    }
+
+    return topCitiesByRegion;
+}
+
+// Step 4: Rank emitters by position across regions
+function rankEmittersByPosition(topCitiesByRegion) {
+    const rankedEmitters = [];
+    const maxLength = Math.max(...Object.values(topCitiesByRegion).map(region => region.length));
+
+    for (let position = 0; position < maxLength; position++) {
+        const emittersAtPosition = {};
+
+        for (const region in topCitiesByRegion) {
+            const cityData = topCitiesByRegion[region][position];
+            if (cityData) {
+                if (!emittersAtPosition[region]) {
+                    emittersAtPosition[region] = [];
+                }
+                emittersAtPosition[region].push(cityData);
+            }
+        }
+
+        rankedEmitters.push(emittersAtPosition);
+    }
+
+    return rankedEmitters;
+}
+
+// Step 5: Generate mini-datasets based on ranked emitters for subplots
+function generateMiniDatasets(topCitiesByRegion) {
+    const rankedEmitters = rankEmittersByPosition(topCitiesByRegion);
+    return rankedEmitters.map((emitters, index) => ({
+        rank: index + 1,
+        data: emitters
+    }));
+}
+
+// Step 6: Apply colors to each dataset
+function applyColorPalette(miniDatasets, orderedRegions, colorPalette) {
+    miniDatasets.forEach(dataset => {
+        orderedRegions.forEach((region, regionIndex) => {
+            if (dataset.data[region]) {
+                dataset.data[region].forEach(cityData => {
+                    cityData.color = colorPalette[regionIndex % colorPalette.length];
+                });
+            }
+        });
+    });
+}
+
+// Step 7: Create a single subplot for a mini-dataset
+function createSubplot(data, orderedRegions, label, width, height, showYAxisLabels) {
+    return Plot.plot({
+        width,
+        height,
+        marginLeft: showYAxisLabels ? 60 : 20,
+        marginBottom: 80,
+        x: {
+            label,
+            grid: true,
+            tickFormat: "s",
+            tickSpacing: 50
+        },
+        y: {
+            domain: orderedRegions,
+            label: showYAxisLabels ? "Region" : null, // Only show y-axis label on the leftmost plot
+            labelPosition: "top",
+            ticks: showYAxisLabels ? orderedRegions : [], // Only show y-axis ticks on the leftmost plot
+            tickFormat: showYAxisLabels ? d => d : null // Only format y-axis tick labels on the leftmost plot
+        },
+        marks: [
+            Plot.barX(data, {
+                x: "co2Emissions",
+                y: "region",
+                fill: "color",
+                title: d => `${d.city}: ${d.co2Emissions} CO₂`
+            })
+        ]
+    });
+}
+
+// Dynamically generate labels based on `topNPerRegion`
+function generateLabels(topNPerRegion) {
+    const rankLabels = ["First", "Second", "Third", "Fourth", "Fifth"];
+    const labels = rankLabels.slice(0, topNPerRegion); // Adjust labels based on the topNPerRegion value
+    labels.push("Other", "Total emissions"); // Append "Other" and "Total emissions" labels
+    return labels;
+}
+
+// Step 8: Create container with subplots
+function createSubplotContainer(miniDatasets, orderedRegions, width, height, topNPerRegion) {
+    const container = document.createElement("div");
+    container.style.display = "flex";
+    container.style.gap = "20px";
+
+    // Generate appropriate labels
+    const labels = generateLabels(topNPerRegion);
+
+    miniDatasets.forEach((dataset, index) => {
+        const subplotWidth = index === miniDatasets.length - 1 ? (width / miniDatasets.length) * 2 : width / miniDatasets.length;
+        const data = orderedRegions.flatMap(region => dataset.data[region] || []);
+        
+        const label = labels[index];
+        const showYAxisLabels = index === 0; // Show y-axis only for the leftmost plot
+        const subplot = createSubplot(data, orderedRegions, label, subplotWidth, height, showYAxisLabels);
+        
+        const subplotContainer = document.createElement("div");
+        subplotContainer.appendChild(subplot);
+        container.appendChild(subplotContainer);
+    });
+
+    return container;
+}
+
+// Main function to create the full visualization with modularized steps
+function EmissionsByRegionStackedMultipleMini(data, regionsData, { width = 1600, height = 500, topNPerRegion = 5 } = {}) {
+    // Constants and color palette
+
+    
+    const colorPalette = [
+        "#FF8C00", // Orange
+        "#FFD700", // Yellow
+        "#6B8E23", // Olive green
+        "#3CB371", // Sea green
+        "#4682B4", // Steel blue
+        "#4169E1", // Royal blue
+        "#8A2BE2", // Blue violet
+        "#A0522D", // Sienna
+        "#696969", // Dim gray
+    ];
+
+    // Step 1-3: Data preparation and processing
+    const preparedData = prepareData(data, regionsData);
+    const regionalEmissions = calculateRegionalEmissions(preparedData);
+    const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, true);
+
+    // Step 4-5: Generate mini-datasets based on rankings and order regions by total emissions
+    const miniDatasets = generateMiniDatasets(topCitiesByRegion);
+    const orderedRegions = Object.keys(miniDatasets[miniDatasets.length - 1].data)
+        .sort((a, b) => miniDatasets[miniDatasets.length - 1].data[b][0].co2Emissions - miniDatasets[miniDatasets.length - 1].data[a][0].co2Emissions);
+
+    // Step 6: Apply color palette to mini-datasets
+    applyColorPalette(miniDatasets, orderedRegions, colorPalette);
+
+    // Step 7-8: Create and return container with subplots
+    return createSubplotContainer(miniDatasets, orderedRegions, width, height, topNPerRegion);
+}
+
+
+
+return {prepareData,calculateRegionalEmissions,selectTopCities,rankEmittersByPosition,generateMiniDatasets,applyColorPalette,createSubplot,generateLabels,createSubplotContainer,EmissionsByRegionStackedMultipleMini};
+}});
+
+define({id: "61edd21e", mode: "inline", inputs: ["resize","EmissionsByRegionStackedMultipleMini","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedMultipleMini,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStackedMultipleMini(dataset, RegionDataset, { width, topNPerRegion: 5}))
+))
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
+    <li class="observablehq-link"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<!-- Load and transform the data -->
+<div class="observablehq observablehq--block"><!--:dd8709b0:--></div>
+<!--Functions -->
+<div class="observablehq observablehq--block"><!--:e4e2e85f:--></div>
+<h1 id="lazzarinis-part" tabindex="-1"><a class="observablehq-header-anchor" href="#lazzarinis-part">Lazzarini's Part</a></h1>
+<h2 id="top-5-co-emitters-per-capita-per-region-stacked-multiple" tabindex="-1"><a class="observablehq-header-anchor" href="#top-5-co-emitters-per-capita-per-region-stacked-multiple">Top 5 CO₂ emitters (per capita) per region  - Stacked multiple🌍</a></h2>
+<br>
+<br>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:61edd21e:--> </div>
+</div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./laboratory1"><span>Laboratory One</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-04T11:30:26">Nov 4, 2024</a>.</div>
+</footer>
+</div>
