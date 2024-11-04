@@ -3,133 +3,6 @@ theme: dashboard
 title: Bilal Trial
 toc: false
 ---
-
-### Best 20 Capita with low CO₂ Emissions in 2000 🌍
-
-<!-- Load and transform the data -->
-```js
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: true});
-```
-
-<!-- BarPlot that show the emission and the country in one year -->
-
-```js
-function EmissionsByCapital(data, {width = 800} = {}) { 
-  const filteredData = data
-    .filter(d => d.Year === 2000)
-    .map(d => ({
-      city: d.Entity,
-      co2Emissions: +d["Annual CO₂ emissions (per capita)"]
-    }))
-    .sort((a, b) => a.co2Emissions - b.co2Emissions)
-    .slice(0, 20);
-
-  return Plot.plot({
-    height: 400,
-    width,
-    marginLeft: 60,
-    marginBottom: 100,
-    x: {
-      label: "City",
-      domain: filteredData.map(d => d.city),
-      tickRotate: -45,
-      tickSize: 10 
-    },
-    y: {
-      label: "Annual CO₂ Emissions (per capita)",
-      grid: true
-    },
-    marks: [
-      Plot.barY(filteredData, {x: "city", y: "co2Emissions", fill: "steelblue"})
-    ]
-  });
-}
-
-```
-
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapital(dataset, {width}))} </div> 
-</div>
-
-
-
-
-<!-- BarPlot that show the emission and the country in one decade -->
-
-
-<!-- BarPlot that show the emission and the country with high emission -->
-
-### Best 20 Capita with high CO₂ Emissions 🌍
-
-```js
-// Function for Best 20 Capita with high CO₂ Emissions 🌍
-function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
-    const totalEmissionsMap = data.reduce((acc, d) => {
-        const city = d.Entity;
-        const emissions = +d["Annual CO₂ emissions (per capita)"];
-        if (!acc[city]) acc[city] = 0;
-        acc[city] += emissions;
-        return acc;
-    }, {});
-
-    const topCities = Object.entries(totalEmissionsMap)
-        .map(([city, co2Emissions]) => ({ city, co2Emissions }))
-        .sort((a, b) => b.co2Emissions - a.co2Emissions)
-        .slice(0, 20);
-
-    const colorScale = d3.scaleSequential(d3.interpolateSpectral)
-        .domain([Math.max(...topCities.map(d => d.co2Emissions)), Math.min(...topCities.map(d => d.co2Emissions))]);
-
-    return Plot.plot({
-        height: 400,
-        width,
-        marginLeft: 150,
-        marginBottom: 60,
-        x: {
-            label: "Total CO₂ Emissions (per capita)",
-            grid: true,
-            nice: true
-        },
-        y: {
-            domain: topCities.map(d => d.city),
-            label: null
-        },
-        marks: [
-            Plot.barX(topCities, {
-                x: "co2Emissions",
-                y: "city",
-                fill: d => colorScale(d.co2Emissions),
-                className: "hover-bar"
-            }),
-            Plot.text(topCities, {
-                x: d => d.co2Emissions / 2, // Position text in the middle of the bar
-                y: "city",
-                text: d => d.co2Emissions.toFixed(2),
-                textAnchor: "middle",
-                fill: "#000",
-                opacity: 0,
-                fontSize: 20,
-                className: "hover-label"
-            })
-        ],
-        // Function to handle hover interactions
-        decorate(svg) {
-            const labels = svg.querySelectorAll(".hover-label");
-            svg.querySelectorAll(".hover-bar").forEach((bar, i) => {
-                bar.addEventListener("mouseenter", () => labels[i].setAttribute("opacity", 1)); // Show text on hover
-                bar.addEventListener("mouseleave", () => labels[i].setAttribute("opacity", 0)); // Hide text on mouse out
-            });
-        }
-    });
-}
-
-```
-
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapitalDecade(dataset, { width }))} </div> 
-</div>
-
 ### CO₂ Emissions Heatmap 🌍
 
 ```js
@@ -137,176 +10,139 @@ function EmissionsByCapitalDecade(data, { width = 800 } = {}) {
 const dataset2 = FileAttachment("data/co2-fossil-plus-land-use.csv").csv({typed: true});
 ```
 
+
 ```js
-// Prepare the data for heatmap visualization with total, fossil, and land-use emissions
-function prepareHeatmapData(data, yearRange = [2011, 2022]) {
-  // Filter data to only include years within the specified range
-  const filteredData = data
-    .filter(d => d.Year >= yearRange[0] && d.Year <= yearRange[1])
+// Prepare the data for the heatmap based on the selected year and top countries
+function prepareDataForYear(data, year) {
+  return data
+    .filter(d => d.Year === year)
     .map(d => ({
       country: d.Entity,
-      year: d.Year,
-      totalEmissions: +d["Annual CO₂ emissions including land-use change"], // Total emissions
-      fossilEmissions: +d["Annual CO₂ emissions"],                          // Fossil fuel emissions
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]     // Land-use emissions
-    }));
-
-  // Aggregate total emissions by country to find the top 20 emitters
-  const totalEmissionsByCountry = d3.rollup(
-    filteredData,
-     v => d3.sum(v, d => d.fossilEmissions + d.landUseEmissions),
-    d => d.country
-  );
-
-  // Get the top 20 countries by total emissions
-  const topCountries = Array.from(totalEmissionsByCountry)
-    .sort((a, b) => b[1] - a[1]) // Sort by descending total emissions
-    .slice(0, 10)                 // Keep only the top 20 countries
-    .map(d => d[0]);              // Extract country names
-
-  // Filter to include only the top 20 countries
-  return filteredData.filter(d => topCountries.includes(d.country));
+      year,
+      fossilEmissions: +d["Annual CO₂ emissions"],
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]
+    }))
+    .sort((a, b) => (b.fossilEmissions + b.landUseEmissions) - (a.fossilEmissions + a.landUseEmissions))
+    .slice(0, 10) // Top 10 countries by total emissions
+    .flatMap(d => [
+      { country: d.country, yearAndType: `${year} (Fossil Fuel)`, emissions: d.fossilEmissions },
+      { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions }
+    ]);
 }
 
-// Heatmap visualization function for selected emission type
-function EmissionsHeatmap(data, type = "totalEmissions", { width = 1000 } = {}) {
-  // Prepare the data specifically for the heatmap
-  const heatmapData = prepareHeatmapData(data);
-
-  return Plot.plot({
-    width,
-    height: 500,
-    marginLeft: 100,
-    marginBottom: 50,
-    style: {
-      fontSize: "12px" // Set global font size
+// Generate and render the heatmap based on the selected year
+function renderHeatmap(data, year) {
+  const heatmapData = prepareDataForYear(data, year);
+  const heatmap = Plot.plot({
+    width: 800,
+    height: 200,
+    marginLeft: 150,
+    marginBottom: 100,
+        style: {
+      fontSize: "14px",      // Set global font size for all text elements (axis labels, ticks, legend)
+      color: "black"         // Set text color globally for better visibility
     },
     x: {
-      label: "Year",
-      domain: Array.from(new Set(heatmapData.map(d => d.year))).sort(),
+      label: "Country",
+      domain: [...new Set(heatmapData.map(d => d.country))],
+      tickRotate: -30,
+      labelAnchor: "left",
+      paddingInner: 0.05
     },
     y: {
-      label: "Country",
-      labelAnchor: "top",
-      domain: Array.from(new Set(heatmapData.map(d => d.country))),
-      tickRotate: -45,
+      label: "Year and Emission Type",
+      domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`],
+      paddingInner: 0.05
     },
     color: {
       type: "linear",
-      domain: [0, d3.max(heatmapData, d => d[type])], // Set color domain based on selected type
+      domain: [0, d3.max(heatmapData, d => d.emissions)],
       scheme: "reds",
-      label: `CO₂ Emissions (${type})`
+      label: "CO₂ Emissions (tons per capita)",
     },
     marks: [
       Plot.rect(heatmapData, { 
-        x: "year",
-        y: "country",
-        fill: d => d[type], // Choose the emission type for color intensity
-        title: d => `${d.country} (${d.year}): ${d[type]} tons`
-      })
-    ]
-  });
-}
-
-// Render the heatmap with total emissions
-EmissionsHeatmap(dataset2, "totalEmissions");
-```
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsHeatmap(dataset2,"totalEmissions", { width }))} </div> 
-</div>
-
-
-
-```js
-// Prepare the data for the vertically stacked heatmap visualization
-function prepareComparisonHeatmapData(data, yearRange = [2011, 2022]) {
-  // Filter data within the selected year range
-  const filteredData = data
-    .filter(d => d.Year >= yearRange[0] && d.Year <= yearRange[1])
-    .map(d => ({
-      country: d.Entity,
-      year: d.Year,
-      fossilEmissions: +d["Annual CO₂ emissions"],                         // Fossil fuel emissions
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]    // Land-use emissions
-    }));
-
-  // Aggregate total fossil + land-use emissions by country to find the top 20 emitters
-  const totalEmissionsByCountry = d3.rollup(
-    filteredData,
-    v => d3.sum(v, d => d.fossilEmissions + d.landUseEmissions),
-    d => d.country
-  );
-
-  // Get the top 20 countries by combined emissions
-  const topCountries = Array.from(totalEmissionsByCountry)
-    .sort((a, b) => b[1] - a[1])  // Sort descending by total emissions
-    .slice(0, 10)                 // Keep only the top 20 countries
-    .map(d => d[0]);              // Extract country names
-
-  // Filter original data to include only the top 20 countries
-  return filteredData.filter(d => topCountries.includes(d.country));
-}
-
-// Comparative Heatmap visualization function for fossil vs land-use emissions
-function EmissionsComparisonHeatmap(data, { width = 800 } = {}) {
-  // Prepare the data specifically for the heatmap
-  const heatmapData = prepareComparisonHeatmapData(data);
-
-  // Map years and emission types for heatmap arrangement with stacking
-  const expandedData = [];
-  heatmapData.forEach(d => {
-    expandedData.push(
-      { country: d.country, year: d.year, emissionType: "Fossil Fuel", emissions: d.fossilEmissions },
-      { country: d.country, year: d.year, emissionType: "Land-Use", emissions: d.landUseEmissions }
-    );
-  });
-
-  return Plot.plot({
-    width,
-    height: 700,
-    marginLeft: 100,
-    marginBottom: 50,
-    style: {
-      fontSize: "10px" // Set global font size
-    },
-    x: {
-      label: "Year",
-      paddingInner: 0.05,
-      domain: Array.from(new Set(expandedData.map(d => d.year))).sort(),
-      tickRotate: -45,
-    },
-    y: {
-      label: "Country (Emission Type)",
-      labelAnchor: "top",
-      paddingInner: 0.05,
-      domain: Array.from(new Set(expandedData.map(d => `${d.country} (${d.emissionType})`))), // Stack vertically
-    },
-    color: {
-      type: "linear",
-      domain: [0, d3.max(expandedData, d => d.emissions)], // Set color intensity range based on emissions
-      scheme: "reds",
-      label: "CO₂ Emissions (tons per capita)"
-    },
-    marks: [
-      // Rectangles for fossil and land-use emissions stacked vertically for each year
-      Plot.rect(expandedData, { 
-        x: "year",
-        y: d => `${d.country} (${d.emissionType})`, // Stack by combining country and emissionType
-        fill: "emissions", // Set color intensity based on emissions value
-        title: d => `${d.country} (${d.year}, ${d.emissionType}): ${d.emissions.toFixed(2)} tons`, // Tooltip
+        x: "country", 
+        y: "yearAndType", 
+        fill: "emissions", 
+        title: d => `${d.country} (${d.yearAndType}): ${d.emissions.toFixed(2)} tons`,
         stroke: "black",
         strokeWidth: 0.1
       })
     ]
   });
+  document.getElementById("heatmap-container").innerHTML = ""; // Clear previous plot
+  document.getElementById("heatmap-container").appendChild(heatmap); // Append new plot
 }
 
-// Render the comparative heatmap with stacking
-EmissionsComparisonHeatmap(dataset2, { width: 800 });
+// Initialize the dropdown menu and initial heatmap
+function initializeDropdown(data) {
+  const years = [...new Set(data.map(d => d.Year))].sort((a, b) => a - b);
+  const dropdown = document.getElementById("year-dropdown");
+  dropdown.onchange = () => renderHeatmap(data, Number(dropdown.value));
 
+  years.forEach(year => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.text = year;
+    dropdown.appendChild(option);
+  });
+
+  renderHeatmap(data, years[0]); // Render the heatmap for the initial year
+}
+
+// Auto-play functionality to cycle through years
+let autoPlayInterval; // Variable to store the interval for auto-play
+
+function toggleAutoPlay(data) {
+  const dropdown = document.getElementById("year-dropdown");
+  const years = [...dropdown.options].map(option => Number(option.value));
+  let currentIndex = years.indexOf(Number(dropdown.value));
+
+  if (autoPlayInterval) {
+    // Stop auto-play if it's already running
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    document.getElementById("auto-play-button").innerText = "Auto Play";
+  } else {
+    // Start auto-play
+    autoPlayInterval = setInterval(() => {
+      // Check if the next year is greater than the current year
+      const previousYear = years[currentIndex];
+      currentIndex = (currentIndex + 1) % years.length;
+      const currentYear = years[currentIndex];
+
+      if (currentYear <= previousYear) {
+        // Stop auto-play if the year does not increase
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        document.getElementById("auto-play-button").innerText = "Auto Play";
+      } else {
+        // Update dropdown and heatmap with the new year
+        dropdown.value = currentYear;
+        renderHeatmap(data, currentYear);
+      }
+    }, 350); // Change year every 1 second
+    document.getElementById("auto-play-button").innerText = "Stop";
+  }
+}
+
+// Attach the toggleAutoPlay function to the button
+document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(dataset2);
+
+// Call the initialize function with the dataset
+initializeDropdown(dataset2);
 ```
+
 <div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsComparisonHeatmap(dataset2, { width }))} </div> 
+  <div class="card">
+    <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+      <span>Select a year to view CO₂ emissions by country:</span> 
+      <select id="year-dropdown"></select> <!-- Dropdown for years -->
+      <button id="auto-play-button">Auto Play</button> <!-- Auto Play button -->
+    </div>
+    <div id="heatmap-container"></div>
+  </div> 
 </div>
 
 
