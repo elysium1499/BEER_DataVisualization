@@ -14,26 +14,21 @@ const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: tru
 
 ```
 
-
 <!-- BarPlot that show the emission and the country in one year -->
 
 # First Part
 ### Best 20 Capita with high CO₂ Emissions in the Years 🌍
 
 ```js
-const uniqueEntities = [...new Set(dataset.map(d => d.Year.toString()))].sort((a, b) => b - a);
-const year = view(Inputs.select(uniqueEntities, {label: "📅 Choose Year"}));
-
-
-function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
-    const filteredData = data
-        .filter(d => d.Year.toString() === year)
-        .map(d => ({
-            city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"]
-        }))
-        .sort((a, b) => b.co2Emissions - a.co2Emissions)
-        .slice(0, 20);
+function EmissionsByCapitalYear(data, {width = 800} = {}) {
+  const filteredData = data
+    .filter(d => d.Year === 2000)
+    .map(d => ({
+      city: d.Entity,
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]
+    }))
+    .sort((a, b) => a.co2Emissions - b.co2Emissions)
+    .slice(0, 20);
 
     const colorPalette = [
         "#FFDFBA", // Light Apricot
