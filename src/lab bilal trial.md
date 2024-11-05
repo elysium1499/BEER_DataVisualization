@@ -13,14 +13,15 @@ const dataset2 = FileAttachment("data/co2-fossil-plus-land-use.csv").csv({typed:
 
 ```js
 // Prepare the data for the heatmap based on the selected year and top countries
+// Prepare the data for the heatmap based on the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
     .filter(d => d.Year === year)
     .map(d => ({
       country: d.Entity,
       year,
-      fossilEmissions: +d["Annual CO₂ emissions"],
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"]
+      fossilEmissions: +d["Annual CO₂ emissions"] / 1e6,       // Normalizing to tons
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e6  // Normalizing to tons
     }))
     .sort((a, b) => (b.fossilEmissions + b.landUseEmissions) - (a.fossilEmissions + a.landUseEmissions))
     .slice(0, 10) // Top 10 countries by total emissions
@@ -30,6 +31,7 @@ function prepareDataForYear(data, year) {
     ]);
 }
 
+
 // Generate and render the heatmap based on the selected year
 function renderHeatmap(data, year) {
   const heatmapData = prepareDataForYear(data, year);
@@ -38,6 +40,7 @@ function renderHeatmap(data, year) {
     height: 200,
     marginLeft: 150,
     marginBottom: 100,
+    marginTop: 50,
         style: {
       fontSize: "14px",      // Set global font size for all text elements (axis labels, ticks, legend)
       color: "black"         // Set text color globally for better visibility
@@ -59,13 +62,15 @@ function renderHeatmap(data, year) {
       domain: [0, d3.max(heatmapData, d => d.emissions)],
       scheme: "reds",
       label: "CO₂ Emissions (tons per capita)",
+      legend: true
     },
     marks: [
       Plot.rect(heatmapData, { 
         x: "country", 
         y: "yearAndType", 
         fill: "emissions", 
-        title: d => `${d.country} (${d.yearAndType}): ${d.emissions.toFixed(2)} tons`,
+        title: d => `${d.country}: ${d.emissions.toFixed(2)} million tons`,
+        tip: true,
         stroke: "black",
         strokeWidth: 0.1
       })
