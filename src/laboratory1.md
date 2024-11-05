@@ -11,6 +11,8 @@ toc: false
 const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: true});
+//column: Entity,Region,Population
+const populationDataset = FileAttachment("data/region_entities_population2022.csv").csv({typed: true});
 
 ```
 
@@ -150,8 +152,6 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         ...cityData,
         color: emissionColorMap[cityData.co2Emissions]
     }));
-
-    console.log(coloredCities);
 
     return Plot.plot({
         height: 400,
@@ -299,7 +299,7 @@ const topCities = Object.values(
   <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
 </div>
 
-
+# third part
 <!--Lazzarini Part-->
 
 ```js
@@ -325,16 +325,18 @@ const colorPalette = [
 ];
 
 // Step 1: Data Preparation
-function prepareData(data, regionsData) {
+function prepareData(data, regionsData, per_capita = false) {
     return data.map(d => {
         const regionData = regionsData.find(region => region.Entity === d.Entity);
+        const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
         return {
             city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"],
+            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (per_capita ? 1 : populationData.Population2022),
             region: regionData ? regionData.Region : "Unknown"
         };
     });
 }
+
 
 // Step 2: Calculate total CO₂ emissions for each city within a region
 function calculateRegionalEmissions(preparedData) {
@@ -361,6 +363,7 @@ function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, inc
         
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
+            .filter(cityData => cityData.co2Emissions > 0) // Ignore zero-emission cities
             .sort((a, b) => b.co2Emissions - a.co2Emissions);
 
         topCitiesByRegion[region] = sortedCities.slice(0, topN);
@@ -514,9 +517,9 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
 
 
 // Main function to create the full visualization with modularized steps
-function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, height = 500, topNPerRegion = 5 } = {}) {
+function EmissionsByRegionStackedMultiple(data, regionsData,per_capita=false, { width = 1600, height = 500, topNPerRegion = 5 } = {}) {
     // Step 1-3: Data preparation and processing
-    const preparedData = prepareData(data, regionsData);
+    const preparedData = prepareData(data, regionsData,per_capita);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, true);
 
@@ -635,9 +638,9 @@ function addXAxis(svg, xScale, width, height) {
 }
 
 // Main function to generate the stacked 100% bar chart
-function EmissionsByRegion100PercentStacked(data, regionsData, { width = 1600, height = 350, topNPerRegion = 5 } = {}) {
+function EmissionsByRegion100PercentStacked(data, regionsData,per_capita=false, { width = 1600, height = 350, topNPerRegion = 5 } = {}) {
     // Step 1: Data preparation
-    const preparedData = prepareData(data, regionsData);
+    const preparedData = prepareData(data, regionsData,per_capita);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, false);
 
@@ -656,22 +659,24 @@ function EmissionsByRegion100PercentStacked(data, regionsData, { width = 1600, h
     return svg.node();
 }
 
+const per_capita = view(Inputs.toggle({label: "Per capita"}));
+
 
 ```
 
-# Lazzarini's Part
 ## Top 5 CO₂ emitters (per capita) per region  - Stacked multiple🌍
+
 <br>
 <br>
 <div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 5 }))}</div>
+  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))}</div>
 </div>
 
 ## Top 5 CO₂ emitters (per capita) per region  - Stacked 100%🌍
 <br>
 <br>
 <div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset, { width, topNPerRegion: 5 }))}</div>
+  <div class="card">${resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))}</div>
 </div>
 
 
