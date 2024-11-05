@@ -303,17 +303,16 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     return acc;
   }, {});
 
-  const topCities = Object.entries(totalEmissionsByEntity)
-    .map(([city, { co2Emissions, region }]) => ({ city, co2Emissions, region }))
-    .sort((a, b) => b.co2Emissions - a.co2Emissions)
-    .slice(0, 50);
+  const topCities = Object.values(
+    Object.entries(totalEmissionsByEntity)
+        .reduce((acc, [city, { co2Emissions, region }]) => {
+            if (!acc[region]) acc[region] = [];
+            acc[region].push({ city, co2Emissions, region });
+            return acc;
+        }, {})
+  ).map(citiesInRegion => citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions).slice(0, 5)).flat();
 
-  const colorPalette = [
-    "#FFDFBA", "#FFD700", "#FF8C00", "#FF4500", "#6B8E23",
-    "#3CB371", "#2E8B57", "#20B2AA", "#4682B4", "#4169E1",
-    "#6A5ACD", "#8A2BE2", "#7B68EE", "#A0522D", "#D2691E",
-    "#B22222", "#696969", "#A9A9A9"
-  ];
+  const colorPalette = ["#FF0000", "#FF8C00", "#FFA500", "#FFFF00", "#008000"];
 
   // Mappa dei colori per le città
   const cityColorMap = {};
@@ -377,9 +376,7 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
         y: d => d.region,
         fill: d => cityColorMap[d.city],
         title: d => `${d.city}: ${d.co2Emissions} CO₂`,
-        tooltip: {
-          delay: 0
-        }
+        tip:true
       })
     ]
   });

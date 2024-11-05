@@ -9,8 +9,8 @@ toc: false
   <div class="cards-container">
     <div class="card">Elisa Calza S4700104</div>
     <div class="card">Bilal Khateeb S5835711</div>
-    <div class="card">Roberto Lazzarini S.</div>
-    <div class="card">Elena Martino S.</div>
+    <div class="card">Roberto Lazzarini S4937188</div>
+    <div class="card">Elena Martino S4702492</div>
   </div>
 </div>
 
