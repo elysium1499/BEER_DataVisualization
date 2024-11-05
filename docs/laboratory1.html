@@ -315,7 +315,7 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
-define({id: "579c3558", inputs: ["Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (Plot) => {
+define({id: "e6846d64", inputs: ["Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -340,17 +340,16 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     return acc;
   }, {});
 
-  const topCities = Object.entries(totalEmissionsByEntity)
-    .map(([city, { co2Emissions, region }]) => ({ city, co2Emissions, region }))
-    .sort((a, b) => b.co2Emissions - a.co2Emissions)
-    .slice(0, 50);
+  const topCities = Object.values(
+    Object.entries(totalEmissionsByEntity)
+        .reduce((acc, [city, { co2Emissions, region }]) => {
+            if (!acc[region]) acc[region] = [];
+            acc[region].push({ city, co2Emissions, region });
+            return acc;
+        }, {})
+  ).map(citiesInRegion => citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions).slice(0, 5)).flat();
 
-  const colorPalette = [
-    "#FFDFBA", "#FFD700", "#FF8C00", "#FF4500", "#6B8E23",
-    "#3CB371", "#2E8B57", "#20B2AA", "#4682B4", "#4169E1",
-    "#6A5ACD", "#8A2BE2", "#7B68EE", "#A0522D", "#D2691E",
-    "#B22222", "#696969", "#A9A9A9"
-  ];
+  const colorPalette = ["#FF0000", "#FF8C00", "#FFA500", "#FFFF00", "#008000"];
 
   // Mappa dei colori per le città
   const cityColorMap = {};
@@ -414,9 +413,7 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
         y: d => d.region,
         fill: d => cityColorMap[d.city],
         title: d => `${d.city}: ${d.co2Emissions} CO₂`,
-        tooltip: {
-          delay: 0
-        }
+        tip:true
       })
     ]
   });
@@ -475,13 +472,13 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 </div>
 <br>
 <br>
-<div class="observablehq observablehq--block"><!--:579c3558:--></div>
+<div class="observablehq observablehq--block"><!--:e6846d64:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
 </div>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./lab%20bilal%20trial"><span>Bilal Trial</span></a><a rel="next" href="./laboratory_lazzarini"><span>Laboratory Lazzarini</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-04T11:30:26">Nov 4, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-05T09:38:33">Nov 5, 2024</a>.</div>
 </footer>
 </div>
