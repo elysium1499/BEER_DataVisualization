@@ -11,8 +11,7 @@ toc: false
 const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: true});
-//column: Entity,Region,Population
-const populationDataset = FileAttachment("data/region_entities_population2022.csv").csv({typed: true});
+
 ```
 
 <!-- BarPlot that show the emission and the country in one year -->
@@ -151,8 +150,6 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         ...cityData,
         color: emissionColorMap[cityData.co2Emissions]
     }));
-
-    console.log(coloredCities);
 
     return Plot.plot({
         height: 400,
@@ -308,7 +305,7 @@ const topCities = Object.values(
   <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
 </div>
 
-
+# third part
 <!--Lazzarini Part-->
 
 ```js
@@ -671,6 +668,9 @@ const per_capita = view(Inputs.toggle({label: "Per capita"}));
 
 
 ```
+
+# Lazzarini's Part
+## Top 5 CO₂ emitters (per capita) per region  - Stacked multiple🌍
 <br>
 <br>
 
