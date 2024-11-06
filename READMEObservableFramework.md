@@ -56,8 +56,8 @@ A typical Framework project looks like this:
 
 
 ## Elisa Advice 
-finish to modify your file .md do:
-- delete folder dir
+To see the page on github do:
 - do 'npm run build' on command line
+- copy file jekill from /docs into new /dir (created by last command execution)
 - remame the new /dir to /docs
-- remember to add jekill file to new /docs
+- do push
