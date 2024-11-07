@@ -11,6 +11,7 @@ Argentina,South America
 Armenia,Asia
 Aruba,North America
 Asia,Asia
+Asia (excl. China and India),Asia
 Australia,Oceania
 Austria,Europe
 Azerbaijan,Asia
@@ -68,6 +69,10 @@ Estonia,Europe
 Eswatini,Africa
 Ethiopia,Africa
 Europe,Europe
+Europe (excl. EU-27),Europe
+Europe (excl. EU-28),Europe
+European Union (27),Europe
+European Union (28),Europe
 Faroe Islands,Europe
 Fiji,Oceania
 Finland,Europe
@@ -86,6 +91,7 @@ Guinea,Africa
 Guinea-Bissau,Africa
 Guyana,South America
 Haiti,North America
+High-income countries,Global
 Honduras,North America
 Hong Kong,Asia
 Hungary,Europe
@@ -114,6 +120,8 @@ Liberia,Africa
 Libya,Africa
 Liechtenstein,Europe
 Lithuania,Europe
+Low-income countries,Global
+Lower-middle-income countries,Global
 Luxembourg,Europe
 Macao,Asia
 Madagascar,Africa
@@ -126,7 +134,7 @@ Marshall Islands,Oceania
 Mauritania,Africa
 Mauritius,Africa
 Mexico,North America
-Micronesia,Oceania
+Micronesia (country),Oceania
 Moldova,Europe
 Mongolia,Asia
 Montenegro,Europe
@@ -145,6 +153,7 @@ Niger,Africa
 Nigeria,Africa
 Niue,Oceania
 North America,North America
+North America (excl. USA),North America
 North Korea,Asia
 North Macedonia,Europe
 Norway,Europe
@@ -177,7 +186,7 @@ Serbia,Europe
 Seychelles,Africa
 Sierra Leone,Africa
 Singapore,Asia
-Sint Maarten,North America
+Sint Maarten (Dutch part),North America
 Slovakia,Europe
 Slovenia,Europe
 Solomon Islands,Oceania
@@ -210,12 +219,14 @@ Ukraine,Europe
 United Arab Emirates,Asia
 United Kingdom,Europe
 United States,North America
+Upper-middle-income countries,Global
 Uruguay,South America
 Uzbekistan,Asia
 Vanuatu,Oceania
 Venezuela,South America
 Vietnam,Asia
 Wallis and Futuna,Oceania
+World,Global
 Yemen,Asia
 Zambia,Africa
 Zimbabwe,Africa
