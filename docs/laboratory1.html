@@ -59,13 +59,13 @@
 import {define} from "./_observablehq/client.0d99af51.js";
 import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
 
-registerFile("./data/co-emissions-per-capita.csv", {"name":"./data/co-emissions-per-capita.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita.d61721b8.csv","lastModified":1730299695221,"size":800024});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.4ee3bad1.csv","lastModified":1730968296695,"size":442593});
 registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.7f82b29f.csv","lastModified":1730391401269,"size":4552});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.6b6bc476.csv","lastModified":1730800699598,"size":6484});
 
-define({id: "217aab17", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
+define({id: "28e628a1", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("./data/co-emissions-per-capita.csv").csv({typed: true});
+const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
@@ -235,14 +235,14 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
-define({id: "f187bd2b", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
-function prepareStackedData(data, regionsData, per_capita = false) {
+define({id: "7791bed7", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
+function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
     const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
     return {
       city: d.Entity,
-      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (per_capita ? 1 : populationData.Population2022),
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (populationData.Population2022),
       region: regionData ? regionData.Region : "Unknown"
     };
   });
@@ -353,7 +353,7 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 ))
 }});
 
-define({id: "46e6211f", inputs: ["populationDataset","Plot","d3"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple","normalizeEmissionsToPercentages","createSvg","createYScale","createXScale","renderBars","addYAxis","addXAxis","EmissionsByRegion100PercentStacked"], body: (populationDataset,Plot,d3) => {
+define({id: "7583cb5c", inputs: ["populationDataset","Plot","d3"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple","normalizeEmissionsToPercentages","createSvg","createYScale","createXScale","renderBars","addYAxis","addXAxis","EmissionsByRegion100PercentStacked"], body: (populationDataset,Plot,d3) => {
 const colorPalette = [
     "#CC564D", // Dark Coral
     "#4FAAC4", // Dark Sky Blue
@@ -375,13 +375,13 @@ const colorPalette = [
 ];
 
 // Step 1: Data Preparation
-function prepareData(data, regionsData, per_capita = false) {
+function prepareData(data, regionsData) {
     return data.map(d => {
         const regionData = regionsData.find(region => region.Entity === d.Entity);
         const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
         return {
             city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (per_capita ? 1 : populationData.Population2022),
+            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (populationData.Population2022),
             region: regionData ? regionData.Region : "Unknown"
         };
     });
@@ -490,7 +490,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
     return Plot.plot({
         width,
         height,
-        marginLeft: showYAxisLabels ? 60 : 20,
+        marginLeft: showYAxisLabels ? 100 : 20,
         marginBottom: 80,
         x: {
             label,
@@ -511,20 +511,9 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
                 x: "co2Emissions",
                 y: "region",
                 fill: color, // Set a single color for the entire subplot
-                title: d => `${d.city}: ${d.co2Emissions} CO₂`
+                title: d => `${d.city}: ${d.co2Emissions} CO₂`,
+                tip: true
             }),
-            // Only add text labels if showText is true
-            ...(showText ? [
-                Plot.text(data, {
-                    x: d => 250, // Position text slightly to the right of the bar
-                    y: "region",
-                    text: d => d.city,
-                    dy: 0,
-                    fontSize: 10,
-                    textAnchor: "start", // Align text with the start of the bar
-                    fill: "white" // Set text color to white for visibility
-                })
-            ] : [])
         ]
     });
 }
@@ -567,9 +556,9 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
 
 
 // Main function to create the full visualization with modularized steps
-function EmissionsByRegionStackedMultiple(data, regionsData,per_capita=false, { width = 1600, height = 500, topNPerRegion = 5 } = {}) {
+function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, height = 500, topNPerRegion } = {}) {
     // Step 1-3: Data preparation and processing
-    const preparedData = prepareData(data, regionsData,per_capita);
+    const preparedData = prepareData(data, regionsData);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, true);
 
@@ -688,9 +677,9 @@ function addXAxis(svg, xScale, width, height) {
 }
 
 // Main function to generate the stacked 100% bar chart
-function EmissionsByRegion100PercentStacked(data, regionsData,per_capita=false, { width = 1600, height = 350, topNPerRegion = 5 } = {}) {
+function EmissionsByRegion100PercentStacked(data, regionsData, { width = 1600, height = 350, topNPerRegion } = {}) {
     // Step 1: Data preparation
-    const preparedData = prepareData(data, regionsData,per_capita);
+    const preparedData = prepareData(data, regionsData);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, false);
 
@@ -709,24 +698,12 @@ function EmissionsByRegion100PercentStacked(data, regionsData,per_capita=false, 
     return svg.node();
 }
 
-//const per_capita = view(Inputs.toggle({label: "Per capita"}));
 return {colorPalette,prepareData,calculateRegionalEmissions,selectTopCities,rankEmittersByPosition,generateMiniDatasets,applyColorPaletteMiniDatasets,createSubplot,generateLabels,createSubplotContainer,EmissionsByRegionStackedMultiple,normalizeEmissionsToPercentages,createSvg,createYScale,createXScale,renderBars,addYAxis,addXAxis,EmissionsByRegion100PercentStacked};
 }});
 
-define({id: "f75420fb", inputs: ["view","Inputs"], outputs: ["per_capita"], body: (view,Inputs) => {
-const per_capita = view(Inputs.toggle({label: "Per capita"}));
-return {per_capita};
-}});
-
-define({id: "9646cfe8", mode: "inline", inputs: ["resize","EmissionsByRegionStackedMultiple","dataset","RegionDataset","per_capita","display"], body: async (resize,EmissionsByRegionStackedMultiple,dataset,RegionDataset,per_capita,display) => {
+define({id: "2832f044", mode: "inline", inputs: ["resize","EmissionsByRegionStackedMultiple","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedMultiple,dataset,RegionDataset,display) => {
 display(await(
-resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))
-))
-}});
-
-define({id: "abf3957c", mode: "inline", inputs: ["resize","EmissionsByRegion100PercentStacked","dataset","RegionDataset","per_capita","display"], body: async (resize,EmissionsByRegion100PercentStacked,dataset,RegionDataset,per_capita,display) => {
-display(await(
-resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))
+resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))
 ))
 }});
 
@@ -748,7 +725,7 @@ resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset,per_ca
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
 <!-- Load and transform the data -->
-<div class="observablehq observablehq--block"><!--:217aab17:--></div>
+<div class="observablehq observablehq--block"><!--:28e628a1:--></div>
 <!-- BarPlot that show the emission and the country in one year -->
 <h1 id="first-part" tabindex="-1"><a class="observablehq-header-anchor" href="#first-part">First Part</a></h1>
 <h3 id="top-20-countries-with-high-co-emissions-per-capita-in-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-the-years">Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍</a></h3>
@@ -767,30 +744,23 @@ resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset,per_ca
 <br>
 <h1 id="second-part" tabindex="-1"><a class="observablehq-header-anchor" href="#second-part">Second Part</a></h1>
 <h3 id="region-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#region-with-high-co-emissions">Region with high CO₂ Emissions 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:f187bd2b:--></div>
+<div class="observablehq observablehq--block"><!--:7791bed7:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
 </div>
 <!--Lazzarini Part-->
-<div class="observablehq observablehq--block"><!--:46e6211f:--></div>
+<div class="observablehq observablehq--block"><!--:7583cb5c:--></div>
 <br>
 <br>
-<h3 id="top-5-co-emitters-per-capita-per-region-stacked-multiple" tabindex="-1"><a class="observablehq-header-anchor" href="#top-5-co-emitters-per-capita-per-region-stacked-multiple">Top 5 CO₂ emitters (per capita) per region  - Stacked multiple🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:f75420fb:--></div>
+<h3 id="top-5-co-emitters-per-capita-per-region-stacked-multiple" tabindex="-1"><a class="observablehq-header-anchor" href="#top-5-co-emitters-per-capita-per-region-stacked-multiple">Top 5 CO₂ emitters per capita per region  - Stacked multiple🌍</a></h3>
 <div class="grid grid-cols-1">
-  <div class="card"><observablehq-loading></observablehq-loading><!--:9646cfe8:--></div>
-</div>
-<br>
-<br>
-<h3 id="top-5-co-emitters-per-capita-per-region-stacked-100" tabindex="-1"><a class="observablehq-header-anchor" href="#top-5-co-emitters-per-capita-per-region-stacked-100">Top 5 CO₂ emitters (per capita) per region  - Stacked 100%🌍</a></h3>
-<div class="grid grid-cols-1">
-  <div class="card"><observablehq-loading></observablehq-loading><!--:abf3957c:--></div>
+  <div class="card"><observablehq-loading></observablehq-loading><!--:2832f044:--></div>
 </div>
 <h1 id="third-part" tabindex="-1"><a class="observablehq-header-anchor" href="#third-part">Third part</a></h1>
 <!--Bilal Part-->
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./lab%20bilal%20trial"><span>Bilal Trial</span></a><a rel="next" href="./laboratory_lazzarini"><span>Laboratory Lazzarini</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-06T10:59:53">Nov 6, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T10:42:19">Nov 7, 2024</a>.</div>
 </footer>
 </div>

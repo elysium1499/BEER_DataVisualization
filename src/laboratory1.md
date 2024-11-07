@@ -8,7 +8,7 @@ toc: false
 
 ```js
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("data/co-emissions-per-capita.csv").csv({typed: true});
+const dataset = FileAttachment("data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
@@ -193,13 +193,13 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 
 
 ```js
-function prepareStackedData(data, regionsData, per_capita = false) {
+function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
     const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
     return {
       city: d.Entity,
-      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (per_capita ? 1 : populationData.Population2022),
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (populationData.Population2022),
       region: regionData ? regionData.Region : "Unknown"
     };
   });
@@ -333,13 +333,13 @@ const colorPalette = [
 ];
 
 // Step 1: Data Preparation
-function prepareData(data, regionsData, per_capita = false) {
+function prepareData(data, regionsData) {
     return data.map(d => {
         const regionData = regionsData.find(region => region.Entity === d.Entity);
         const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
         return {
             city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (per_capita ? 1 : populationData.Population2022),
+            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (populationData.Population2022),
             region: regionData ? regionData.Region : "Unknown"
         };
     });
@@ -448,7 +448,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
     return Plot.plot({
         width,
         height,
-        marginLeft: showYAxisLabels ? 60 : 20,
+        marginLeft: showYAxisLabels ? 100 : 20,
         marginBottom: 80,
         x: {
             label,
@@ -469,20 +469,9 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
                 x: "co2Emissions",
                 y: "region",
                 fill: color, // Set a single color for the entire subplot
-                title: d => `${d.city}: ${d.co2Emissions} CO₂`
+                title: d => `${d.city}: ${d.co2Emissions} CO₂`,
+                tip: true
             }),
-            // Only add text labels if showText is true
-            ...(showText ? [
-                Plot.text(data, {
-                    x: d => 250, // Position text slightly to the right of the bar
-                    y: "region",
-                    text: d => d.city,
-                    dy: 0,
-                    fontSize: 10,
-                    textAnchor: "start", // Align text with the start of the bar
-                    fill: "white" // Set text color to white for visibility
-                })
-            ] : [])
         ]
     });
 }
@@ -525,9 +514,9 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
 
 
 // Main function to create the full visualization with modularized steps
-function EmissionsByRegionStackedMultiple(data, regionsData,per_capita=false, { width = 1600, height = 500, topNPerRegion = 5 } = {}) {
+function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, height = 500, topNPerRegion } = {}) {
     // Step 1-3: Data preparation and processing
-    const preparedData = prepareData(data, regionsData,per_capita);
+    const preparedData = prepareData(data, regionsData);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, true);
 
@@ -646,9 +635,9 @@ function addXAxis(svg, xScale, width, height) {
 }
 
 // Main function to generate the stacked 100% bar chart
-function EmissionsByRegion100PercentStacked(data, regionsData,per_capita=false, { width = 1600, height = 350, topNPerRegion = 5 } = {}) {
+function EmissionsByRegion100PercentStacked(data, regionsData, { width = 1600, height = 350, topNPerRegion } = {}) {
     // Step 1: Data preparation
-    const preparedData = prepareData(data, regionsData,per_capita);
+    const preparedData = prepareData(data, regionsData);
     const regionalEmissions = calculateRegionalEmissions(preparedData);
     const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, false);
 
@@ -667,29 +656,17 @@ function EmissionsByRegion100PercentStacked(data, regionsData,per_capita=false, 
     return svg.node();
 }
 
-//const per_capita = view(Inputs.toggle({label: "Per capita"}));
 ```
 
 <br>
 <br>
 
-### Top 5 CO₂ emitters (per capita) per region  - Stacked multiple🌍
-
-```js
-const per_capita = view(Inputs.toggle({label: "Per capita"}));
-```
+### Top 5 CO₂ emitters per capita per region  - Stacked multiple🌍
 
 <div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))}</div>
+  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))}</div>
 </div>
 
-<br>
-<br>
-
-### Top 5 CO₂ emitters (per capita) per region  - Stacked 100%🌍
-<div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegion100PercentStacked(dataset, RegionDataset,per_capita, { width, topNPerRegion: 5 }))}</div>
-</div>
 
 # Third part
 <!--Bilal Part-->
