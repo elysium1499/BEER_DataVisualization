@@ -59,13 +59,13 @@
 import {define} from "./_observablehq/client.0d99af51.js";
 import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
 
-registerFile("./_file/data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.csv","lastModified":1730968296695,"size":442593});
+registerFile("./_file/data/co-emissions-per-capita-filter.4ee3bad1.csv", {"name":"./data/co-emissions-per-capita-filter.4ee3bad1.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.4ee3bad1.csv","lastModified":1730968296695,"size":442593});
 registerFile("./_file/data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.csv","lastModified":1730391401269,"size":4552});
 registerFile("./_file/data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.csv","lastModified":1730800699598,"size":6484});
 
 define({id: "28e628a1", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
+const dataset = FileAttachment("./data/co-emissions-per-capita-filter.4ee3bad1.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
