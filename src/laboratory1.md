@@ -283,7 +283,7 @@ const topCities = Object.values(
       label: "Total Annual CO₂ Emissions (per capita)",
       grid: true,
       tickSpacing: 50,
-      tickFormat: d => d3.format(".2s")(d).replace("G", " billion")
+      tickFormat: d => `${d} BT`
     },
     y: {
       label: "Region",
@@ -326,7 +326,7 @@ function prepareData(data, regionsData) {
         const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
         return {
             city: d.Entity,
-            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (populationData.Population2022),
+            co2Emissions: +d["Annual CO₂ emissions (per capita)"] * (populationData.Population2022)/ 1_000_000_000,
             region: regionData ? regionData.Region : "Unknown"
         };
     });
@@ -358,7 +358,7 @@ function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, inc
         
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
-            .filter(cityData => cityData.co2Emissions > 0) // Ignore zero-emission cities
+            .filter(cityData => cityData.co2Emissions > 0)
             .sort((a, b) => b.co2Emissions - a.co2Emissions);
 
         topCitiesByRegion[region] = sortedCities.slice(0, topN);
@@ -425,7 +425,6 @@ function generateMiniDatasets(topCitiesByRegion) {
 // Step 6: Apply a unique color to each dataset
 function applyColorPaletteMiniDatasets(miniDatasets, colorPalette) {
     miniDatasets.forEach((dataset, index) => {
-        // Assign a single color from the palette for each subplot based on its index
         dataset.color = colorPalette[index % colorPalette.length];
     });
 }
@@ -442,21 +441,21 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
             labelAnchor: "center",
             grid: true,
             tickFormat: "s",
-            tickSpacing: 50
+            tickSpacing: 50,
+            tickFormat: d => `${d} BT`
         },
         y: {
             domain: orderedRegions,
             label: showYAxisLabels ? "Region" : null, // Only show y-axis label on the leftmost plot
             labelPosition: "top",
             ticks: showYAxisLabels ? orderedRegions : [], // Only show y-axis ticks on the leftmost plot
-            //tickFormat: showYAxisLabels ? d => d : null // Only format y-axis tick labels on the leftmost plot
         },
         marks: [
             Plot.barX(data, {
                 x: "co2Emissions",
                 y: "region",
-                fill: color, // Set a single color for the entire subplot
-                title: d => `${d.city}: ${d.co2Emissions} CO₂`,
+                fill: color,
+                title: d => `${d.city}: ${d.co2Emissions.toFixed(2)} Billion Tons of CO₂`,
                 tip: true
             }),
         ]
@@ -467,7 +466,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
 
 // Dynamically generate labels based on `topNPerRegion`
 function generateLabels(topNPerRegion) {
-    const rankLabels = ["First", "Second", "Third", "Fourth", "Fifth"];
+    const rankLabels = ["First", "Second", "Third"];
     const labels = rankLabels.slice(0, topNPerRegion); // Adjust labels based on the topNPerRegion value
     labels.push("Other", "Total emissions"); // Append "Other" and "Total emissions" labels
     return labels;
@@ -615,7 +614,6 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
     x: {
         label: "Percentage of Total Regional CO₂ Emissions",
         tickSpacing: 50,
-        tickValues: null, 
         tickFormat: d => `${d}%`
     },
     y: {

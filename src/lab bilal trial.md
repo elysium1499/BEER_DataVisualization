@@ -7,7 +7,7 @@ toc: false
 
 ```js
 // Load the new data file
-const dataset2 = FileAttachment("data/co2-fossil-plus-land-use.csv").csv({typed: true});
+const dataset2 = FileAttachment("data/co2-fossil-plus-land-use1.csv").csv({typed: true});
 ```
 
 
@@ -41,9 +41,9 @@ function renderHeatmap(data, year) {
     marginLeft: 150,
     marginBottom: 100,
     marginTop: 50,
-        style: {
+    style: {
       fontSize: "14px",      // Set global font size for all text elements (axis labels, ticks, legend)
-      color: "black"         // Set text color globally for better visibility
+      color: "White"         // Set text color globally for better visibility
     },
     x: {
       label: "Country",
