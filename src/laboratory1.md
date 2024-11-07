@@ -4,7 +4,7 @@ title: Laboratory One
 toc: false
 ---
 
-<!-- Load and transform the data -->
+<!-- Load the data -->
 
 ```js
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
@@ -17,8 +17,15 @@ const populationDataset = FileAttachment("data/region_entities_population2022.cs
 
 <!-- BarPlot that show the emission and the country in one year -->
 
-# First Part
-### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
+# Section 1
+
+<br>
+
+### First Part
+
+<br>
+
+##### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
 
 ```js
 
@@ -98,7 +105,7 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
 <br>
 
-### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
+##### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
 
 ```js
 function EmissionsByCapital(data, { width = 800 } = {}) {
@@ -187,10 +194,11 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 <br>
 <br>
 
-# Second Part
+### Second Part
 
-### Region with high CO₂ Emissions 🌍
+<br>
 
+##### Region with high CO₂ Emissions 🌍
 
 ```js
 function prepareStackedData(data, regionsData) {
@@ -199,7 +207,7 @@ function prepareStackedData(data, regionsData) {
     const populationData = populationDataset.find(pop => pop.Entity === d.Entity);
     return {
       city: d.Entity,
-      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (populationData.Population2022),
+      co2Emissions: +d["Annual CO₂ emissions (per capita)"]* (populationData.Population2022)/ 1_000_000_000,
       region: regionData ? regionData.Region : "Unknown"
     };
   });
@@ -231,19 +239,12 @@ const topCities = Object.values(
     return [...top5Cities, { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
   }).flat();
 
-  const colorPalette = [
-    "#CC564D", // Dark Coral
-    "#4FAAC4", // Dark Sky Blue
-    "#D4AC40", // Dark Sunflower
-    "#76B89F", // Dark Mint
-    "#D87886", // Dark Soft Pink
-    "#523D60", // Dark Velvet Purple
-    ];
+  const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
   const cityColorMap = {};
   topCities.forEach(d => {
     if (d.city === "Other Cities") {
-      cityColorMap[d.city] = "#800080";
+      cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
       cityColorMap[d.city] = colorPalette[cityIndex];
@@ -281,8 +282,8 @@ const topCities = Object.values(
     x: {
       label: "Total Annual CO₂ Emissions (per capita)",
       grid: true,
-      tickFormat: "s",
-      tickSpacing: 50
+      tickSpacing: 50,
+      tickFormat: d => d3.format(".2s")(d).replace("G", " billion")
     },
     y: {
       label: "Region",
@@ -294,11 +295,12 @@ const topCities = Object.values(
         x: "co2Emissions",
         y: d => d.region,
         fill: d => cityColorMap[d.city],
-        title: d => `${d.city}: ${d.co2Emissions.toFixed(4)} CO₂`,
-        tip:true
+        title: d => `${d.city}: ${d.co2Emissions.toFixed(4)} Billion Tons of CO₂`,
+        tip: true
       })
     ]
   });
+
 }
 
 ```
@@ -306,31 +308,16 @@ const topCities = Object.values(
   <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
 </div>
 
+<br>
+<br>
 
+##### Top 3 CO₂ emitters per capita per region - Stacked multiple🌍
 
 
 <!--Lazzarini Part-->
 
 ```js
-const colorPalette = [
-    "#CC564D", // Dark Coral
-    "#4FAAC4", // Dark Sky Blue
-    "#D4AC40", // Dark Sunflower
-    "#76B89F", // Dark Mint
-    "#D87886", // Dark Soft Pink
-    "#523D60", // Dark Velvet Purple
-    "#C05568", // Dark Blush
-    "#2A4A5F", // Dark Deep Blue
-    "#9A506C", // Dark Rose
-    "#6A6A68", // Dark Granite Gray
-    "#BC7A60", // Dark Light Coral
-    "#33907F", // Dark Seafoam
-    "#AA8FA0", // Dark Lavender Blush
-    "#1E292D", // Dark Charcoal
-    "#86998F", // Dark Frosted Green
-    "#B0885A", // Dark Sand
-    "#7DA087", // Dark Moss Green
-];
+const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
 // Step 1: Data Preparation
 function prepareData(data, regionsData) {
@@ -533,140 +520,131 @@ function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, hei
     // Step 7-8: Create and return container with subplots
     return createSubplotContainer(miniDatasets, orderedRegions, width, height, topNPerRegion);
 }
-
-//------------------------------------------------------------------------------------------------
-// Function to normalize emissions to percentages within each region
-function normalizeEmissionsToPercentages(topCitiesByRegion) {
-    Object.keys(topCitiesByRegion).forEach(region => {
-        const totalEmissions = topCitiesByRegion[region].reduce((sum, city) => sum + city.co2Emissions, 0);
-        topCitiesByRegion[region].forEach(city => {
-            city.co2EmissionsPercent = (city.co2Emissions / totalEmissions) * 100;
-        });
-    });
-}
-
-// Function to create the SVG container
-function createSvg(width, height) {
-    return d3.create("svg")
-        .attr("width", width)
-        .attr("height", height);
-}
-
-// Function to create a Y scale for regions
-function createYScale(topCitiesByRegion, height) {
-    return d3.scaleBand()
-        .domain(Object.keys(topCitiesByRegion))
-        .range([0, height])
-        .padding(0.2);
-}
-
-// Function to create an X scale for percentage
-function createXScale(width) {
-    return d3.scaleLinear()
-        .domain([0, 100])
-        .range([0, width]);
-}
-
-function renderBars(svg, topCitiesByRegion, xScale, yScale, topNPerRegion) {
-    const color = d3.scaleOrdinal()
-        .domain(d3.range(topNPerRegion + 1))
-        .range(colorPalette);
-
-    Object.entries(topCitiesByRegion).forEach(([region, cities]) => {
-        let xOffset = 0;
-        const group = svg.append("g")
-            .attr("transform", `translate(0,${yScale(region)})`);
-
-        // Render bars with city names overlapping
-        group.selectAll("rect")
-            .data(cities)
-            .enter()
-            .append("rect")
-            .attr("x", d => xScale(xOffset += d.co2EmissionsPercent) - xScale(d.co2EmissionsPercent))
-            .attr("width", d => xScale(d.co2EmissionsPercent))
-            .attr("height", yScale.bandwidth())
-            .attr("fill", (d, i) => color(i));
-
-        // Add city names as text labels overlapping the bars
-        xOffset = 0; // Reset xOffset for positioning text
-        group.selectAll("text")
-            .data(cities)
-            .enter()
-            .append("text")
-            .attr("x", d => xScale(xOffset += d.co2EmissionsPercent) - xScale(d.co2EmissionsPercent) / 2) // Center of each bar
-            .attr("y", yScale.bandwidth() / 2) // Center vertically within the bar
-            .attr("dy", "0.35em") // Adjust for vertical alignment
-            .attr("text-anchor", "middle")
-            .attr("fill", "white") // Set text color for readability; adjust if needed
-            .style("font-size", "8px") // Adjust font size as needed
-            .text(d => d.city);
-    });
-}
-
-// Function to add Y-axis labels for regions
-function addYAxis(svg, yScale) {
-    svg.append("g")
-        .attr("class", "y-axis")
-        .call(d3.axisLeft(yScale));
-}
-
-// Function to add X-axis with scale for percentage
-function addXAxis(svg, xScale, width, height) {
-    // Detect if the browser is in dark mode
-    const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const textColor = isDarkMode ? "white" : "black";
-
-    // Append x-axis with percentage ticks
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(5).tickFormat(d => `${d}%`)) // Set ticks and format as percentages
-        .selectAll("text")
-        .attr("fill", textColor);
-
-    // Append x-axis label
-    svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", height + 30)
-        .attr("text-anchor", "middle")
-        .attr("fill", textColor)
-        .text("CO₂ Emissions (%)")
-        .style("font-size", "10px") // Adjust font size as needed
-}
-
-// Main function to generate the stacked 100% bar chart
-function EmissionsByRegion100PercentStacked(data, regionsData, { width = 1600, height = 350, topNPerRegion } = {}) {
-    // Step 1: Data preparation
-    const preparedData = prepareData(data, regionsData);
-    const regionalEmissions = calculateRegionalEmissions(preparedData);
-    const topCitiesByRegion = selectTopCities(regionalEmissions, topNPerRegion, true, false);
-
-    // Step 2: Normalize emissions to percentages
-    normalizeEmissionsToPercentages(topCitiesByRegion);
-
-    // Step 3: Set up and render chart
-    const svg = createSvg(width, height);
-    const yScale = createYScale(topCitiesByRegion, height);
-    const xScale = createXScale(width);
-
-    renderBars(svg, topCitiesByRegion, xScale, yScale, topNPerRegion);
-    addYAxis(svg, yScale);
-    addXAxis(svg, xScale, width, height);
-
-    return svg.node();
-}
-
 ```
-
-<br>
-<br>
-
-### Top 5 CO₂ emitters per capita per region  - Stacked multiple🌍
-
 <div class="grid grid-cols-1">
   <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))}</div>
 </div>
 
+<br>
+<br>
 
-# Third part
+<!-- Percentage of first graph rappresentation-->
+
+##### Region with high CO₂ Percentage Emissions 🌍
+
+```js
+
+function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } = {}) {
+  const preparedData = prepareStackedData(data, regionsData);
+  
+  const totalEmissionsByEntity = preparedData.reduce((acc, d) => {
+    if (!acc[d.city]) {
+      acc[d.city] = { co2Emissions: 0, region: d.region };
+    }
+    acc[d.city].co2Emissions += d.co2Emissions;
+    return acc;
+  }, {});
+
+  const totalEmissionsByRegion = Object.values(totalEmissionsByEntity).reduce((acc, { co2Emissions, region }) => {
+    acc[region] = (acc[region] || 0) + co2Emissions;
+    return acc;
+  }, {});
+
+  const topCities = Object.values(
+    Object.entries(totalEmissionsByEntity)
+      .reduce((acc, [city, { co2Emissions, region }]) => {
+        if (!acc[region]) acc[region] = [];
+        acc[region].push({ city, co2Emissions, region });
+        return acc;
+      }, {})
+  ).map(citiesInRegion => {
+      const sortedCities = citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions);
+      const top5Cities = sortedCities.slice(0, 5);
+      const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
+      return [
+        ...top5Cities, 
+        { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
+      ];
+    }).flat();
+
+  const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
+
+  const cityColorMap = {};
+  topCities.forEach(d => {
+    if (d.city === "Other Cities") {
+      cityColorMap[d.city] = "#00008B";
+    } else {
+      const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
+      cityColorMap[d.city] = colorPalette[cityIndex];
+    }
+  });
+
+  const topCitiesWithPercentage = topCities.map(d => ({
+    ...d,
+    co2EmissionsPercentage: (d.co2Emissions / totalEmissionsByRegion[d.region]) * 100
+  }));
+
+  const regionData = {};
+
+  topCitiesWithPercentage.forEach(d => {
+    if (!regionData[d.region]) {
+      regionData[d.region] = {
+        region: d.region,
+        co2Emissions: 0,
+        cities: []
+      };
+    }
+    regionData[d.region].co2Emissions += d.co2Emissions;
+
+    if (!regionData[d.region].cities.some(city => city.city === d.city)) {
+      regionData[d.region].cities.push({
+        city: d.city,
+        co2EmissionsPercentage: d.co2EmissionsPercentage,
+        color: cityColorMap[d.city]
+      });
+    }
+  });
+
+  const finalData = Object.values(regionData).sort((a, b) => b.co2Emissions - a.co2Emissions);
+
+  return Plot.plot({
+    width,
+    height: 500,
+    marginLeft: 100,
+    marginBottom: 60,
+    x: {
+        label: "Percentage of Total Regional CO₂ Emissions",
+        tickSpacing: 50,
+        tickValues: null, 
+        tickFormat: d => `${d}%`
+    },
+    y: {
+      label: "Region",
+      domain: finalData.map(d => d.region),
+      labelPosition: "top"
+    },
+    marks: [
+      Plot.barX(topCitiesWithPercentage, {
+        x: "co2EmissionsPercentage",
+        y: d => d.region,
+        fill: d => cityColorMap[d.city],
+        title: d => `${d.city}: ${d.co2EmissionsPercentage.toFixed(2)}% emissions`,
+        tip: true
+      })
+    ]
+  });
+}
+
+
+```
+<div class="grid grid-cols-1">
+  <div class="card"> ${resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))} </div>
+</div>
+
+
+
+### Third part
+
+<br>
+
 <!--Bilal Part-->
