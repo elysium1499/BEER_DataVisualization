@@ -55,11 +55,11 @@
 import {define} from "./_observablehq/client.0d99af51.js";
 import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
 
-registerFile("./file/data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.csv","lastModified":1730714261353,"size":1628264});
+registerFile("./_file/data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.csv","lastModified":1730714261353,"size":1628264});
 
 define({id: "e4f50494", inputs: ["FileAttachment"], outputs: ["dataset2"], body: (FileAttachment) => {
 // Load the new data file
-const dataset2 = FileAttachment("./file/data/co2-fossil-plus-land-use.csv").csv({typed: true});
+const dataset2 = FileAttachment("./_file/data/co2-fossil-plus-land-use.csv").csv({typed: true});
 return {dataset2};
 }});
 
