@@ -317,7 +317,7 @@ const topCities = Object.values(
 <!--Lazzarini Part-->
 
 ```js
-const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
+const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#00008B", "#A0522D"];
 
 // Step 1: Data Preparation
 function prepareData(data, regionsData) {
@@ -354,8 +354,7 @@ function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, inc
 
     // Step 1: Build top cities for each region
     for (const region in totalEmissionsByRegion) {
-        if (region === "Global") continue;
-        
+       
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
             .filter(cityData => cityData.co2Emissions > 0)
@@ -446,9 +445,9 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         },
         y: {
             domain: orderedRegions,
-            label: showYAxisLabels ? "Region" : null, // Only show y-axis label on the leftmost plot
+            label: showYAxisLabels ? "Region" : null,
             labelPosition: "top",
-            ticks: showYAxisLabels ? orderedRegions : [], // Only show y-axis ticks on the leftmost plot
+            ticks: showYAxisLabels ? orderedRegions : [],
         },
         marks: [
             Plot.barX(data, {
@@ -467,8 +466,8 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
 // Dynamically generate labels based on `topNPerRegion`
 function generateLabels(topNPerRegion) {
     const rankLabels = ["First", "Second", "Third"];
-    const labels = rankLabels.slice(0, topNPerRegion); // Adjust labels based on the topNPerRegion value
-    labels.push("Other", "Total emissions"); // Append "Other" and "Total emissions" labels
+    const labels = rankLabels.slice(0, topNPerRegion);
+    labels.push("Other", "Total emissions");
     return labels;
 }
 
@@ -486,8 +485,8 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
         const data = orderedRegions.flatMap(region => dataset.data[region] || []);
         
         const label = labels[index];
-        const showYAxisLabels = index === 0; // Show y-axis only for the leftmost plot
-        const showText = index < miniDatasets.length - 2; // Don't show text only for 'others' and 'total'
+        const showYAxisLabels = index === 0;
+        const showText = index < miniDatasets.length - 2;
         const subplot = createSubplot(data, orderedRegions, label, subplotWidth, height, showYAxisLabels, dataset.color, showText);
         
         const subplotContainer = document.createElement("div");

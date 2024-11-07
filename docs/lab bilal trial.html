@@ -55,11 +55,11 @@
 import {define} from "./_observablehq/client.0d99af51.js";
 import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
 
-registerFile("./data/co2-fossil-plus-land-use1.csv", {"name":"./data/co2-fossil-plus-land-use1.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use1.69e0fa38.csv","lastModified":1730990711513,"size":294056});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.69e0fa38.csv","lastModified":1730990711513,"size":294056});
 
-define({id: "0bd5a404", inputs: ["FileAttachment"], outputs: ["dataset2"], body: (FileAttachment) => {
+define({id: "e4f50494", inputs: ["FileAttachment"], outputs: ["dataset2"], body: (FileAttachment) => {
 // Load the new data file
-const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use1.csv").csv({typed: true});
+const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
 return {dataset2};
 }});
 
@@ -210,7 +210,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
 <h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:0bd5a404:--></div>
+<div class="observablehq observablehq--block"><!--:e4f50494:--></div>
 <div class="observablehq observablehq--block"><!--:14857457:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
@@ -225,6 +225,6 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Laboratory One</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T15:52:37">Nov 7, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T16:36:45">Nov 7, 2024</a>.</div>
 </footer>
 </div>
