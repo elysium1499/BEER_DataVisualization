@@ -1,34 +1,79 @@
----
-theme: dashboard
-title: Laboratory One
-toc: false
----
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Laboratory One | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="modulepreload" href="./_observablehq/client.4c65c85d.js">
+<link rel="modulepreload" href="./_observablehq/runtime.3b5fbfd2.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.fbe34e68.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.c13ac5ac.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
 
-<!-- Load the data -->
+import {define} from "./_observablehq/client.4c65c85d.js";
+import {registerFile} from "./_observablehq/stdlib.fbe34e68.js";
 
-```js
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.822626fd.csv","lastModified":1730992549604,"size":441718});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.7f82b29f.csv","lastModified":1730992549636,"size":4552});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.6b6bc476.csv","lastModified":1730992549636,"size":6484});
+
+define({id: "28e628a1", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("data/co-emissions-per-capita-filter.csv").csv({typed: true});
+const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
-const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: true});
+const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
-const populationDataset = FileAttachment("data/region_entities_population2022.csv").csv({typed: true});
-```
+const populationDataset = FileAttachment("./data/region_entities_population2022.csv").csv({typed: true});
+return {dataset,RegionDataset,populationDataset};
+}});
 
-<!-- BarPlot that show the emission and the country in one year -->
-
-# Section 1
-
-<br>
-
-### First Part
-
-<br>
-
-##### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
-
-```js
-
+define({id: "7b375418", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
 const uniqueEntities = [...new Set(dataset.map(d => d.Year.toString()))].sort((a, b) => b - a);
 const year = view(Inputs.select(uniqueEntities, {label: "📅 Choose Year"}));
 
@@ -81,7 +126,7 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
             tickSize: 10 
         },
         y: {
-            label: "Annual CO₂ Emissions (per capita) - Billion Tons",
+            label: "Annual CO₂ Emissions (per capita)",
             grid: true
         },
         marks: [
@@ -94,20 +139,16 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     });
 }
 
-```
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapitalYear(dataset, year, {width}))} </div> 
-</div>
+return {uniqueEntities,year,EmissionsByCapitalYear};
+}});
 
+define({id: "c5890bb6", mode: "inline", inputs: ["resize","EmissionsByCapitalYear","dataset","year","display"], body: async (resize,EmissionsByCapitalYear,dataset,year,display) => {
+display(await(
+resize((width) => EmissionsByCapitalYear(dataset, year, {width}))
+))
+}});
 
-
-
-<!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
-<br>
-
-##### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
-
-```js
+define({id: "9b8051bb", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
 function EmissionsByCapital(data, { width = 800 } = {}) {
     const totalEmissions = data
         .filter(d => d.Year >= 2011 && d.Year <= 2022)
@@ -165,7 +206,7 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         marginLeft: 150,
         marginBottom: 60,
         x: {
-            label: "Total CO₂ Emissions (per capita) - Billion Tons",
+            label: "Total CO₂ Emissions (per capita)",
             grid: true,
             nice: true
         },
@@ -185,22 +226,16 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
     });
 }
 
-```
+return {EmissionsByCapital};
+}});
 
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapital(dataset, {width}))} </div> 
-</div>
+define({id: "a24953ee", mode: "inline", inputs: ["resize","EmissionsByCapital","dataset","display"], body: async (resize,EmissionsByCapital,dataset,display) => {
+display(await(
+resize((width) => EmissionsByCapital(dataset, {width}))
+))
+}});
 
-<br>
-<br>
-
-### Second Part
-
-<br>
-
-##### Region with high CO₂ Emissions 🌍
-
-```js
+define({id: "7c51547b", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -236,14 +271,14 @@ const topCities = Object.values(
     const sortedCities = citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions);
     const top5Cities = sortedCities.slice(0, 5);
     const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
-    return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
+    return [...top5Cities, { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
   }).flat();
 
   const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
+    if (d.city === "Other Cities") {
       cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
@@ -280,7 +315,7 @@ const topCities = Object.values(
     marginLeft: 100,
     marginBottom: 60,
     x: {
-      label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
+      label: "Total Annual CO₂ Emissions (per capita)",
       grid: true,
       tickSpacing: 50,
       tickFormat: d => `${d} BT`
@@ -303,21 +338,17 @@ const topCities = Object.values(
 
 }
 
-```
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
-</div>
+return {prepareStackedData,EmissionsByRegionStacked};
+}});
 
-<br>
-<br>
+define({id: "0f6b3f90", mode: "inline", inputs: ["resize","EmissionsByRegionStacked","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStacked,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
+))
+}});
 
-##### Top 3 CO₂ emitters per capita per region - Stacked small multiple🌍
-
-
-<!--Lazzarini Part-->
-
-```js
-const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#00008B", "#A0522D"];
+define({id: "2598c0cb", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
+const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
 // Step 1: Data Preparation
 function prepareData(data, regionsData) {
@@ -354,7 +385,8 @@ function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, inc
 
     // Step 1: Build top cities for each region
     for (const region in totalEmissionsByRegion) {
-       
+        if (region === "Global") continue;
+        
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
             .filter(cityData => cityData.co2Emissions > 0)
@@ -445,9 +477,9 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         },
         y: {
             domain: orderedRegions,
-            label: showYAxisLabels ? "Region" : null,
+            label: showYAxisLabels ? "Region" : null, // Only show y-axis label on the leftmost plot
             labelPosition: "top",
-            ticks: showYAxisLabels ? orderedRegions : [],
+            ticks: showYAxisLabels ? orderedRegions : [], // Only show y-axis ticks on the leftmost plot
         },
         marks: [
             Plot.barX(data, {
@@ -466,8 +498,8 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
 // Dynamically generate labels based on `topNPerRegion`
 function generateLabels(topNPerRegion) {
     const rankLabels = ["First", "Second", "Third"];
-    const labels = rankLabels.slice(0, topNPerRegion);
-    labels.push("Other", "Total emissions");
+    const labels = rankLabels.slice(0, topNPerRegion); // Adjust labels based on the topNPerRegion value
+    labels.push("Other", "Total emissions"); // Append "Other" and "Total emissions" labels
     return labels;
 }
 
@@ -485,8 +517,8 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
         const data = orderedRegions.flatMap(region => dataset.data[region] || []);
         
         const label = labels[index];
-        const showYAxisLabels = index === 0;
-        const showText = index < miniDatasets.length - 2;
+        const showYAxisLabels = index === 0; // Show y-axis only for the leftmost plot
+        const showText = index < miniDatasets.length - 2; // Don't show text only for 'others' and 'total'
         const subplot = createSubplot(data, orderedRegions, label, subplotWidth, height, showYAxisLabels, dataset.color, showText);
         
         const subplotContainer = document.createElement("div");
@@ -518,20 +550,16 @@ function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, hei
     // Step 7-8: Create and return container with subplots
     return createSubplotContainer(miniDatasets, orderedRegions, width, height, topNPerRegion);
 }
-```
-<div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))}</div>
-</div>
+return {colorPalette,prepareData,calculateRegionalEmissions,selectTopCities,rankEmittersByPosition,generateMiniDatasets,applyColorPaletteMiniDatasets,createSubplot,generateLabels,createSubplotContainer,EmissionsByRegionStackedMultiple};
+}});
 
-<br>
-<br>
+define({id: "2832f044", mode: "inline", inputs: ["resize","EmissionsByRegionStackedMultiple","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedMultiple,dataset,RegionDataset,display) => {
+display(await(
+resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))
+))
+}});
 
-<!-- Percentage of first graph rappresentation-->
-
-##### Region with high CO₂ Percentage Emissions 🌍
-
-```js
-
+define({id: "df588618", inputs: ["prepareStackedData","Plot"], outputs: ["EmissionsByRegionStackedPercentage"], body: (prepareStackedData,Plot) => {
 function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } = {}) {
   const preparedData = prepareStackedData(data, regionsData);
   
@@ -561,7 +589,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
       const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
       return [
         ...top5Cities, 
-        { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
+        { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
       ];
     }).flat();
 
@@ -569,7 +597,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
+    if (d.city === "Other Cities") {
       cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
@@ -633,15 +661,82 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 }
 
 
-```
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))} </div>
-</div>
+return {EmissionsByRegionStackedPercentage};
+}});
 
+define({id: "f17805dc", mode: "inline", inputs: ["resize","EmissionsByRegionStackedPercentage","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedPercentage,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))
+))
+}});
 
-
-### Third part
-
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<!-- Load the data -->
+<div class="observablehq observablehq--block"><!--:28e628a1:--></div>
+<!-- BarPlot that show the emission and the country in one year -->
+<h1 id="section-1" tabindex="-1"><a class="observablehq-header-anchor" href="#section-1">Section 1</a></h1>
 <br>
-
+<h3 id="first-part" tabindex="-1"><a class="observablehq-header-anchor" href="#first-part">First Part</a></h3>
+<br>
+<h5 id="top-20-countries-with-high-co-emissions-per-capita-in-the-years" tabindex="-1">Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍</h5>
+<div class="observablehq observablehq--block"><!--:7b375418:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
+</div>
+<!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
+<br>
+<h5 id="top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022" tabindex="-1">Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍</h5>
+<div class="observablehq observablehq--block"><!--:9b8051bb:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
+</div>
+<br>
+<br>
+<h3 id="second-part" tabindex="-1"><a class="observablehq-header-anchor" href="#second-part">Second Part</a></h3>
+<br>
+<h5 id="region-with-high-co-emissions" tabindex="-1">Region with high CO₂ Emissions 🌍</h5>
+<div class="observablehq observablehq--block"><!--:7c51547b:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
+</div>
+<br>
+<br>
+<h5 id="top-3-co-emitters-per-capita-per-region-stacked-multiple" tabindex="-1">Top 3 CO₂ emitters per capita per region - Stacked multiple🌍</h5>
+<!--Lazzarini Part-->
+<div class="observablehq observablehq--block"><!--:2598c0cb:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"><observablehq-loading></observablehq-loading><!--:2832f044:--></div>
+</div>
+<br>
+<br>
+<!-- Percentage of first graph rappresentation-->
+<h5 id="region-with-high-co-percentage-emissions" tabindex="-1">Region with high CO₂ Percentage Emissions 🌍</h5>
+<div class="observablehq observablehq--block"><!--:df588618:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:f17805dc:--> </div>
+</div>
+<h3 id="third-part" tabindex="-1"><a class="observablehq-header-anchor" href="#third-part">Third part</a></h3>
+<br>
 <!--Bilal Part-->
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./lab%20bilal%20trial"><span>Bilal Trial</span></a><a rel="next" href="./laboratory_lazzarini"><span>Laboratory Lazzarini</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T16:19:24">Nov 7, 2024</a>.</div>
+</footer>
+</div>
