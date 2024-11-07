@@ -81,7 +81,7 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
             tickSize: 10 
         },
         y: {
-            label: "Annual CO₂ Emissions (per capita) - Billion Tons",
+            label: "Annual CO₂ Emissions (per capita)",
             grid: true
         },
         marks: [
@@ -165,7 +165,7 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         marginLeft: 150,
         marginBottom: 60,
         x: {
-            label: "Total CO₂ Emissions (per capita) - Billion Tons",
+            label: "Total CO₂ Emissions (per capita)",
             grid: true,
             nice: true
         },
@@ -236,14 +236,14 @@ const topCities = Object.values(
     const sortedCities = citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions);
     const top5Cities = sortedCities.slice(0, 5);
     const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
-    return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
+    return [...top5Cities, { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
   }).flat();
 
   const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
+    if (d.city === "Other Cities") {
       cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
@@ -280,7 +280,7 @@ const topCities = Object.values(
     marginLeft: 100,
     marginBottom: 60,
     x: {
-      label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
+      label: "Total Annual CO₂ Emissions (per capita)",
       grid: true,
       tickSpacing: 50,
       tickFormat: d => `${d} BT`
@@ -311,7 +311,7 @@ const topCities = Object.values(
 <br>
 <br>
 
-##### Top 3 CO₂ emitters per capita per region - Stacked small multiple🌍
+##### Top 3 CO₂ emitters per capita per region - Stacked multiple🌍
 
 
 <!--Lazzarini Part-->
@@ -561,7 +561,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
       const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
       return [
         ...top5Cities, 
-        { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
+        { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
       ];
     }).flat();
 
@@ -569,7 +569,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
+    if (d.city === "Other Cities") {
       cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
@@ -638,7 +638,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
   <div class="card"> ${resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))} </div>
 </div>
 
-
+<br>
 
 ### Third part
 
