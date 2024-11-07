@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Bilal Trial | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="modulepreload" href="./_observablehq/client.4c65c85d.js">
+<link rel="modulepreload" href="./_observablehq/runtime.3b5fbfd2.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.fbe34e68.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
+
+import {define} from "./_observablehq/client.4c65c85d.js";
+import {registerFile} from "./_observablehq/stdlib.fbe34e68.js";
+
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.1017009a.csv","lastModified":1730994243542,"size":300137});
+
+define({id: "e4f50494", inputs: ["FileAttachment"], outputs: ["dataset2"], body: (FileAttachment) => {
+// Load the new data file
+const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
+return {dataset2};
+}});
+
+define({id: "14857457", inputs: ["Plot","d3","dataset2"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,dataset2) => {
+// Prepare the data for the heatmap based on the selected year and top countries
+// Prepare the data for the heatmap based on the selected year and top countries
+function prepareDataForYear(data, year) {
+  return data
+    .filter(d => d.Year === year)
+    .map(d => ({
+      country: d.Entity,
+      year,
+      fossilEmissions: +d["Annual CO₂ emissions"] / 1e6,       // Normalizing to tons
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e6  // Normalizing to tons
+    }))
+    .sort((a, b) => (b.fossilEmissions + b.landUseEmissions) - (a.fossilEmissions + a.landUseEmissions))
+    .slice(0, 10) // Top 10 countries by total emissions
+    .flatMap(d => [
+      { country: d.country, yearAndType: `${year} (Fossil Fuel)`, emissions: d.fossilEmissions },
+      { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions }
+    ]);
+}
+
+
+// Generate and render the heatmap based on the selected year
+function renderHeatmap(data, year) {
+  const heatmapData = prepareDataForYear(data, year);
+  const heatmap = Plot.plot({
+    width: 800,
+    height: 200,
+    marginLeft: 150,
+    marginBottom: 100,
+    marginTop: 50,
+    style: {
+      fontSize: "14px",      // Set global font size for all text elements (axis labels, ticks, legend)
+      color: "White"         // Set text color globally for better visibility
+    },
+    x: {
+      label: "Country",
+      domain: [...new Set(heatmapData.map(d => d.country))],
+      tickRotate: -30,
+      labelAnchor: "left",
+      paddingInner: 0.05
+    },
+    y: {
+      label: "Year and Emission Type",
+      domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`],
+      paddingInner: 0.05
+    },
+    color: {
+      type: "linear",
+      domain: [0, d3.max(heatmapData, d => d.emissions)],
+      scheme: "reds",
+      label: "CO₂ Emissions (tons per capita)",
+      legend: true
+    },
+    marks: [
+      Plot.rect(heatmapData, { 
+        x: "country", 
+        y: "yearAndType", 
+        fill: "emissions", 
+        title: d => `${d.country}: ${d.emissions.toFixed(2)} million tons`,
+        tip: true,
+        stroke: "black",
+        strokeWidth: 0.1
+      })
+    ]
+  });
+  document.getElementById("heatmap-container").innerHTML = ""; // Clear previous plot
+  document.getElementById("heatmap-container").appendChild(heatmap); // Append new plot
+}
+
+// Initialize the dropdown menu and initial heatmap
+function initializeDropdown(data) {
+  const years = [...new Set(data.map(d => d.Year))].sort((a, b) => a - b);
+  const dropdown = document.getElementById("year-dropdown");
+  dropdown.onchange = () => renderHeatmap(data, Number(dropdown.value));
+
+  years.forEach(year => {
+    const option = document.createElement("option");
+    option.value = year;
+    option.text = year;
+    dropdown.appendChild(option);
+  });
+
+  renderHeatmap(data, years[0]); // Render the heatmap for the initial year
+}
+
+// Auto-play functionality to cycle through years
+let autoPlayInterval; // Variable to store the interval for auto-play
+
+function toggleAutoPlay(data) {
+  const dropdown = document.getElementById("year-dropdown");
+  const years = [...dropdown.options].map(option => Number(option.value));
+  let currentIndex = years.indexOf(Number(dropdown.value));
+
+  if (autoPlayInterval) {
+    // Stop auto-play if it's already running
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = null;
+    document.getElementById("auto-play-button").innerText = "Auto Play";
+  } else {
+    // Start auto-play
+    autoPlayInterval = setInterval(() => {
+      // Check if the next year is greater than the current year
+      const previousYear = years[currentIndex];
+      currentIndex = (currentIndex + 1) % years.length;
+      const currentYear = years[currentIndex];
+
+      if (currentYear <= previousYear) {
+        // Stop auto-play if the year does not increase
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        document.getElementById("auto-play-button").innerText = "Auto Play";
+      } else {
+        // Update dropdown and heatmap with the new year
+        dropdown.value = currentYear;
+        renderHeatmap(data, currentYear);
+      }
+    }, 350); // Change year every 1 second
+    document.getElementById("auto-play-button").innerText = "Stop";
+  }
+}
+
+// Attach the toggleAutoPlay function to the button
+document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(dataset2);
+
+// Call the initialize function with the dataset
+initializeDropdown(dataset2);
+return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link observablehq-link-active"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
+    <li class="observablehq-link"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
+<div class="observablehq observablehq--block"><!--:e4f50494:--></div>
+<div class="observablehq observablehq--block"><!--:14857457:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card">
+    <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+      <span>Select a year to view CO₂ emissions by country:</span> 
+      <select id="year-dropdown"></select> <!-- Dropdown for years -->
+      <button id="auto-play-button">Auto Play</button> <!-- Auto Play button -->
+    </div>
+    <div id="heatmap-container"></div>
+  </div> 
+</div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Laboratory One</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T22:15:24">Nov 7, 2024</a>.</div>
+</footer>
+</div>
