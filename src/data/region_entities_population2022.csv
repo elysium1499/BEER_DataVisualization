@@ -1,6 +1,5 @@
 Entity,Region,Population2022
 Afghanistan,Asia,40218234
-Africa,Africa,1340598147
 Albania,Europe,2877797
 Algeria,Africa,44700000
 Andorra,Europe,77287
@@ -10,8 +9,6 @@ Antigua and Barbuda,North America,97928
 Argentina,South America,45878774
 Armenia,Asia,2963243
 Aruba,North America,106766
-Asia,Asia,4641054775
-Asia (excl. China and India),Asia,3500000000
 Australia,Oceania,25687041
 Austria,Europe,8902600
 Azerbaijan,Asia,10354600
@@ -68,11 +65,6 @@ Eritrea,Africa,3536000
 Estonia,Europe,1331057
 Eswatini,Africa,1195200
 Ethiopia,Africa,123379924
-Europe,Europe,747447000
-Europe (excl. EU-27),Europe,446520000
-Europe (excl. EU-28),Europe,446520000
-European Union (27),Europe,447706209
-European Union (28),Europe,447706209
 Faroe Islands,Europe,53480
 Fiji,Oceania,907949
 Finland,Europe,5540718
@@ -149,12 +141,9 @@ Nicaragua,North America,6860735
 Niger,Africa,27535000
 Nigeria,Africa,216746934
 Niue,Oceania,1610
-North America,North America,592072212
-North America (excl. USA),North America,339912212
 North Korea,Asia,25778816
 North Macedonia,Europe,2083459
 Norway,Europe,5440778
-Oceania,Oceania,43111760
 Oman,Asia,5035065
 Pakistan,Asia,242923845
 Palau,Oceania,18092
@@ -189,7 +178,6 @@ Slovenia,Europe,2100126
 Solomon Islands,Oceania,722000
 Somalia,Africa,16800000
 South Africa,Africa,60342994
-South America,South America,430759000
 South Korea,Asia,51780579
 South Sudan,Africa,11193725
 Spain,Europe,47351567
