@@ -65,11 +65,11 @@ registerFile("./_file/data/region_entities_population2022.csv", {"name":"./data/
 
 define({id: "28e628a1", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
+const dataset = FileAttachment("./_file/data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
-const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
+const RegionDataset = FileAttachment("./_file/data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
-const populationDataset = FileAttachment("./data/region_entities_population2022.csv").csv({typed: true});
+const populationDataset = FileAttachment("./_file/data/region_entities_population2022.csv").csv({typed: true});
 return {dataset,RegionDataset,populationDataset};
 }});
 
