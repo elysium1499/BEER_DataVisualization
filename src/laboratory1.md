@@ -560,7 +560,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
       const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
       return [
         ...top5Cities, 
-        { city: 'Other Cities', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
+        { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
       ];
     }).flat();
 
@@ -568,7 +568,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Cities") {
+    if (d.city === "Other Countries") {
       cityColorMap[d.city] = "#00008B";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
