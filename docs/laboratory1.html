@@ -10,15 +10,16 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
-<link rel="modulepreload" href="./_observablehq/client.0d99af51.js">
-<link rel="modulepreload" href="./_observablehq/runtime.8eb97cbb.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.8048ec16.js">
-<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.9d076414.js">
+<link rel="modulepreload" href="./_observablehq/client.4c65c85d.js">
+<link rel="modulepreload" href="./_observablehq/runtime.3b5fbfd2.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.fbe34e68.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.c13ac5ac.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
 <link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
@@ -48,33 +49,28 @@
 <link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
 <link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
 <link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
-<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
 <link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
-<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.0d99af51.js";
-import {registerFile} from "./_observablehq/stdlib.8048ec16.js";
+import {define} from "./_observablehq/client.4c65c85d.js";
+import {registerFile} from "./_observablehq/stdlib.fbe34e68.js";
 
-registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.451ace18.csv","lastModified":1731004796965,"size":417454});
-registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.69e0fa38.csv","lastModified":1730990711513,"size":294056});
-registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731004796971,"size":4099});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731004796973,"size":5856});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.822626fd.csv","lastModified":1730992549604,"size":441718});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.7f82b29f.csv","lastModified":1730992549636,"size":4552});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.6b6bc476.csv","lastModified":1730992549636,"size":6484});
 
-define({id: "1cdd081f", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","dataset2"], body: (FileAttachment) => {
+define({id: "28e628a1", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
 const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
 const populationDataset = FileAttachment("./data/region_entities_population2022.csv").csv({typed: true});
-//column: Entity,Code,Year,Annual CO₂ emissions including land-use change,Annual CO₂ emissions from land-use change,Annual CO₂ emissions
-const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
-
-return {dataset,RegionDataset,populationDataset,dataset2};
+return {dataset,RegionDataset,populationDataset};
 }});
 
 define({id: "69f0e69d", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
@@ -389,7 +385,8 @@ function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, inc
 
     // Step 1: Build top cities for each region
     for (const region in totalEmissionsByRegion) {
-       
+        if (region === "Global") continue;
+        
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
             .filter(cityData => cityData.co2Emissions > 0)
@@ -473,9 +470,9 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         },
         y: {
             domain: orderedRegions,
-            label: showYAxisLabels ? "Region" : null,
+            label: showYAxisLabels ? "Region" : null, // Only show y-axis label on the leftmost plot
             labelPosition: "top",
-            ticks: showYAxisLabels ? orderedRegions : [],
+            ticks: showYAxisLabels ? orderedRegions : [], // Only show y-axis ticks on the leftmost plot
         },
         marks: [
             Plot.barX(data, {
@@ -513,8 +510,8 @@ function createSubplotContainer(miniDatasets, orderedRegions, width, height, top
         const data = orderedRegions.flatMap(region => dataset.data[region] || []);
         
         const label = labels[index];
-        const showYAxisLabels = index === 0;
-        const showText = index < miniDatasets.length - 2;
+        const showYAxisLabels = index === 0; // Show y-axis only for the leftmost plot
+        const showText = index < miniDatasets.length - 2; // Don't show text only for 'others' and 'total'
         const subplot = createSubplot(data, orderedRegions, label, subplotWidth, height, showYAxisLabels, dataset.color, showText);
         
         const subplotContainer = document.createElement("div");
@@ -822,7 +819,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 </aside>
 <main id="observablehq-main" class="observablehq">
 <!-- Load the data -->
-<div class="observablehq observablehq--block"><!--:1cdd081f:--></div>
+<div class="observablehq observablehq--block"><!--:28e628a1:--></div>
 <!-- BarPlot that show the emission and the country in one year -->
 <h1 id="section-1-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#section-1-co-emissions">Section 1: CO₂ emissions</a></h1>
 <br>

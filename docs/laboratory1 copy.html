@@ -1,37 +1,83 @@
----
-theme: dashboard
-title: Laboratory One
-toc: true
----
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Laboratory One | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="modulepreload" href="./_observablehq/client.4c65c85d.js">
+<link rel="modulepreload" href="./_observablehq/runtime.3b5fbfd2.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.fbe34e68.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.c13ac5ac.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
 
-<!-- Load the data -->
+import {define} from "./_observablehq/client.4c65c85d.js";
+import {registerFile} from "./_observablehq/stdlib.fbe34e68.js";
 
-```js
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.451ace18.csv","lastModified":1730996451822,"size":417454});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.1017009a.csv","lastModified":1730994243542,"size":300137});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1730996695194,"size":4099});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1730996451829,"size":5856});
+
+define({id: "1cdd081f", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","dataset2"], body: (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
-const dataset = FileAttachment("data/co-emissions-per-capita-filter.csv").csv({typed: true});
+const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
-const RegionDataset = FileAttachment("data/region_entities.csv").csv({typed: true});
+const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
-const populationDataset = FileAttachment("data/region_entities_population2022.csv").csv({typed: true});
+const populationDataset = FileAttachment("./data/region_entities_population2022.csv").csv({typed: true});
 //column: Entity,Code,Year,Annual CO₂ emissions including land-use change,Annual CO₂ emissions from land-use change,Annual CO₂ emissions
-const dataset2 = FileAttachment("data/co2-fossil-plus-land-use.csv").csv({typed: true});
+const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
 
-```
+return {dataset,RegionDataset,populationDataset,dataset2};
+}});
 
-<!-- BarPlot that show the emission and the country in one year -->
-
-# Section 1: CO₂ emissions
-
-<br>
-
-## Exploring data
-
-<br>
-
-### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
-
-```js
-
+define({id: "69f0e69d", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
 const uniqueEntities = [...new Set(dataset.map(d => d.Year.toString()))].sort((a, b) => b - a);
 const year = view(Inputs.select(uniqueEntities, {label: "📅 Choose Year"}));
 
@@ -85,7 +131,6 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
         },
         y: {
             label: "Annual CO₂ Emissions (per capita) - Billion tons",
-            label: "Annual CO₂ Emissions (per capita) - Billion tons",
             grid: true
         },
         marks: [
@@ -98,26 +143,16 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     });
 }
 
-```
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapitalYear(dataset, year, {width}))} </div> 
-</div>
+return {uniqueEntities,year,EmissionsByCapitalYear};
+}});
 
-<p> 
+define({id: "c5890bb6", mode: "inline", inputs: ["resize","EmissionsByCapitalYear","dataset","year","display"], body: async (resize,EmissionsByCapitalYear,dataset,year,display) => {
+display(await(
+resize((width) => EmissionsByCapitalYear(dataset, year, {width}))
+))
+}});
 
-Countries like **Qatar**, **United Arab Emirates (UAE)**, and **Kuwait** lead with exceptionally high emissions per capita, primarily due to their reliance on fossil fuel extraction and export.
-
-**Australia**, **United States**, and **Canada** follow closely, with emissions shaped by their high energy consumption, large geographical areas, and industrial economies. 
-
-Despite their small populations, **Trinidad and Tobago** and **New Caledonia** also have high emissions, primarily from fossil fuel use for energy and transport. **Kazakhstan** and **Russia** show lower emissions than the Gulf states and Western nations, but still exceed the global average. Meanwhile, **Luxembourg** maintains high emissions due to its industrial economy, while **Palau** stands out with lower emissions, thanks to its focus on tourism over heavy industry.
-</p>
-
-<!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
-<br>
-
-### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
-
-```js
+define({id: "ce8e7431", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
 function EmissionsByCapital(data, { width = 800 } = {}) {
     const totalEmissions = data
         .filter(d => d.Year >= 2011 && d.Year <= 2022)
@@ -176,7 +211,6 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         marginBottom: 60,
         x: {
             label: "Total CO₂ Emissions (per capita) - Billion Tons",
-            label: "Total CO₂ Emissions (per capita) - Billion Tons",
             grid: true,
             nice: true
         },
@@ -196,33 +230,16 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
     });
 }
 
-```
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) => EmissionsByCapital(dataset, {width}))} </div> 
-</div>
+return {EmissionsByCapital};
+}});
 
-<p>
+define({id: "a24953ee", mode: "inline", inputs: ["resize","EmissionsByCapital","dataset","display"], body: async (resize,EmissionsByCapital,dataset,display) => {
+display(await(
+resize((width) => EmissionsByCapital(dataset, {width}))
+))
+}});
 
-From 2011 to 2022, countries like **Qatar**, **Bahrain**, and **Kuwait** consistently ranked at the top for CO₂ emissions per capita, largely due to their heavy reliance on fossil fuel extraction and small, energy-intensive economies.
-
-**Australia**, **United States**, and **Canada** follow closely, with emissions driven by large industrial sectors and energy needs for vast geographical areas. While these countries are larger and more industrialized, their high consumption patterns still make their per capita emissions relatively high compared to global averages.
-
-Meanwhile, **Luxembourg** and **Faroe Islands** stand out for their relatively high per capita emissions despite their small sizes.
-
-In contrast, **Palau** shows a much lower carbon footprint. Its small population and tourism-based economy, which doesn’t rely on heavy industry, allow it to maintain one of the lowest per capita emissions on the list.
-
-Overall, the data highlights a clear link between fossil fuel reliance, industrial activity, and high CO₂ emissions, while also showing how small nations with less industrialization can maintain lower per capita emissions.
-</p>
-
-<br>
-
-## Country Comparison per Region in 2022
-
-<br>
-
-### Region with high CO₂ Emissions 🌍
-
-```js
+define({id: "f35b83e7", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -259,14 +276,12 @@ const topCities = Object.values(
     const top5Cities = sortedCities.slice(0, 5);
     const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
     return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
-    return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
   }).flat();
 
   const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
     if (d.city === "Other Countries") {
       cityColorMap[d.city] = "#00008B";
     } else {
@@ -305,7 +320,6 @@ const topCities = Object.values(
     marginBottom: 60,
     x: {
       label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
-      label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
       grid: true,
       tickSpacing: 50,
       tickFormat: d => `${d} BT`
@@ -328,34 +342,16 @@ const topCities = Object.values(
 
 }
 
-```
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
-</div>
+return {prepareStackedData,EmissionsByRegionStacked};
+}});
 
+define({id: "0f6b3f90", mode: "inline", inputs: ["resize","EmissionsByRegionStacked","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStacked,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
+))
+}});
 
-<p>
-
-In 2022, global CO₂ emissions were dominated by key countries across regions.
-**China** remains the world’s largest emitter, largely due to its vast manufacturing sector, reliance on coal, and the energy demands of its massive population. **India**, while having a lower per capita emission than China, continues to see rapid industrial growth and energy consumption, particularly in urban areas.
-
-In North America, **the USA** continues to be a major emitter with emissions largely driven by energy consumption, transportation, and industrial sectors. **Canada**, with its vast landmass and reliance on energy-intensive industries like oil extraction, also ranks high in emissions per capita.
-
-**Russia** stands as Europe’s largest emitter, with emissions driven by its oil and natural gas extraction industries. **Germany**, Europe’s industrial powerhouse, also contributes heavily, particularly through manufacturing, transportation, and energy sectors.
-
-**South Africa** and **Egypt** are the top emitters in Africa. **South Africa’s** emissions are largely from coal-powered energy production, while **Egypt** has seen increasing emissions due to urbanization and energy demands.
-
-In South America, **Brazil**’s emissions are shaped by deforestation, agriculture, and energy consumption, while **Argentina** also experiences high emissions due to its industrial sector and large-scale agriculture.
-
-**Australia** and **New Zealand** contribute heavily to emissions in Oceania, with **Australia**'s reliance on coal for energy and high per capita car usage. **New Zealand**, despite having a smaller population, has significant emissions from agriculture, particularly livestock.
-
-</p>
-<br>
-
-### Top 3 CO₂ emitters per capita per region 🌍
-
-
-```js
+define({id: "2854ac2a", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
 const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#00008B", "#A0522D"];
 
 // Step 1: Data Preparation
@@ -401,6 +397,7 @@ function selectTopCities(totalEmissionsByRegion, topN = 3) {
         // Keep only the top 3 emitters
         topCitiesByRegion[region] = sortedCities.slice(0, topN);
 
+        // Calculate and include total emissions
         const totalEmissions = sortedCities.reduce((sum, city) => sum + city.co2Emissions, 0);
         topCitiesByRegion[region].push({ city: "Total", co2Emissions: totalEmissions, region });
     }
@@ -502,7 +499,6 @@ function generateLabels(topNPerRegion) {
     const rankLabels = ["First", "Second", "Third"];
     const labels = rankLabels.slice(0, topNPerRegion);
     labels.push("Total emissions");
-    labels.push("Total emissions");
     return labels;
 }
 
@@ -553,28 +549,16 @@ function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, hei
     // Step 7-8: Create and return container with subplots
     return createSubplotContainer(miniDatasets, orderedRegions, width, height, topNPerRegion);
 }
-```
-<div class="grid grid-cols-1">
-  <div class="card">${resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))}</div>
-</div>
+return {colorPalette,prepareData,calculateRegionalEmissions,selectTopCities,rankEmittersByPosition,generateMiniDatasets,applyColorPaletteMiniDatasets,createSubplot,generateLabels,createSubplotContainer,EmissionsByRegionStackedMultiple};
+}});
 
-<p>
+define({id: "2832f044", mode: "inline", inputs: ["resize","EmissionsByRegionStackedMultiple","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedMultiple,dataset,RegionDataset,display) => {
+display(await(
+resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width, topNPerRegion: 3 }))
+))
+}});
 
-In the previous chart we can visualize the top three CO₂ emitters from each region in 2022, highlighting key trends in energy consumption and industrialization. 
-
-In the top emitters per region, the **USA** stands out as the largest emitter globally, with its massive industrial base, transportation sector, and high energy consumption. Following closely, **India** and **Germany** are the second largest emitters in their respective regions, driven by industrial activities and energy demands. **Japan** and the **UK** round out the third positions, reflecting their energy-intensive economies and reliance on fossil fuels, though Japan's emissions remain high due to its significant manufacturing sector.
-
-This analysis suggests that **Asia** and **Europe** are the regions with the largest concentrations of emissions, with major contributors like the **USA**, **India**, and **Germany** leading the way. Their high emissions stem from a mix of industrialization, transportation, and energy production needs, showing a clear pattern where both population size and industrial output play crucial roles in regional CO₂ emissions.
-</p>
-
-<br>
-
-<!-- Percentage of first graph rappresentation-->
-
-### Region with high CO₂ Percentage Emissions 🌍
-
-```js
-
+define({id: "bcdcfb82", inputs: ["prepareStackedData","Plot"], outputs: ["EmissionsByRegionStackedPercentage"], body: (prepareStackedData,Plot) => {
 function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } = {}) {
   const preparedData = prepareStackedData(data, regionsData);
   
@@ -605,7 +589,6 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
       return [
         ...top5Cities, 
         { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
-        { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
       ];
     }).flat();
 
@@ -613,7 +596,6 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
     if (d.city === "Other Countries") {
       cityColorMap[d.city] = "#00008B";
     } else {
@@ -678,29 +660,16 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 }
 
 
-```
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))} </div>
-</div>
+return {EmissionsByRegionStackedPercentage};
+}});
 
-<p>
+define({id: "f17805dc", mode: "inline", inputs: ["resize","EmissionsByRegionStackedPercentage","dataset","RegionDataset","display"], body: async (resize,EmissionsByRegionStackedPercentage,dataset,RegionDataset,display) => {
+display(await(
+resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { width }))
+))
+}});
 
-In Asia, **China** is responsible for 52.18% of the region's CO₂ emissions, highlighting its role as the largest emitter in the world. In **North America**, the **USA** accounts for a staggering 80.27% of emissions, driven by its high energy consumption, transportation sector, and industrial activities. In **Europe**, **Russia** contributes 32.57% of emissions, with **Germany** following at 13.26%, reflecting their large industrial bases and energy needs. 
-
-In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egypt** contributes 17.45%. **Brazil** accounts for 44.39% of **South America's** emissions, with **Argentina** contributing 17.96%. In **Oceania**, **Australia** dominates, responsible for 89.06% of the region's emissions.
-
-</p>
-
-<br>
-
-## CO₂ emissions comparison per type (fossil/land-use) 
-
-<br>
-
-### CO₂ Emissions Heatmap 🌍
-
-
-```js
+define({id: "61a9c718", inputs: ["Plot","d3","dataset2"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,dataset2) => {
 // Prepare the data for the heatmap based on the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
@@ -711,28 +680,24 @@ function prepareDataForYear(data, year) {
       fossilEmissions: +d["Annual CO₂ emissions"] / 1e9,       // Normalizing to million tons
       landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
       totalEmissions: (+d["Annual CO₂ emissions"] + +d["Annual CO₂ emissions from land-use change"]) / 1e9 // Total emissions
-      fossilEmissions: +d["Annual CO₂ emissions"] / 1e9,       // Normalizing to million tons
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
-      totalEmissions: (+d["Annual CO₂ emissions"] + +d["Annual CO₂ emissions from land-use change"]) / 1e9 // Total emissions
     }))
-    .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
     .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
     .slice(0, 10) // Top 10 countries by total emissions
     .flatMap(d => [
       { country: d.country, yearAndType: `${year} (Fossil Fuel)`, emissions: d.fossilEmissions },
       { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions },
       { country: d.country, yearAndType: `${year} (Total)`, emissions: d.totalEmissions } // Add total emissions
-      { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions },
-      { country: d.country, yearAndType: `${year} (Total)`, emissions: d.totalEmissions } // Add total emissions
     ]);
 }
+
+
+
+
 
 // Generate and render the heatmap based on the selected year
 function renderHeatmap(data, year) {
   const heatmapData = prepareDataForYear(data, year);
   const heatmap = Plot.plot({
-    width: 1000, // Increase width for bigger cells
-    height: 300, // Increase height for bigger cells
     width: 1000, // Increase width for bigger cells
     height: 300, // Increase height for bigger cells
     marginLeft: 150,
@@ -741,20 +706,16 @@ function renderHeatmap(data, year) {
     style: {
       fontSize: "14px", // Keep font size readable
       color: "white"
-      fontSize: "14px", // Keep font size readable
-      color: "white"
     },
     x: {
       label: "Country",
       domain: [...new Set(heatmapData.map(d => d.country))],
       tickRotate: -30,
-      labelAnchor: "center",
+      labelAnchor: "left",
       paddingInner: 0.1 // Adjust spacing between columns for bigger cells
     },
     y: {
       label: "Year and Emission Type",
-      domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`, `${year} (Total)`],
-      paddingInner: 0.1 // Adjust spacing between rows for bigger cells
       domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`, `${year} (Total)`],
       paddingInner: 0.1 // Adjust spacing between rows for bigger cells
     },
@@ -763,7 +724,6 @@ function renderHeatmap(data, year) {
       domain: [0, d3.max(heatmapData, d => d.emissions)],
       scheme: "reds",
       label: "CO₂ Emissions (billion tons)",
-      label: "CO₂ Emissions (billion tons)",
       legend: true
     },
     marks: [
@@ -771,7 +731,6 @@ function renderHeatmap(data, year) {
         x: "country", 
         y: "yearAndType", 
         fill: "emissions", 
-        title: d => `${d.country}: ${d.emissions.toFixed(2)} billion tons`,
         title: d => `${d.country}: ${d.emissions.toFixed(2)} billion tons`,
         tip: true,
         stroke: "black",
@@ -782,6 +741,8 @@ function renderHeatmap(data, year) {
   document.getElementById("heatmap-container").innerHTML = ""; // Clear previous plot
   document.getElementById("heatmap-container").appendChild(heatmap); // Append new plot
 }
+
+
 
 
 // Initialize the dropdown menu and initial heatmap
@@ -801,7 +762,7 @@ function initializeDropdown(data) {
 }
 
 // Auto-play functionality to cycle through years
-let autoPlayInterval;
+let autoPlayInterval; // Variable to store the interval for auto-play
 
 function toggleAutoPlay(data) {
   const dropdown = document.getElementById("year-dropdown");
@@ -841,8 +802,76 @@ document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(datas
 
 // Call the initialize function with the dataset
 initializeDropdown(dataset2);
-```
+return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
+}});
 
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./lab%20bilal%20trial">Bilal Trial</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory1">Laboratory One</a></li>
+    <li class="observablehq-link"><a href="./laboratory_lazzarini">Laboratory Lazzarini</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<!-- Load the data -->
+<div class="observablehq observablehq--block"><!--:1cdd081f:--></div>
+<!-- BarPlot that show the emission and the country in one year -->
+<h1 id="section-1" tabindex="-1"><a class="observablehq-header-anchor" href="#section-1">Section 1</a></h1>
+<br>
+<h3 id="first-part" tabindex="-1"><a class="observablehq-header-anchor" href="#first-part">First Part</a></h3>
+<br>
+<h5 id="top-20-countries-with-high-co-emissions-per-capita-in-the-years" tabindex="-1">Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍</h5>
+<div class="observablehq observablehq--block"><!--:69f0e69d:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
+</div>
+<!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
+<br>
+<h5 id="top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022" tabindex="-1">Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍</h5>
+<div class="observablehq observablehq--block"><!--:ce8e7431:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
+</div>
+<br>
+<br>
+<h3 id="second-part" tabindex="-1"><a class="observablehq-header-anchor" href="#second-part">Second Part</a></h3>
+<br>
+<h5 id="region-with-high-co-emissions" tabindex="-1">Region with high CO₂ Emissions 🌍</h5>
+<div class="observablehq observablehq--block"><!--:f35b83e7:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
+</div>
+<br>
+<br>
+<h5 id="top-3-co-emitters-per-capita-per-region-stacked-small-multiple" tabindex="-1">Top 3 CO₂ emitters per capita per region - Stacked small multiple🌍</h5>
+<!--Lazzarini Part-->
+<div class="observablehq observablehq--block"><!--:2854ac2a:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"><observablehq-loading></observablehq-loading><!--:2832f044:--></div>
+</div>
+<br>
+<br>
+<!-- Percentage of first graph rappresentation-->
+<h5 id="region-with-high-co-percentage-emissions" tabindex="-1">Region with high CO₂ Percentage Emissions 🌍</h5>
+<div class="observablehq observablehq--block"><!--:bcdcfb82:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:f17805dc:--> </div>
+</div>
+<br>
+<h3 id="third-part" tabindex="-1"><a class="observablehq-header-anchor" href="#third-part">Third part</a></h3>
+<br>
+<!--Bilal Part-->
+<h5 id="co-emissions-heatmap" tabindex="-1">CO₂ Emissions Heatmap 🌍</h5>
+<div class="observablehq observablehq--block"><!--:61a9c718:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
     <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -853,14 +882,9 @@ initializeDropdown(dataset2);
     <div id="heatmap-container"></div>
   </div> 
 </div>
-
-<p>
-
-The heatmap visually represents the share of CO₂ emissions coming from *fossil fuels* versus *land-use changes* across different countries. In this heatmap, regions where *fossil fuel emissions* dominate are shown with deeper shades of red, indicating a higher contribution to total emissions from industries such as energy production, transportation, and manufacturing. On the other hand, areas where *land-use emissions*, such as deforestation and agriculture, play a larger role are highlighted in shades of green, indicating their significant impact on global CO₂ levels due to land transformation and vegetation loss.
-
-Countries with large industrial economies and high energy consumption, such as the **USA**, **China**, and **India**, dominate the red spectrum. These nations rely heavily on fossil fuels for electricity, heating, transportation, and manufacturing, driving the bulk of their emissions from these sources. **Europe** also shows significant fossil fuel emissions, particularly in industrialized nations like **Germany** and **Russia**.
-  
-Countries with significant land-use emissions are those with large agricultural sectors or high rates of deforestation. **Brazil** stands out in South America, where deforestation of the Amazon contributes massively to carbon emissions. Similarly, **Indonesia** also shows strong land-use emissions. These emissions primarily result from agricultural practices, land clearing for agriculture, and changes in forest cover.
-
-This heatmap reveals a global landscape where **fossil fuel consumption** is the dominant source of emissions in highly industrialized countries, whereas **land-use changes** emerge as a major source in regions with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.
-</p>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./lab%20bilal%20trial"><span>Bilal Trial</span></a><a rel="next" href="./laboratory_lazzarini"><span>Laboratory Lazzarini</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-07T22:15:24">Nov 7, 2024</a>.</div>
+</footer>
+</div>
