@@ -85,7 +85,6 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
         },
         y: {
             label: "Annual CO₂ Emissions (per capita) - Billion tons",
-            label: "Annual CO₂ Emissions (per capita) - Billion tons",
             grid: true
         },
         marks: [
@@ -176,7 +175,6 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         marginBottom: 60,
         x: {
             label: "Total CO₂ Emissions (per capita) - Billion Tons",
-            label: "Total CO₂ Emissions (per capita) - Billion Tons",
             grid: true,
             nice: true
         },
@@ -259,14 +257,12 @@ const topCities = Object.values(
     const top5Cities = sortedCities.slice(0, 5);
     const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
     return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
-    return [...top5Cities, { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }];
   }).flat();
 
   const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#4FAAC4", "#008000"];
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
     if (d.city === "Other Countries") {
       cityColorMap[d.city] = "#00008B";
     } else {
@@ -304,7 +300,6 @@ const topCities = Object.values(
     marginLeft: 100,
     marginBottom: 60,
     x: {
-      label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
       label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
       grid: true,
       tickSpacing: 50,
@@ -388,17 +383,17 @@ function calculateRegionalEmissions(preparedData) {
     }, {});
 }
 
-function selectTopCities(totalEmissionsByRegion, topN = 3) {
+function selectTopCities(totalEmissionsByRegion, topN, includeOther = false, includeTotal = false) {
     let topCitiesByRegion = {};
 
     // Step 1: Build top cities for each region
     for (const region in totalEmissionsByRegion) {
+       
         const sortedCities = Object.entries(totalEmissionsByRegion[region])
             .map(([city, co2Emissions]) => ({ city, co2Emissions, region }))
             .filter(cityData => cityData.co2Emissions > 0)
             .sort((a, b) => b.co2Emissions - a.co2Emissions);
 
-        // Keep only the top 3 emitters
         topCitiesByRegion[region] = sortedCities.slice(0, topN);
 
         const totalEmissions = sortedCities.reduce((sum, city) => sum + city.co2Emissions, 0);
@@ -418,8 +413,6 @@ function selectTopCities(totalEmissionsByRegion, topN = 3) {
 
     return topCitiesByRegion;
 }
-
-
 
 
 // Step 4: Rank emitters by position across regions
@@ -501,7 +494,6 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
 function generateLabels(topNPerRegion) {
     const rankLabels = ["First", "Second", "Third"];
     const labels = rankLabels.slice(0, topNPerRegion);
-    labels.push("Total emissions");
     labels.push("Total emissions");
     return labels;
 }
@@ -605,7 +597,6 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
       return [
         ...top5Cities, 
         { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
-        { city: 'Other Countries', co2Emissions: otherCitiesSum, region: top5Cities[0].region }
       ];
     }).flat();
 
@@ -613,7 +604,6 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
   const cityColorMap = {};
   topCities.forEach(d => {
-    if (d.city === "Other Countries") {
     if (d.city === "Other Countries") {
       cityColorMap[d.city] = "#00008B";
     } else {
@@ -711,17 +701,11 @@ function prepareDataForYear(data, year) {
       fossilEmissions: +d["Annual CO₂ emissions"] / 1e9,       // Normalizing to million tons
       landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
       totalEmissions: (+d["Annual CO₂ emissions"] + +d["Annual CO₂ emissions from land-use change"]) / 1e9 // Total emissions
-      fossilEmissions: +d["Annual CO₂ emissions"] / 1e9,       // Normalizing to million tons
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
-      totalEmissions: (+d["Annual CO₂ emissions"] + +d["Annual CO₂ emissions from land-use change"]) / 1e9 // Total emissions
     }))
-    .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
     .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
     .slice(0, 10) // Top 10 countries by total emissions
     .flatMap(d => [
       { country: d.country, yearAndType: `${year} (Fossil Fuel)`, emissions: d.fossilEmissions },
-      { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions },
-      { country: d.country, yearAndType: `${year} (Total)`, emissions: d.totalEmissions } // Add total emissions
       { country: d.country, yearAndType: `${year} (Land-Use)`, emissions: d.landUseEmissions },
       { country: d.country, yearAndType: `${year} (Total)`, emissions: d.totalEmissions } // Add total emissions
     ]);
@@ -733,14 +717,10 @@ function renderHeatmap(data, year) {
   const heatmap = Plot.plot({
     width: 1000, // Increase width for bigger cells
     height: 300, // Increase height for bigger cells
-    width: 1000, // Increase width for bigger cells
-    height: 300, // Increase height for bigger cells
     marginLeft: 150,
     marginBottom: 100,
     marginTop: 50,
     style: {
-      fontSize: "14px", // Keep font size readable
-      color: "white"
       fontSize: "14px", // Keep font size readable
       color: "white"
     },
@@ -755,14 +735,11 @@ function renderHeatmap(data, year) {
       label: "Year and Emission Type",
       domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`, `${year} (Total)`],
       paddingInner: 0.1 // Adjust spacing between rows for bigger cells
-      domain: [`${year} (Fossil Fuel)`, `${year} (Land-Use)`, `${year} (Total)`],
-      paddingInner: 0.1 // Adjust spacing between rows for bigger cells
     },
     color: {
       type: "linear",
       domain: [0, d3.max(heatmapData, d => d.emissions)],
       scheme: "reds",
-      label: "CO₂ Emissions (billion tons)",
       label: "CO₂ Emissions (billion tons)",
       legend: true
     },
@@ -771,7 +748,6 @@ function renderHeatmap(data, year) {
         x: "country", 
         y: "yearAndType", 
         fill: "emissions", 
-        title: d => `${d.country}: ${d.emissions.toFixed(2)} billion tons`,
         title: d => `${d.country}: ${d.emissions.toFixed(2)} billion tons`,
         tip: true,
         stroke: "black",
