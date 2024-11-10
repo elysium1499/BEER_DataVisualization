@@ -239,7 +239,7 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
-define({id: "f35b83e7", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
+define({id: "0ce1d9a3", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -283,7 +283,7 @@ const topCities = Object.values(
   const cityColorMap = {};
   topCities.forEach(d => {
     if (d.city === "Other Countries") {
-      cityColorMap[d.city] = "#00008B";
+      cityColorMap[d.city] = "#303080";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
       cityColorMap[d.city] = colorPalette[cityIndex];
@@ -351,8 +351,8 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 ))
 }});
 
-define({id: "b2aa8257", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
-const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#00008B", "#A0522D"];
+define({id: "e764d8c5", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
+const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#6B8E23"];
 
 // Step 1: Data Preparation
 function prepareData(data, regionsData) {
@@ -555,7 +555,7 @@ resize(width => EmissionsByRegionStackedMultiple(dataset, RegionDataset, { width
 ))
 }});
 
-define({id: "bcdcfb82", inputs: ["prepareStackedData","Plot"], outputs: ["EmissionsByRegionStackedPercentage"], body: (prepareStackedData,Plot) => {
+define({id: "c3c0d68d", inputs: ["prepareStackedData","Plot"], outputs: ["EmissionsByRegionStackedPercentage"], body: (prepareStackedData,Plot) => {
 function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } = {}) {
   const preparedData = prepareStackedData(data, regionsData);
   
@@ -594,7 +594,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
   const cityColorMap = {};
   topCities.forEach(d => {
     if (d.city === "Other Countries") {
-      cityColorMap[d.city] = "#00008B";
+      cityColorMap[d.city] = "#303080";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
       cityColorMap[d.city] = colorPalette[cityIndex];
@@ -856,7 +856,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <h2 id="country-comparison-per-region-in-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#country-comparison-per-region-in-2022">Country Comparison per Region in 2022</a></h2>
 <br>
 <h3 id="region-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#region-with-high-co-emissions">Region with high CO₂ Emissions 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:f35b83e7:--></div>
+<div class="observablehq observablehq--block"><!--:0ce1d9a3:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
 </div>
@@ -871,7 +871,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p></p>
 <br>
 <h3 id="top-3-co-emitters-per-capita-per-region" tabindex="-1"><a class="observablehq-header-anchor" href="#top-3-co-emitters-per-capita-per-region">Top 3 CO₂ emitters per capita per region 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:b2aa8257:--></div>
+<div class="observablehq observablehq--block"><!--:e764d8c5:--></div>
 <div class="grid grid-cols-1">
   <div class="card"><observablehq-loading></observablehq-loading><!--:2832f044:--></div>
 </div>
@@ -883,7 +883,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <br>
 <!-- Percentage of first graph rappresentation-->
 <h3 id="region-with-high-co-percentage-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#region-with-high-co-percentage-emissions">Region with high CO₂ Percentage Emissions 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:bcdcfb82:--></div>
+<div class="observablehq observablehq--block"><!--:c3c0d68d:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:f17805dc:--> </div>
 </div>
@@ -914,6 +914,6 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-08T12:48:40">Nov 8, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-10T14:05:10">Nov 10, 2024</a>.</div>
 </footer>
 </div>

@@ -264,7 +264,7 @@ const topCities = Object.values(
   const cityColorMap = {};
   topCities.forEach(d => {
     if (d.city === "Other Countries") {
-      cityColorMap[d.city] = "#00008B";
+      cityColorMap[d.city] = "#303080";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
       cityColorMap[d.city] = colorPalette[cityIndex];
@@ -351,7 +351,7 @@ In South America, **Brazil**’s emissions are shaped by deforestation, agricult
 
 
 ```js
-const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#00008B", "#A0522D"];
+const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#6B8E23"];
 
 // Step 1: Data Preparation
 function prepareData(data, regionsData) {
@@ -605,7 +605,7 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
   const cityColorMap = {};
   topCities.forEach(d => {
     if (d.city === "Other Countries") {
-      cityColorMap[d.city] = "#00008B";
+      cityColorMap[d.city] = "#303080";
     } else {
       const cityIndex = topCities.filter(c => c.region === d.region).indexOf(d);
       cityColorMap[d.city] = colorPalette[cityIndex];
