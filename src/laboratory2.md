@@ -45,11 +45,10 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     const countryName = d.Entity;
     const continentName = d.Region;
 
-  // Add country node if it doesn't exist
-  if (!countryNodes.some(node => node.name === countryName)) {
-    countryNodes.push({ name: countryName });
-  }
-
+    // Add country node if it doesn't exist
+    if (!countryNodes.some(node => node.name === countryName)) {
+      countryNodes.push({ name: countryName });
+    }
 
     // Create link from continent to country based on total emissions
     links.push({
