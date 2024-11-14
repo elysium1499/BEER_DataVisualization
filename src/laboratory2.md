@@ -17,7 +17,7 @@ const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
 ]);
 
 // Load and process the dataset
-const datasetFossil = await FileAttachment("data/new_filtered_co2_data.csv").csv({ typed: true });
+const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").csv({ typed: true });
 console.log("Loaded data:", datasetFossil);  // Check if data is loaded
 
 // Filter data for the year 2000 and select top 30 countries by CO₂ emissions
@@ -67,7 +67,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
       links.push({
         source: countryName,
         target: "Fossil Use",
-        value: d["Annual CO₂ emissions"]
+        value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
 
