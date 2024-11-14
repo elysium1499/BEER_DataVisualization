@@ -146,14 +146,11 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
     .text(d => d.name);
 
-  console.log("Rendering Sankey chart with nodes and links:", sankeyNodes, sankeyLinks);  // Debug output
   return svg.node();
 }
 
 ```
 
 <div class="grid grid-cols-1"> 
-  <div class="card"> 
-    ${ContinentCountryEmissionSankeyChart(dataYear2000, 800)}
-  </div> 
+  <div class="card"> ${ContinentCountryEmissionSankeyChart(dataYear2000, 800)}</div> 
 </div>
