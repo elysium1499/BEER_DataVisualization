@@ -697,10 +697,11 @@ function prepareDataForYear(data, year) {
     .filter(d => d.Year === year)
     .map(d => ({
       country: d.Entity,
+      rgion: d.Region,
       year,
-      fossilEmissions: +d["Annual CO₂ emissions"] / 1e9,       // Normalizing to million tons
+      fossilEmissions: +d["Annual CO₂ emissions from fossil fuel"] / 1e9,       // Normalizing to million tons
       landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
-      totalEmissions: (+d["Annual CO₂ emissions"] + +d["Annual CO₂ emissions from land-use change"]) / 1e9 // Total emissions
+      totalEmissions: +d["Annual CO₂ emissions"] / 1e9 // Total emissions
     }))
     .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
     .slice(0, 10) // Top 10 countries by total emissions
