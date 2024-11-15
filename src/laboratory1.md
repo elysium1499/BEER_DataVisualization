@@ -697,7 +697,7 @@ function prepareDataForYear(data, year) {
     .filter(d => d.Year === year)
     .map(d => ({
       country: d.Entity,
-      rgion: d.Region,
+      region: d.Region,
       year,
       fossilEmissions: +d["Annual CO₂ emissions from fossil fuel"] / 1e9,       // Normalizing to million tons
       landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
