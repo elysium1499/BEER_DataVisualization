@@ -15,12 +15,13 @@
 <link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
 <link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
-<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
 <link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
 <link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
@@ -50,10 +51,9 @@
 <link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
 <link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
 <link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
-<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
 <link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
-<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
@@ -66,17 +66,17 @@ registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-p
 registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731701143960,"size":4099});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731701143960,"size":5856});
 
-define({id: "1cdd081f", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","dataset2"], body: (FileAttachment) => {
+define({id: "f920bdb6", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","datasetFossil"], body: async (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
 const dataset = FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({typed: true});
 //column: Entity,Region
 const RegionDataset = FileAttachment("./data/region_entities.csv").csv({typed: true});
 //column: Entity,Region,Population
 const populationDataset = FileAttachment("./data/region_entities_population2022.csv").csv({typed: true});
-//column: Entity,Code,Year,Annual CO₂ emissions including land-use change,Annual CO₂ emissions from land-use change,Annual CO₂ emissions
-const dataset2 = FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({typed: true});
+//column: Entity,Region,Code,Year,Annual CO₂ emissions,Annual CO₂ emissions from land-use change,Annual CO₂ emissions from fossil fuel
+const datasetFossil = await FileAttachment("./data/co2-fossil-plus-land-use.csv").csv({ typed: true });
 
-return {dataset,RegionDataset,populationDataset,dataset2};
+return {dataset,RegionDataset,populationDataset,datasetFossil};
 }});
 
 define({id: "69f0e69d", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
@@ -668,7 +668,7 @@ resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { w
 ))
 }});
 
-define({id: "6f6112f6", inputs: ["Plot","d3","dataset2"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,dataset2) => {
+define({id: "4f29f70f", inputs: ["Plot","d3","datasetFossil"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,datasetFossil) => {
 // Prepare the data for the heatmap based on the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
@@ -792,11 +792,216 @@ function toggleAutoPlay(data) {
 }
 
 // Attach the toggleAutoPlay function to the button
-document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(dataset2);
+document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(datasetFossil);
 
 // Call the initialize function with the dataset
-initializeDropdown(dataset2);
+initializeDropdown(datasetFossil);
 return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
+}});
+
+define({id: "b68cf23c", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
+// Import necessary D3 libraries
+const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
+  import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
+  import("https://cdn.jsdelivr.net/npm/d3-sankey@0.12/+esm")
+]);
+
+
+// Filter data for the year 2000 and select top 30 countries by CO₂ emissions
+const dataYear2000 = datasetFossil
+  .filter(d => d.Year === 2000)  // Filter for the year 2000
+  .sort((a, b) => b["Annual CO₂ emissions"] - a["Annual CO₂ emissions"])  // Sort by emissions, descending
+  .slice(0, 30);  // Select top 30 countries
+console.log("Data for year 2000:", dataYear2000);  // Check filtered data
+
+// Define the chart function to connect continents to countries and countries to emission types
+function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
+  const continentNodes = [];  // Layer 1: Continent nodes
+  const countryNodes = [];    // Layer 2: Country nodes
+  const typeNodes = [{ name: "Fossil Use" }, { name: "Land Use" }];  // Layer 3: Emission types
+  const links = [];
+
+  // Step 1: Create unique continent nodes
+  const uniqueContinents = Array.from(new Set(data.map(d => d.Region)));
+  uniqueContinents.forEach(continent => {
+    continentNodes.push({ name: continent });
+  });
+
+  // Step 2: Create country nodes and links from continent to country
+  data.forEach(d => {
+    const countryName = d.Entity;
+    const continentName = d.Region;
+
+    // Add country node if it doesn't exist
+    if (!countryNodes.some(node => node.name === countryName)) {
+      countryNodes.push({ name: countryName });
+    }
+
+    // Create link from continent to country based on total emissions
+    links.push({
+      source: continentName,
+      target: countryName,
+      value: d["Annual CO₂ emissions"]
+    });
+  });
+
+  // Step 3: Link each country to "Fossil Use" and "Land Use" nodes for specific emission types
+  data.forEach(d => {
+    const countryName = d.Entity;
+
+    // Link to Fossil emissions if applicable
+    if (d["Annual CO₂ emissions"] > 0) {
+      links.push({
+        source: countryName,
+        target: "Fossil Use",
+        value: d["Annual CO₂ emissions"]
+      });
+    }
+
+    // Link to Land Use emissions if applicable
+    if (d["Annual CO₂ emissions from land-use change"] > 0) {
+      links.push({
+        source: countryName,
+        target: "Land Use",
+        value: d["Annual CO₂ emissions from land-use change"]
+      });
+    }
+  });
+
+  // Combine nodes for Sankey setup
+  const nodes = [...continentNodes, ...countryNodes, ...typeNodes];
+
+  // Set up the Sankey diagram
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  const { nodes: sankeyNodes, links: sankeyLinks } = sankey()
+    .nodeWidth(30)
+    .nodePadding(7)
+    .extent([[1, 1], [width - 1, height - 6]])({
+      nodes: nodes.map(d => ({ ...d })),
+      links: links.map(d => ({
+        source: nodes.findIndex(n => n.name === d.source),
+        target: nodes.findIndex(n => n.name === d.target),
+        value: d.value
+      }))
+    });
+
+  // Create an SVG element
+  const svg = d3.create("svg")
+    .attr("viewBox", [-30, -30, width , height])
+    .attr("width", width -50)
+    .attr("height", height)
+    .style("min-height", "640px")
+    .style("font", "10px sans-serif");
+
+  // Create a tooltip div that is hidden by default
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background", "rgba(0, 0, 0, 0.7)")
+    .style("color", "white")
+    .style("padding", "5px 10px")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("pointer-events", "none")
+    .style("display", "none");
+
+  svg.append("g")
+    .selectAll("rect")
+    .data(sankeyNodes)
+    .join("rect")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("fill", d => color(d.name))
+    .style("opacity", 0.7)
+    .on("mouseover", function(event, d) {
+      d3.select(this).style("opacity", 1);
+      tooltip.style("display", "block")
+        .html(`<strong>${d.name}</strong>`);
+    })
+    .on("mousemove", event => {
+      tooltip.style("top", `${event.pageY + 10}px`)
+        .style("left", `${event.pageX + 10}px`);
+    })
+    .on("mouseout", function() {
+      d3.select(this).style("opacity", 0.7);
+      tooltip.style("display", "none");
+    });
+
+  svg.append("g")
+  .attr("fill", "none")
+  .selectAll("path")
+  .data(sankeyLinks)
+  .join("path")
+  .attr("d", sankeyLinkHorizontal())
+  .attr("stroke", d => color(d.source.name))
+  .attr("stroke-width", d => Math.max(1, d.width))
+  .attr("opacity", 0.5)
+  .on("mouseover", function(event, d) {
+    d3.select(this).attr("opacity", 0.8);
+
+    // Verifica il tipo di collegamento basandosi sui nodi di origine e destinazione
+    if (continentNodes.some(node => node.name === d.source.name) &&
+        countryNodes.some(node => node.name === d.target.name)) {
+      // Link tra Continents e Countries
+      tooltip.style("display", "block")
+        .html(`<strong>${d.source.name} → ${d.target.name}</strong>`);
+    } else if (countryNodes.some(node => node.name === d.source.name) &&
+               typeNodes.some(node => node.name === d.target.name)) {
+      // Link tra Countries e Emission Types
+      tooltip.style("display", "block")
+        .html(`<strong>${d.source.name} → Value: ${(d.value / 1_000_000_000).toLocaleString()} BT </strong>`);
+    }
+  })
+  .on("mousemove", event => {
+    tooltip.style("top", `${event.pageY + 10}px`)
+      .style("left", `${event.pageX + 10}px`);
+  })
+  .on("mouseout", function() {
+    d3.select(this).attr("opacity", 0.5);
+    tooltip.style("display", "none");
+  });
+
+  svg.append("text")
+    .attr("x", 0)
+    .attr("y", -20)
+    .attr("text-anchor", "start")
+    .style("font-weight", "bold")
+    .style("fill", "white")
+    .style("font-size", "16px")
+    .text("Region");
+
+  svg.append("text")
+    .attr("x", width * 0.5)
+    .attr("y", -20)
+    .attr("text-anchor", "middle")
+    .style("font-weight", "bold")
+    .style("fill", "white")
+    .style("font-size", "16px")
+    .text("Country");
+
+  svg.append("text")
+    .attr("x", width)
+    .attr("y", -20)
+    .attr("text-anchor", "end")
+    .style("font-weight", "bold")
+    .style("fill", "white")
+    .style("font-size", "16px")
+    .text("Emission");
+
+  return svg.node();
+
+}
+
+return {d3,sankey,sankeyLinkHorizontal,dataYear2000,ContinentCountryEmissionSankeyChart};
+}});
+
+define({id: "40e98c05", mode: "inline", inputs: ["resize","ContinentCountryEmissionSankeyChart","dataYear2000","display"], body: async (resize,ContinentCountryEmissionSankeyChart,dataYear2000,display) => {
+display(await(
+resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
+))
 }});
 
 </script>
@@ -811,7 +1016,6 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
   </ol>
   <ol>
     <li class="observablehq-link observablehq-link-active"><a href="./laboratory1">Laboratory One</a></li>
-    <li class="observablehq-link"><a href="./laboratory2">Laboratory Two</a></li>
   </ol>
 </nav>
 <script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
@@ -823,12 +1027,14 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <li class="observablehq-secondary-link"><a href="#exploring-data">Exploring data</a></li>
 <li class="observablehq-secondary-link"><a href="#country-comparison-per-region-in-2022">Country Comparison per Region in 2022</a></li>
 <li class="observablehq-secondary-link"><a href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></li>
+<li class="observablehq-secondary-link"><a href="#section-2-alluvial">Section 2: Alluvial</a></li>
+<li class="observablehq-secondary-link"><a href="#data-and-chart-setup">Data and Chart Setup</a></li>
 </ol>
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
 <!-- Load the data -->
-<div class="observablehq observablehq--block"><!--:1cdd081f:--></div>
+<div class="observablehq observablehq--block"><!--:f920bdb6:--></div>
 <!-- BarPlot that show the emission and the country in one year -->
 <h1 id="section-1-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#section-1-co-emissions">Section 1: CO₂ emissions</a></h1>
 <br>
@@ -901,7 +1107,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <h2 id="co-emissions-comparison-per-type-fossil-land-use" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></h2>
 <br>
 <h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:6f6112f6:--></div>
+<div class="observablehq observablehq--block"><!--:4f29f70f:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
     <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -917,10 +1123,27 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p>Countries with large industrial economies and high energy consumption, such as the <strong>USA</strong>, <strong>China</strong>, and <strong>India</strong>, dominate the red spectrum. These nations rely heavily on fossil fuels for electricity, heating, transportation, and manufacturing, driving the bulk of their emissions from these sources. <strong>Europe</strong> also shows significant fossil fuel emissions, particularly in industrialized nations like <strong>Germany</strong> and <strong>Russia</strong>.</p>
 <p>Countries with significant land-use emissions are those with large agricultural sectors or high rates of deforestation. <strong>Brazil</strong> stands out in South America, where deforestation of the Amazon contributes massively to carbon emissions. Similarly, <strong>Indonesia</strong> also shows strong land-use emissions. These emissions primarily result from agricultural practices, land clearing for agriculture, and changes in forest cover.</p>
 <p>This heatmap reveals a global landscape where <strong>fossil fuel consumption</strong> is the dominant source of emissions in highly industrialized countries, whereas <strong>land-use changes</strong> emerge as a major source in regions with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.</p>
+<p></p>
+<h1 id="section-2-alluvial" tabindex="-1"><a class="observablehq-header-anchor" href="#section-2-alluvial">Section 2: Alluvial</a></h1>
+<br>
+<h2 id="data-and-chart-setup" tabindex="-1"><a class="observablehq-header-anchor" href="#data-and-chart-setup">Data and Chart Setup</a></h2>
+<div class="observablehq observablehq--block"><!--:b68cf23c:--></div>
+<div class="grid grid-cols-1"> 
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:40e98c05:--></div> 
+</div>
+<p>
+</p><p>This chart offers a detailed visualization of CO2 emissions for the year 2022, providing valuable insights into the primary sources of global CO2 emissions.</p>
+<p>Each continent’s total CO2 emissions are represented by flows, with larger flows indicating greater emissions.</p>
+<p>Emission flows split further to individual countries. More significant flows indicate higher national emissions.
+Major emitters like the <strong>United States</strong>, <strong>China</strong>, and <strong>Brazil</strong> dominate the chart, reflecting their status as some of the largest contributors to global CO2 emissions.</p>
+<p>The chart divides emissions into two primary categories on the right: <strong>Fossil Fuel Use</strong> and <strong>Land Use</strong>.
+Countries such as the <strong>United States</strong> and <strong>China</strong> show significant flows linked to <strong>Fossil Fuel Use</strong>, highlighting their dependence on coal, oil, and natural gas.
+In contrast, nations like <strong>Brazil</strong> and other countries in South America exhibit stronger connections to <strong>Land Use</strong> emissions, reflecting the impact of deforestation and land management practices.</p>
+<p>European nations, such as <strong>Indonesia</strong> and the <strong>Russia</strong>, also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.</p>
 <p></p></main>
 <footer id="observablehq-footer">
-<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory2"><span>Laboratory Two</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-15T21:15:31">Nov 15, 2024</a>.</div>
+<nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-18T15:16:33">Nov 18, 2024</a>.</div>
 </footer>
 </div>
 </body>
