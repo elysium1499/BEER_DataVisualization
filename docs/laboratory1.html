@@ -799,7 +799,7 @@ initializeDropdown(datasetFossil);
 return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
 }});
 
-define({id: "b68cf23c", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
+define({id: "bd96d182", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
 // Import necessary D3 libraries
 const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
   import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
@@ -945,14 +945,9 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     // Verifica il tipo di collegamento basandosi sui nodi di origine e destinazione
     if (continentNodes.some(node => node.name === d.source.name) &&
         countryNodes.some(node => node.name === d.target.name)) {
-      // Link tra Continents e Countries
-      tooltip.style("display", "block")
-        .html(`<strong>${d.source.name} → ${d.target.name}</strong>`);
-    } else if (countryNodes.some(node => node.name === d.source.name) &&
-               typeNodes.some(node => node.name === d.target.name)) {
-      // Link tra Countries e Emission Types
-      tooltip.style("display", "block")
-        .html(`<strong>${d.source.name} → Value: ${(d.value / 1_000_000_000).toLocaleString()} BT </strong>`);
+        tooltip.style("display", "block").html(`<strong>${d.source.name} → ${d.target.name}</strong>`);
+    } else if (countryNodes.some(node => node.name === d.source.name) && typeNodes.some(node => node.name === d.target.name)) {
+        tooltip.style("display", "block").html(`<strong>${d.source.name} → Value: ${(d.value / 1_000_000_000).toLocaleString()} BT </strong>`);
     }
   })
   .on("mousemove", event => {
@@ -1127,7 +1122,7 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 <h1 id="section-2-alluvial" tabindex="-1"><a class="observablehq-header-anchor" href="#section-2-alluvial">Section 2: Alluvial</a></h1>
 <br>
 <h2 id="data-and-chart-setup" tabindex="-1"><a class="observablehq-header-anchor" href="#data-and-chart-setup">Data and Chart Setup</a></h2>
-<div class="observablehq observablehq--block"><!--:b68cf23c:--></div>
+<div class="observablehq observablehq--block"><!--:bd96d182:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:40e98c05:--></div> 
 </div>
@@ -1143,7 +1138,7 @@ In contrast, nations like <strong>Brazil</strong> and other countries in South A
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-18T15:16:33">Nov 18, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-18T15:41:27">Nov 18, 2024</a>.</div>
 </footer>
 </div>
 </body>

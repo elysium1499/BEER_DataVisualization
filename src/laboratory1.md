@@ -995,14 +995,9 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     // Verifica il tipo di collegamento basandosi sui nodi di origine e destinazione
     if (continentNodes.some(node => node.name === d.source.name) &&
         countryNodes.some(node => node.name === d.target.name)) {
-      // Link tra Continents e Countries
-      tooltip.style("display", "block")
-        .html(`<strong>${d.source.name} → ${d.target.name}</strong>`);
-    } else if (countryNodes.some(node => node.name === d.source.name) &&
-               typeNodes.some(node => node.name === d.target.name)) {
-      // Link tra Countries e Emission Types
-      tooltip.style("display", "block")
-        .html(`<strong>${d.source.name} → Value: ${(d.value / 1_000_000_000).toLocaleString()} BT </strong>`);
+        tooltip.style("display", "block").html(`<strong>${d.source.name} → ${d.target.name}</strong>`);
+    } else if (countryNodes.some(node => node.name === d.source.name) && typeNodes.some(node => node.name === d.target.name)) {
+        tooltip.style("display", "block").html(`<strong>${d.source.name} → Value: ${(d.value / 1_000_000_000).toLocaleString()} BT </strong>`);
     }
   })
   .on("mousemove", event => {
@@ -1053,17 +1048,17 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
 
 <p>
 
-This chart offers a detailed visualization of CO2 emissions for the year 2022, providing valuable insights into the primary sources of global CO2 emissions.
+This chart offers a detailed visualization of CO₂ emissions for the year 2022, providing valuable insights into the primary sources of global CO₂ emissions.
 
-Each continent’s total CO2 emissions are represented by flows, with larger flows indicating greater emissions.
+Each continent’s total CO₂ emissions are represented by flows, with larger flows indicating greater emissions.
 
 Emission flows split further to individual countries. More significant flows indicate higher national emissions.
-Major emitters like the **United States**, **China**, and **Brazil** dominate the chart, reflecting their status as some of the largest contributors to global CO2 emissions.
+Major emitters like the **United States**, **China**, and **Brazil** dominate the chart, reflecting their status as some of the largest contributors to global CO₂ emissions.
 
 The chart divides emissions into two primary categories on the right: **Fossil Fuel Use** and **Land Use**.
 Countries such as the **United States** and **China** show significant flows linked to **Fossil Fuel Use**, highlighting their dependence on coal, oil, and natural gas.
 In contrast, nations like **Brazil** and other countries in South America exhibit stronger connections to **Land Use** emissions, reflecting the impact of deforestation and land management practices.
 
-European nations, such as **Indonesia** and the **Russia**, also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.
+**Indonesia** and **Russia** also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.
 
 </p>
