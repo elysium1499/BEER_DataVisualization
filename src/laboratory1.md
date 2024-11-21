@@ -692,6 +692,9 @@ In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egyp
 
 ```js
 // Prepare the data for the heatmap based on the selected year and top countries
+const globalMinEmissions = 0; // Assuming CO₂ emissions can't be negative
+const globalMaxEmissions = d3.max(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
+
 function prepareDataForYear(data, year) {
   return data
     .filter(d => d.Year === year)
@@ -739,7 +742,7 @@ function renderHeatmap(data, year) {
     },
     color: {
       type: "linear",
-      domain: [0, d3.max(heatmapData, d => d.emissions)],
+      domain: [globalMinEmissions, globalMaxEmissions], // Use global domain for fixed legend
       scheme: "reds",
       label: "CO₂ Emissions (billion tons)",
       legend: true
@@ -900,11 +903,11 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     const countryName = d.Entity;
 
     // Link to Fossil emissions if applicable
-    if (d["Annual CO₂ emissions"] > 0) {
+    if (d["Annual CO₂ emissions from fossil fuel"] > 0) {
       links.push({
         source: countryName,
         target: "Fossil Use",
-        value: d["Annual CO₂ emissions"]
+        value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
 

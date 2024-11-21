@@ -668,8 +668,11 @@ resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { w
 ))
 }});
 
-define({id: "4f29f70f", inputs: ["Plot","d3","datasetFossil"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,datasetFossil) => {
+define({id: "398d36ac", inputs: ["d3","datasetFossil","Plot"], outputs: ["globalMinEmissions","globalMaxEmissions","prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (d3,datasetFossil,Plot) => {
 // Prepare the data for the heatmap based on the selected year and top countries
+const globalMinEmissions = 0; // Assuming CO₂ emissions can't be negative
+const globalMaxEmissions = d3.max(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
+
 function prepareDataForYear(data, year) {
   return data
     .filter(d => d.Year === year)
@@ -717,7 +720,7 @@ function renderHeatmap(data, year) {
     },
     color: {
       type: "linear",
-      domain: [0, d3.max(heatmapData, d => d.emissions)],
+      domain: [globalMinEmissions, globalMaxEmissions], // Use global domain for fixed legend
       scheme: "reds",
       label: "CO₂ Emissions (billion tons)",
       legend: true
@@ -796,10 +799,10 @@ document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(datas
 
 // Call the initialize function with the dataset
 initializeDropdown(datasetFossil);
-return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
+return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
 }});
 
-define({id: "bd96d182", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
+define({id: "7c4f44f2", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
 // Import necessary D3 libraries
 const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
   import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
@@ -850,11 +853,11 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     const countryName = d.Entity;
 
     // Link to Fossil emissions if applicable
-    if (d["Annual CO₂ emissions"] > 0) {
+    if (d["Annual CO₂ emissions from fossil fuel"] > 0) {
       links.push({
         source: countryName,
         target: "Fossil Use",
-        value: d["Annual CO₂ emissions"]
+        value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
 
@@ -1102,7 +1105,7 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 <h2 id="co-emissions-comparison-per-type-fossil-land-use" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></h2>
 <br>
 <h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:4f29f70f:--></div>
+<div class="observablehq observablehq--block"><!--:398d36ac:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
     <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -1122,7 +1125,7 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 <h1 id="section-2-alluvial" tabindex="-1"><a class="observablehq-header-anchor" href="#section-2-alluvial">Section 2: Alluvial</a></h1>
 <br>
 <h2 id="data-and-chart-setup" tabindex="-1"><a class="observablehq-header-anchor" href="#data-and-chart-setup">Data and Chart Setup</a></h2>
-<div class="observablehq observablehq--block"><!--:bd96d182:--></div>
+<div class="observablehq observablehq--block"><!--:7c4f44f2:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:40e98c05:--></div> 
 </div>
@@ -1138,7 +1141,7 @@ In contrast, nations like <strong>Brazil</strong> and other countries in South A
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-18T16:26:45">Nov 18, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-21T13:57:22">Nov 21, 2024</a>.</div>
 </footer>
 </div>
 </body>
