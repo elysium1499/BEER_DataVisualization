@@ -1,17 +1,9 @@
 ---
 theme: dashboard
-title: Robb - Bilal 2
+title: Bilal trial
 toc: true
 ---
 
-
-# CO₂ Emissions Map 🌍
-
-<br>
-
-## Plot 1
-
-<br>
 
 ```js
 import { geoMercator, geoOrthographic, geoPath } from "d3-geo";
@@ -19,6 +11,7 @@ import { scaleSequential } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
 
+// Shared configurations and constants
 const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
@@ -34,63 +27,155 @@ const countryNameMapping = {
     "The Bahamas": "Bahamas"
 };
 
-const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+// Utility to load and process data
+async function loadData(aggregation_type) {
+    const coEmissions = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
 
-// Utility Functions
-async function fetchGeoJSON(url) {
-    const response = await fetch(url);
-    return response.json();
+    if (aggregation_type === "density") {
+        // Return data directly without population consideration
+        return coEmissions.filter(d => d.Year === 2022).map(d => ({
+            ...d,
+            TotalEmissions: d["Annual CO₂ emissions (per capita)"] // Use per-capita emissions directly
+        }));
+    } else if (aggregation_type === "absolute_value") {
+        const populationData = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+        const populationMap = new Map(populationData.map(d => [d.Entity, d.Population2022]));
+
+        // Compute total emissions based on population
+        return coEmissions
+            .filter(d => d.Year === 2022)
+            .map(d => {
+                const countryName = countryNameMapping[d.Entity] || d.Entity;
+                const population = populationMap.get(countryName);
+                const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+
+                return { ...d, Population: population, TotalEmissions: totalEmissions };
+            });
+    } else {
+        throw new Error(`Unsupported aggregation_type: ${aggregation_type}`);
+    }
 }
 
-function mapPopulationToEntities(data) {
-    return new Map(data.map(d => [d.Entity, d.Population2022]));
-}
+async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "absolute_value") {
+    const data = await loadData(aggregation_type);
+    const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+    const worldData = await fetch(url).then(response => response.json());
 
-function calculateEmissions(emissionsData, populationMap, year, countryNameMapping) {
-    return emissionsData
-        .filter(d => d.Year === year)
-        .map(d => {
-            let countryName = countryNameMapping[d.Entity] || d.Entity;
-            const population = populationMap.get(countryName);
-            const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-            return {
-                ...d,
-                Population: population,
-                TotalEmissions: totalEmissions,
-            };
-        });
-}
-
-function updateGeoJSONWithEmissions(worldData, emissionsMap, countryNameMapping) {
-    return worldData.features.map(feature => {
-        let countryName = countryNameMapping[feature.properties.name] || feature.properties.name;
-        feature.properties.emission = emissionsMap.get(countryName);
+    const emissionMap = new Map(data.map(d => [d.Entity, d.TotalEmissions]));
+    const countriesWithEmissions = worldData.features.map(feature => {
+        const countryName = countryNameMapping[feature.properties.name] || feature.properties.name;
+        feature.properties.emission = emissionMap.get(countryName);
         return feature;
     });
+
+    const container = d3.select(`#${containerId}`);
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+
+    const projection = createProjection(mapType, width, height);
+    const path = geoPath().projection(projection);
+
+    const maxEmission = d3.max(data, d => d.TotalEmissions);
+    const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+    const svg = container.append("svg").attr("width", width).attr("height", height);
+
+        // Add ocean background first for orthographic map
+    if (mapType === "orthographic") {
+        svg.append("circle")
+            .attr("cx", width / 2) // Center horizontally
+            .attr("cy", height / 2) // Center vertically
+            .attr("r", (Math.min(width, height) / 2.5) * 1.10) // Match globe size
+            .attr("fill", "#A6D8FF"); // Light blue ocean color
+    }
+    
+    const mapGroup = svg.append("g");
+
+    mapGroup.selectAll("path")
+        .data(countriesWithEmissions)
+        .join("path")
+        .attr("d", path)
+        .attr("fill", d => {
+            const emissions = d.properties.emission;
+            return emissions ? colorScale(emissions) : "#ccc";
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.3)
+        .append("title")
+        .text(d => `${d.properties.name}: ${d.properties.emission || "No data"}`);
+
+    if (mapType === "orthographic") {
+        addGlobeInteractivity(svg, mapGroup, projection, path);
+    } else if (mapType === "mercator") {
+        addZoom(svg, mapGroup, width, height);
+    }
+
+    addLegend(svg, colorScale, width, height, maxEmission);
 }
 
-function createColorScale(emissionsData, interpolateScheme) {
-    const maxEmission = d3.max(emissionsData, d => d.TotalEmissions);
-    return scaleSequential(interpolateScheme).domain([0, maxEmission]);
+// Helper function for projections
+function createProjection(mapType, width, height) {
+    if (mapType === "mercator") {
+        return geoMercator().scale(140).translate([width / 2, height / 1.5]);
+    } else if (mapType === "orthographic") {
+        return geoOrthographic().scale(220).translate([width / 2, height / 2]);
+    } else {
+        throw new Error(`Unsupported mapType: ${mapType}`);
+    }
 }
 
-function createProjection(width, height, type = "Mercator") {
-    return type === "Orthographic"
-        ? geoOrthographic().scale(Math.min(width, height) / 2.5).translate([width / 2, height / 2])
-        : geoMercator().scale(Math.min(width, height) / 1.5).translate([width / 2, height / 1.5]);
+// Zoom functionality
+function addZoom(svg, mapGroup, width, height) {
+    const zoomHandler = zoom()
+        .scaleExtent([1, 3]) // Restrict zoom levels between 1x and 4x
+        .translateExtent([[0, 0], [width, height]]) // Restrict panning to the visible map area
+        .on("zoom", (event) => mapGroup.attr("transform", event.transform));
+    svg.call(zoomHandler);
 }
 
-function addLegend(svg, colorScale, width, height, customFormat) {
+// Globe interactivity
+function addGlobeInteractivity(svg, mapGroup, projection, path) {
+    let isDragging = false;
+    let lastPosition = null;
+
+    svg.on("mousedown", (event) => {
+        isDragging = true;
+        lastPosition = [event.clientX, event.clientY];
+    });
+
+svg.on("mousemove", (event) => {
+        if (isDragging) {
+            const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
+            const rotation = projection.rotate();
+
+            // Update the horizontal (longitude) rotation
+            const newLongitude = rotation[0] + dx / 5;
+
+            // Clamp the vertical (latitude) rotation to a range (e.g., -30 to 30)
+            const newLatitude = Math.max(-30, Math.min(30, rotation[1] - dy / 5));
+
+            // Apply the new rotation
+            projection.rotate([newLongitude, newLatitude]);
+
+            // Redraw the map with the updated rotation
+            mapGroup.selectAll("path").attr("d", path);
+            lastPosition = [event.clientX, event.clientY];
+        }
+    });
+
+    svg.on("mouseup mouseleave", () => {
+        isDragging = false;
+    });
+
+}
+
+// Add legend
+function addLegend(svg, colorScale, width, height, maxEmission) {
     const legendWidth = 300;
     const legendHeight = 20;
 
     const legendGroup = svg.append("g")
         .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
-
-    const legendScale = d3.scaleLinear()
-        .domain(colorScale.domain())
-        .range([0, legendWidth]);
 
     const defs = svg.append("defs");
     const linearGradient = defs.append("linearGradient").attr("id", "legend-gradient");
@@ -98,10 +183,10 @@ function addLegend(svg, colorScale, width, height, customFormat) {
     linearGradient.selectAll("stop")
         .data(colorScale.ticks(10).map((t, i, n) => ({
             offset: `${(100 * i) / (n.length - 1)}%`,
-            color: colorScale(t),
+            color: colorScale(t)
         })))
         .join("stop")
-        .attr("offset", d => d.offset)
+        .attr("offset", d => d.offset) 
         .attr("stop-color", d => d.color);
 
     legendGroup.append("rect")
@@ -109,110 +194,37 @@ function addLegend(svg, colorScale, width, height, customFormat) {
         .attr("height", legendHeight)
         .style("fill", "url(#legend-gradient)");
 
+    const legendScale = d3.scaleLinear()
+        .domain([0, maxEmission])
+        .range([0, legendWidth]);
+
     legendGroup.append("g")
         .attr("transform", `translate(0, ${legendHeight})`)
-        .call(d3.axisBottom(legendScale).ticks(3).tickFormat(customFormat))
+        .call(d3.axisBottom(legendScale).ticks(3).tickFormat(d => (d / 1e9).toFixed(2) + "B"))
         .select(".domain").remove();
 }
 
-function drawMap(container, countriesWithEmissions, projection, colorScale, customFormat) {
-    const path = geoPath().projection(projection);
-    const svg = container.append("svg")
-        .attr("width", container.node().clientWidth)
-        .attr("height", container.node().clientHeight);
-
-    const mapGroup = svg.append("g");
-
-    mapGroup.selectAll("path")
-    .data(countriesWithEmissions)
-    .join("path")
-    .attr("d", path)
-    .attr("fill", d => {
-        const emissions = d.properties.emission;
-        return emissions ? colorScale(emissions) : "#ccc";
-    })
-    .attr("stroke", "black") // Set the border color
-    .attr("stroke-width", 0.2) // Define border thickness
-    .on("mouseover", function () {
-        d3.select(this).attr("stroke-width", 2).attr("stroke", "yellow"); // Highlight on hover
-    })
-    .on("mouseout", function () {
-        d3.select(this).attr("stroke-width", 0.5).attr("stroke", "black"); // Revert on mouse out
-    })
-    .append("title")
-    .text(d => {
-        const emissions = d.properties.emission;
-        return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
-    });
-
-
-    return { svg, mapGroup };
-}
-
-function addZoom(svg, mapGroup, width, height) {
-    const zoomHandler = zoom()
-        .scaleExtent([1, 4]) // Restrict zoom levels
-        .translateExtent([[0, 0], [width, height]]) // Restrict panning to the visible area
-        .on("zoom", event => mapGroup.attr("transform", event.transform));
-
-    svg.call(zoomHandler);
-}
-
-// Main Function
-async function createCO2EmissionsMapWorld(containerId, options = {}) {
-    const {
-        populationData,
-        emissionsData,
-        countryNameMapping,
-        geoJSONUrl,
-        year = 2022,
-        projectionType = "Mercator",
-        colorScheme = interpolateYlOrRd,
-        customFormat = value => (value / 1_000_000_000).toFixed(4) + " Billion Tons",
-    } = options;
-
-    const container = d3.select(`#${containerId}`);
-    const width = container.node().clientWidth;
-    const height = container.node().clientHeight;
-
-    const populationMap = mapPopulationToEntities(populationData);
-    const emissionsWithPopulation = calculateEmissions(emissionsData, populationMap, year, countryNameMapping);
-    const emissionsMap = new Map(emissionsWithPopulation.map(d => [d.Entity, d.TotalEmissions]));
-
-    const worldData = await fetchGeoJSON(geoJSONUrl);
-    const countriesWithEmissions = updateGeoJSONWithEmissions(worldData, emissionsMap, countryNameMapping);
-
-    const colorScale = createColorScale(emissionsWithPopulation, colorScheme);
-    const projection = createProjection(width, height, projectionType);
-
-    const { svg, mapGroup } = drawMap(container, countriesWithEmissions, projection, colorScale, customFormat);
-
-    addZoom(svg, mapGroup, width, height);
-    addLegend(svg, colorScale, width, height, customFormat);
-}
-
-// Create Flat Map
-createCO2EmissionsMapWorld("MapOnechart", {
-    populationData: region_population,
-    emissionsData: co_emissions_per_capita,
-    countryNameMapping: countryNameMapping,
-    geoJSONUrl: "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
-});
-
-// Create Globe Map
-createCO2EmissionsMapWorld("MapTwochart", {
-    populationData: region_population,
-    emissionsData: co_emissions_per_capita,
-    countryNameMapping: countryNameMapping,
-    geoJSONUrl: "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
-    projectionType: "Orthographic", // Switch to globe projection
-});
-
+createCO2EmissionsMap("MapOnechart", "mercator", "absolute_value");
+createCO2EmissionsMap("MapTwochart", "orthographic", "absolute_value");
+createCO2EmissionsMap("MapThreechart", "mercator", "density");
+createCO2EmissionsMap("MapFourchart", "orthographic", "density");
 ```
-<div id="MapOnechart" role="region" aria-label="CO₂ Emissions Map - Flat" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 
 
+# CO₂ Emissions Map 🌍
+## Plot 1
+<div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
 
-<div id="MapTwochart" role="region" aria-label="CO₂ Emissions Map - Globe" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
+## Plot 2
+<div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
 
+## Plot 3
+<div id="MapThreechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
+
+## Plot 4
+<div id="MapFourchart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
 
