@@ -124,14 +124,23 @@ if (mapType === "orthographic") {
 
 // Helper function for projections
 function createProjection(mapType, width, height) {
-    if (mapType === "mercator") {
-        return geoMercator().scale(140).translate([width / 2, height / 1.5]);
-    } else if (mapType === "orthographic") {
-        return geoOrthographic().scale(220).translate([width / 2, height / 2]);
-    } else {
-        throw new Error(`Unsupported mapType: ${mapType}`);
+    switch (mapType) {
+        case "mercator":
+            return geoMercator().scale(140).translate([width / 2, height / 1.5]);
+        case "orthographic":
+            return geoOrthographic().scale(220).translate([width / 2, height / 2]);
+        case "equirectangular":
+            return d3.geoEquirectangular().scale(150).translate([width / 2, height / 2]);
+        case "conicEquidistant":
+            return d3.geoConicEquidistant()
+                .scale(100)
+                .translate([width / 2, height / 2])
+                .parallels([20, 60]); // Specify parallels for conic projections
+        default:
+            throw new Error(`Unsupported mapType: ${mapType}`);
     }
 }
+
 
 // Zoom functionality
 function addZoom(svg, mapGroup, width, height) {
@@ -215,8 +224,8 @@ function addLegend(svg, colorScale, width, height, maxEmission,aggregation_type 
 
 createCO2EmissionsMap("MapOnechart", "mercator", "absolute_value");
 createCO2EmissionsMap("MapTwochart", "orthographic", "absolute_value");
-createCO2EmissionsMap("MapThreechart", "mercator", "density");
-createCO2EmissionsMap("MapFourchart", "orthographic", "density");
+createCO2EmissionsMap("MapThreechart", "equirectangular", "density");
+createCO2EmissionsMap("MapFourchart", "conicEquidistant", "density");
 ```
 
 
