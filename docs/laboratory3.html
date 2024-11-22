@@ -73,14 +73,10 @@ import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731701143960,"size":5856});
 
-define({id: "ad80ef68", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoPath","scaleSequential","interpolateYlOrRd","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,d3) => {
-const [{geoMercator, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
+define({id: "3759cd78", inputs: ["FileAttachment"], outputs: ["geoMercator","geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","co_emissions_per_capita","region_population"], body: async (FileAttachment) => {
+const [{geoMercator, geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
-async function createCO2EmissionsMapWorld(containerId) {
-  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
-
-  const countryNameMapping = {
+const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
     "Czech Republic": "Czechia",
@@ -94,8 +90,16 @@ async function createCO2EmissionsMapWorld(containerId) {
     "United Republic of Tanzania": "Tanzania",
     "The Bahamas": "Bahamas"
   };
-  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
 
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,co_emissions_per_capita,region_population};
+}});
+
+define({id: "950bf685", inputs: ["region_population","co_emissions_per_capita","countryNameMapping","d3","geoPath","scaleSequential","interpolateYlOrRd","zoom"], outputs: ["createCO2EmissionsMapWorld"], body: (region_population,co_emissions_per_capita,countryNameMapping,d3,geoPath,scaleSequential,interpolateYlOrRd,zoom) => {
+async function createCO2EmissionsMapWorld(containerId) {
+
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
       let countryName = d.Entity;
       countryName = countryNameMapping[countryName] || countryName;
@@ -154,7 +158,7 @@ async function createCO2EmissionsMapWorld(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    return (value / 1e4).toFixed(2) + " BillionTons";
+    return (value / 1_000_000_000).toFixed(4) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -225,33 +229,11 @@ async function createCO2EmissionsMapWorld(containerId) {
 createCO2EmissionsMapWorld("MapOnechart");
 
 
-return {geoMercator,geoPath,scaleSequential,interpolateYlOrRd,zoom,createCO2EmissionsMapWorld};
+return {createCO2EmissionsMapWorld};
 }});
 
-define({id: "b30f6dec", inputs: ["FileAttachment","d3"], outputs: ["geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","createCO2EmissionsMapEarth"], body: async (FileAttachment,d3) => {
-const [{geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
-//import * as d3 from "d3";
-
-  // Mappa per corrispondenza dei nomi dei paesi
-  const countryNameMapping = {
-    "USA": "United States",
-    "England": "United Kingdom",
-    "Czech Republic": "Czechia",
-    "Republic of Serbia": "Serbia",
-    "Guinea Bissau": "Guinea-Bissau",
-    "Macedonia": "North Macedonia",
-    "Ivory Coast": "Cote d'Ivoire",
-    "Somaliland": "Somalia",
-    "Republic of the Congo": "Congo",
-    "Democratic Republic of the Congo": "Congo",
-    "United Republic of Tanzania": "Tanzania",
-    "The Bahamas": "Bahamas"
-  };
-
+define({id: "c3cbf0a3", inputs: ["region_population","co_emissions_per_capita","countryNameMapping","d3","geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom"], outputs: ["createCO2EmissionsMapEarth"], body: (region_population,co_emissions_per_capita,countryNameMapping,d3,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom) => {
 async function createCO2EmissionsMapEarth(containerId) {
-  // Carica i dataset
-  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
 
   // Trasforma il dataset della popolazione in una mappa
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
@@ -317,8 +299,8 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Billion tons";
-    return value.toFixed(2) + " BillionTons";
+    if (value >= 1e4) return (value / 1_000_000_000).toFixed(4) + " Billion tons";
+    return value + " BillionTons";
   }
 
   // Disegna la mappa
@@ -416,7 +398,7 @@ async function createCO2EmissionsMapEarth(containerId) {
 // Crea la mappa
 createCO2EmissionsMapEarth("MapTwochart");
 
-return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,createCO2EmissionsMapEarth};
+return {createCO2EmissionsMapEarth};
 }});
 
 </script>
@@ -451,20 +433,21 @@ return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNa
 <br>
 <h2 id="plot-1" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-1">Plot 1</a></h2>
 <br>
-<div class="observablehq observablehq--block"><!--:ad80ef68:--></div>
+<div class="observablehq observablehq--block"><!--:3759cd78:--></div>
+<div class="observablehq observablehq--block"><!--:950bf685:--></div>
 <div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 <p>
-sa
+parole parole parole
 </p>
 <h2 id="plot-2" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-2">Plot 2</a></h2>
-<div class="observablehq observablehq--block"><!--:b30f6dec:--></div>
+<div class="observablehq observablehq--block"><!--:c3cbf0a3:--></div>
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>
-sa sa
+parole parole parole
 </p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory2"><span>Section 2</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T11:59:08">Nov 22, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T14:53:14">Nov 22, 2024</a>.</div>
 </footer>
 </div>
 </body>
