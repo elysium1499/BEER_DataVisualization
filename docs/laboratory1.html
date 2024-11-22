@@ -12,16 +12,33 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
-<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
+<link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
+<link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.09b9abd2.js">
+<link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.93e39acc.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.3e4c82b9.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
+<link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
+<link rel="modulepreload" href="./_node/d3-format@3.1.0/index.75f84505.js">
+<link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.8a1d2235.js">
+<link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
+<link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
+<link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.8e5f73cc.js">
+<link rel="modulepreload" href="./_node/d3-selection@3.0.0/index.13204b25.js">
+<link rel="modulepreload" href="./_node/d3-transition@3.0.1/index.d140d658.js">
 <link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
 <link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_node/internmap@2.0.3/index.4106013c.js">
+<link rel="modulepreload" href="./_node/d3-timer@3.0.1/index.0ee6092b.js">
+<link rel="modulepreload" href="./_node/d3-ease@3.0.1/index.09153f73.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
 <link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
@@ -58,13 +75,13 @@
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.7782eb36.js";
-import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
+import {define} from "./_observablehq/client.6b525bf7.js";
+import {registerFile} from "./_observablehq/stdlib.3ac83553.js";
 
-registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
-registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.14870976.csv","lastModified":1731701676493,"size":316369});
-registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731701143960,"size":4099});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731701143960,"size":5856});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731709379255,"size":179331});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.f95469a5.csv","lastModified":1732188783030,"size":322449});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731709379265,"size":4099});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731709379265,"size":5856});
 
 define({id: "f920bdb6", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","datasetFossil"], body: async (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
@@ -1002,6 +1019,359 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 ))
 }});
 
+define({id: "6530913e", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoPath","scaleSequential","interpolateYlOrRd","zoom","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+const [{geoMercator, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+//import * as d3 from "d3";
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.emission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = d3.geoMercator()
+    .scale(140)
+    .translate([width / 2, height / 1.5]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    return (value / 1e4).toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.emission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.emission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Zoom e pan
+  const zoomHandler = zoom()
+    .scaleExtent([1, 8])
+    .translateExtent([[-width, -height], [2 * width, 2 * height]])
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(10).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+
+return {geoMercator,geoPath,scaleSequential,interpolateYlOrRd,zoom,createCO2EmissionsMap};
+}});
+
+define({id: "ad3a78a4", inputs: ["FileAttachment","d3"], outputs: ["geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+const [{geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+//import * as d3 from "d3";
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.totalEmission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = geoOrthographic()
+    .scale(200)
+    .translate([width / 2, height / 2]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Giga tons";
+    return value.toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.totalEmission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.totalEmission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Trascinamento per ruotare il globo
+  let rotate = [0, 0];
+  let isDragging = false;
+  let lastPosition = null;
+
+  svg.on("mousedown", (event) => {
+    isDragging = true;
+    lastPosition = [event.clientX, event.clientY];
+  });
+
+  svg.on("mousemove", (event) => {
+    if (isDragging) {
+      const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
+      rotate[0] += dx / 5;
+      rotate[1] -= dy / 5;
+      projection.rotate(rotate);
+      mapGroup.selectAll("path").attr("d", path);
+      lastPosition = [event.clientX, event.clientY];
+    }
+  });
+
+  svg.on("mouseup", () => {
+    isDragging = false;
+  });
+
+  svg.on("mouseleave", () => {
+    isDragging = false;
+  });
+
+  // Zoom per ingrandire/rimpicciolire
+  const zoomHandler = zoom()
+    .scaleExtent([0.5, 8]) // Zoom minimo e massimo
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(20).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,createCO2EmissionsMap};
+}});
+
 </script>
 </head>
 <body>
@@ -1027,6 +1397,8 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 <li class="observablehq-secondary-link"><a href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></li>
 <li class="observablehq-secondary-link"><a href="#section-2-alluvial">Section 2: Alluvial</a></li>
 <li class="observablehq-secondary-link"><a href="#data-and-chart-setup">Data and Chart Setup</a></li>
+<li class="observablehq-secondary-link"><a href="#co-emissions-map">CO₂ Emissions Map 🌍</a></li>
+<li class="observablehq-secondary-link"><a href="#plot-2">Plot 2</a></li>
 </ol>
 </nav>
 </aside>
@@ -1138,10 +1510,24 @@ Major emitters like the <strong>United States</strong>, <strong>China</strong>, 
 Countries such as the <strong>United States</strong> and <strong>China</strong> show significant flows linked to <strong>Fossil Fuel Use</strong>, highlighting their dependence on coal, oil, and natural gas.
 In contrast, nations like <strong>Brazil</strong> and other countries in South America exhibit stronger connections to <strong>Land Use</strong> emissions, reflecting the impact of deforestation and land management practices.</p>
 <p><strong>Indonesia</strong> and <strong>Russia</strong> also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.</p>
-<p></p></main>
+<p></p>
+<h1 id="co-emissions-map" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-map">CO₂ Emissions Map 🌍</a></h1>
+<h2 id="plot-1" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-1">Plot 1</a></h2>
+<div class="observablehq observablehq--block"><!--:6530913e:--></div>
+<div id="chart-container" style="width: 100%; height: 600px;"></div>
+<p>
+sa
+</p>
+<h2 id="plot-2" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-2">Plot 2</a></h2>
+<div class="observablehq observablehq--block"><!--:ad3a78a4:--></div>
+<div id="chart-container" style="width: 40%; height: 500px;"></div>
+<p>
+sa sa
+</p>
+</main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./"><span>DataVisualization</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-21T13:57:22">Nov 21, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T10:26:11">Nov 22, 2024</a>.</div>
 </footer>
 </div>
 </body>
