@@ -14,16 +14,12 @@ toc: true
 <br>
 
 ```js
-import { geoMercator, geoPath } from "d3-geo";
+import { geoMercator, geoOrthographic, geoPath } from "d3-geo";
 import { scaleSequential } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
 
-async function createCO2EmissionsMapWorld(containerId) {
-  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
-
-  const countryNameMapping = {
+const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
     "Czech Republic": "Czechia",
@@ -37,6 +33,14 @@ async function createCO2EmissionsMapWorld(containerId) {
     "United Republic of Tanzania": "Tanzania",
     "The Bahamas": "Bahamas"
   };
+
+  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+```
+
+```js
+async function createCO2EmissionsMapWorld(containerId) {
+
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
 
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
@@ -173,37 +177,13 @@ createCO2EmissionsMapWorld("MapOnechart");
 
 
 <p>
-sa
+parole parole parole
 </p>
 
 ## Plot 2
 ```js
-import { geoOrthographic, geoPath } from "d3-geo";
-import { scaleSequential } from "d3-scale";
-import { interpolateYlOrRd } from "d3-scale-chromatic";
-import { zoom } from "d3-zoom";
-//import * as d3 from "d3";
-
-  // Mappa per corrispondenza dei nomi dei paesi
-  const countryNameMapping = {
-    "USA": "United States",
-    "England": "United Kingdom",
-    "Czech Republic": "Czechia",
-    "Republic of Serbia": "Serbia",
-    "Guinea Bissau": "Guinea-Bissau",
-    "Macedonia": "North Macedonia",
-    "Ivory Coast": "Cote d'Ivoire",
-    "Somaliland": "Somalia",
-    "Republic of the Congo": "Congo",
-    "Democratic Republic of the Congo": "Congo",
-    "United Republic of Tanzania": "Tanzania",
-    "The Bahamas": "Bahamas"
-  };
 
 async function createCO2EmissionsMapEarth(containerId) {
-  // Carica i dataset
-  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
   // Trasforma il dataset della popolazione in una mappa
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
@@ -372,5 +352,5 @@ createCO2EmissionsMapEarth("MapTwochart");
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
-sa sa
+parole parole parole
 </p>
