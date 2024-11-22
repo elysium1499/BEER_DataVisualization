@@ -81,14 +81,22 @@ async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "a
     const svg = container.append("svg").attr("width", width).attr("height", height);
 
         // Add ocean background first for orthographic map
-    if (mapType === "orthographic") {
-        svg.append("circle")
-            .attr("cx", width / 2) // Center horizontally
-            .attr("cy", height / 2) // Center vertically
-            .attr("r", (Math.min(width, height) / 2.5) * 1.10) // Match globe size
-            .attr("fill", "#A6D8FF"); // Light blue ocean color
-    }
-    
+if (mapType === "orthographic") {
+    svg.append("circle")
+        .attr("cx", width / 2) // Center horizontally
+        .attr("cy", height / 2) // Center vertically
+        .attr("r", (Math.min(width, height) / 2.5) * 1.10) // Slightly larger radius for ocean
+        .attr("fill", "#A6D8FF") // Light blue ocean color
+        .style("cursor", "pointer") // Hand cursor for ocean
+        .on("mouseover", () => {
+            d3.select("body").style("cursor", "pointer"); // Hand cursor on hover
+        })
+        .on("mouseout", () => {
+            d3.select("body").style("cursor", "default"); // Reset cursor on mouse out
+        })
+
+}
+  
     const mapGroup = svg.append("g");
 
     mapGroup.selectAll("path")
@@ -101,6 +109,7 @@ async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "a
         })
         .attr("stroke", "black")
         .attr("stroke-width", 0.3)
+        .style("cursor", "pointer") // Set cursor to hand
         .append("title")
         .text(d => `${d.properties.name}: ${d.properties.emission || "No data"}`);
 
