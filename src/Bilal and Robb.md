@@ -28,54 +28,51 @@ const countryNameMapping = {
 };
 
 // Utility to load and process data
-async function loadData() {
+async function loadData(aggregation_type) {
     const coEmissions = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-    const populationData = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-    const populationMap = new Map(populationData.map(d => [d.Entity, d.Population2022]));
+    if (aggregation_type === "density") {
+        // Return data directly without population consideration
+        return coEmissions.filter(d => d.Year === 2022).map(d => ({
+            ...d,
+            TotalEmissions: d["Annual CO₂ emissions (per capita)"] // Use per-capita emissions directly
+        }));
+    } else if (aggregation_type === "absolute_value") {
+        const populationData = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+        const populationMap = new Map(populationData.map(d => [d.Entity, d.Population2022]));
 
-    const processedData = coEmissions
-        .filter(d => d.Year === 2022)
-        .map(d => {
-            let countryName = countryNameMapping[d.Entity] || d.Entity;
-            const population = populationMap.get(countryName);
-            const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+        // Compute total emissions based on population
+        return coEmissions
+            .filter(d => d.Year === 2022)
+            .map(d => {
+                const countryName = countryNameMapping[d.Entity] || d.Entity;
+                const population = populationMap.get(countryName);
+                const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
 
-            return { ...d, Population: population, TotalEmissions: totalEmissions };
-        });
-
-    return processedData;
+                return { ...d, Population: population, TotalEmissions: totalEmissions };
+            });
+    } else {
+        throw new Error(`Unsupported aggregation_type: ${aggregation_type}`);
+    }
 }
 
-async function createCO2EmissionsMap(containerId, mapType) {
-    const data = await loadData();
+async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "absolute_value") {
+    const data = await loadData(aggregation_type);
     const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
     const worldData = await fetch(url).then(response => response.json());
 
     const emissionMap = new Map(data.map(d => [d.Entity, d.TotalEmissions]));
     const countriesWithEmissions = worldData.features.map(feature => {
-        let countryName = countryNameMapping[feature.properties.name] || feature.properties.name;
+        const countryName = countryNameMapping[feature.properties.name] || feature.properties.name;
         feature.properties.emission = emissionMap.get(countryName);
         return feature;
     });
 
-    const container = d3.select("#" + containerId);
+    const container = d3.select(`#${containerId}`);
     const width = container.node().clientWidth;
     const height = container.node().clientHeight;
 
-    let projection;
-    if (mapType === "mercator") {
-        projection = geoMercator()
-            .scale(140)
-            .translate([width / 2, height / 1.5]);
-    } else if (mapType === "orthographic") {
-        projection = geoOrthographic()
-            .scale(200)
-            .translate([width / 2, height / 2]);
-    } else {
-        throw new Error(`Unsupported mapType: ${mapType}`);
-    }
-
+    const projection = createProjection(mapType, width, height);
     const path = geoPath().projection(projection);
 
     const maxEmission = d3.max(data, d => d.TotalEmissions);
@@ -97,7 +94,6 @@ async function createCO2EmissionsMap(containerId, mapType) {
         .append("title")
         .text(d => `${d.properties.name}: ${d.properties.emission || "No data"}`);
 
-    // Add specific interactivity based on mapType
     if (mapType === "orthographic") {
         addGlobeInteractivity(svg, mapGroup, projection, path);
     } else if (mapType === "mercator") {
@@ -107,7 +103,18 @@ async function createCO2EmissionsMap(containerId, mapType) {
     addLegend(svg, colorScale, width, height, maxEmission);
 }
 
+// Helper function for projections
+function createProjection(mapType, width, height) {
+    if (mapType === "mercator") {
+        return geoMercator().scale(140).translate([width / 2, height / 1.5]);
+    } else if (mapType === "orthographic") {
+        return geoOrthographic().scale(200).translate([width / 2, height / 2]);
+    } else {
+        throw new Error(`Unsupported mapType: ${mapType}`);
+    }
+}
 
+// Zoom functionality
 function addZoom(svg, mapGroup, width, height) {
     const zoomHandler = zoom()
         .scaleExtent([1, 8])
@@ -116,6 +123,7 @@ function addZoom(svg, mapGroup, width, height) {
     svg.call(zoomHandler);
 }
 
+// Globe interactivity
 function addGlobeInteractivity(svg, mapGroup, projection, path) {
     let isDragging = false;
     let lastPosition = null;
@@ -137,6 +145,7 @@ function addGlobeInteractivity(svg, mapGroup, projection, path) {
     svg.on("mouseup mouseleave", () => (isDragging = false));
 }
 
+// Add legend
 function addLegend(svg, colorScale, width, height, maxEmission) {
     const legendWidth = 300;
     const legendHeight = 20;
@@ -171,9 +180,13 @@ function addLegend(svg, colorScale, width, height, maxEmission) {
         .select(".domain").remove();
 }
 
-// Use the refactored function
-createCO2EmissionsMap("MapOnechart", "mercator");
-createCO2EmissionsMap("MapTwochart", "orthographic");
+// Example usage
+createCO2EmissionsMap("MapOnechart", "mercator", "absolute_value");
+createCO2EmissionsMap("MapTwochart", "orthographic", "absolute_value");
+createCO2EmissionsMap("MapThreechart", "mercator", "density");
+createCO2EmissionsMap("MapFourchart", "orthographic", "density");
+
+
 
 
 
@@ -187,3 +200,12 @@ createCO2EmissionsMap("MapTwochart", "orthographic");
 ## Plot 2
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>parole parole parole</p>
+
+## Plot 3
+<div id="MapThreechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
+
+## Plot 4
+<div id="MapFourchart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
+<p>parole parole parole</p>
+
