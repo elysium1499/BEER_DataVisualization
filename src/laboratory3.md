@@ -38,11 +38,12 @@ const countryNameMapping = {
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 ```
 
+
+
 ```js
 async function createCO2EmissionsMapWorld(containerId) {
 
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
       let countryName = d.Entity;
       countryName = countryNameMapping[countryName] || countryName;
@@ -101,7 +102,7 @@ async function createCO2EmissionsMapWorld(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    return (value / 1e4).toFixed(2) + " BillionTons";
+    return (value / 1_000_000_000).toFixed(4) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -249,8 +250,8 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Billion tons";
-    return value.toFixed(2) + " BillionTons";
+    if (value >= 1e4) return (value / 1_000_000_000).toFixed(4) + " Billion tons";
+    return value + " BillionTons";
   }
 
   // Disegna la mappa
