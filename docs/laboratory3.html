@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.13.0">
+<title>Section 3 | DataVisualization</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
+<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
+<link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
+<link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.61617510.js">
+<link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.0e732a91.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
+<link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
+<link rel="modulepreload" href="./_node/d3-format@3.1.0/index.75f84505.js">
+<link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.20c5f3ca.js">
+<link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
+<link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
+<link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.8e5f73cc.js">
+<link rel="modulepreload" href="./_node/d3-selection@3.0.0/index.13204b25.js">
+<link rel="modulepreload" href="./_node/d3-transition@3.0.1/index.d140d658.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_node/internmap@2.0.3/index.4106013c.js">
+<link rel="modulepreload" href="./_node/d3-timer@3.0.1/index.0ee6092b.js">
+<link rel="modulepreload" href="./_node/d3-ease@3.0.1/index.09153f73.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
+
+import {define} from "./_observablehq/client.7782eb36.js";
+import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
+
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731701143960,"size":5856});
+
+define({id: "0bea9442", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoPath","scaleSequential","interpolateYlOrRd","zoom","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+const [{geoMercator, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.emission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = d3.geoMercator()
+    .scale(140)
+    .translate([width / 2, height / 1.5]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    return (value / 1e4).toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.emission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.emission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Zoom e pan
+  const zoomHandler = zoom()
+    .scaleExtent([1, 8])
+    .translateExtent([[-width, -height], [2 * width, 2 * height]])
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(10).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+
+return {geoMercator,geoPath,scaleSequential,interpolateYlOrRd,zoom,createCO2EmissionsMap};
+}});
+
+define({id: "ad3a78a4", inputs: ["FileAttachment","d3"], outputs: ["geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+const [{geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
+//import * as d3 from "d3";
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.totalEmission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = geoOrthographic()
+    .scale(200)
+    .translate([width / 2, height / 2]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Giga tons";
+    return value.toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.totalEmission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.totalEmission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Trascinamento per ruotare il globo
+  let rotate = [0, 0];
+  let isDragging = false;
+  let lastPosition = null;
+
+  svg.on("mousedown", (event) => {
+    isDragging = true;
+    lastPosition = [event.clientX, event.clientY];
+  });
+
+  svg.on("mousemove", (event) => {
+    if (isDragging) {
+      const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
+      rotate[0] += dx / 5;
+      rotate[1] -= dy / 5;
+      projection.rotate(rotate);
+      mapGroup.selectAll("path").attr("d", path);
+      lastPosition = [event.clientX, event.clientY];
+    }
+  });
+
+  svg.on("mouseup", () => {
+    isDragging = false;
+  });
+
+  svg.on("mouseleave", () => {
+    isDragging = false;
+  });
+
+  // Zoom per ingrandire/rimpicciolire
+  const zoomHandler = zoom()
+    .scaleExtent([0.5, 8]) // Zoom minimo e massimo
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(20).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,createCO2EmissionsMap};
+}});
+
+</script>
+</head>
+<body>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./laboratory1">Section 1</a></li>
+    <li class="observablehq-link"><a href="./laboratory2">Section 2</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory3">Section 3</a></li>
+  </ol>
+</nav>
+<script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<aside id="observablehq-toc" data-selector="h1:not(:first-of-type)[id], h2:first-child[id], :not(h1) + h2[id]">
+<nav>
+<div>Contents</div>
+<ol>
+<li class="observablehq-secondary-link"><a href="#plot-2">Plot 2</a></li>
+</ol>
+</nav>
+</aside>
+<main id="observablehq-main" class="observablehq">
+<h1 id="co-emissions-map" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-map">CO₂ Emissions Map 🌍</a></h1>
+<h2 id="plot-1" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-1">Plot 1</a></h2>
+<div class="observablehq observablehq--block"><!--:0bea9442:--></div>
+<div id="chart-container" style="width: 100%; height: 600px;"></div>
+<br><br>
+<p>
+sa
+</p>
+<h2 id="plot-2" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-2">Plot 2</a></h2>
+<div class="observablehq observablehq--block"><!--:ad3a78a4:--></div>
+<div id="chart-container" style="width: 40%; height: 500px; margin-bottom: 50px;"></div>
+<p>
+sa sa
+</p></main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./laboratory2"><span>Section 2</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T11:16:37">Nov 22, 2024</a>.</div>
+</footer>
+</div>
+</body>
+</html>
