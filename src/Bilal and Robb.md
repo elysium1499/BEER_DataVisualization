@@ -41,7 +41,7 @@ const countryNameMapping = {
 
 
 ```js
-// Utility Functions
+// Utility Functions 
 async function fetchGeoJSON(url) {
   const response = await fetch(url);
   return response.json();
@@ -153,7 +153,7 @@ function addZoom(svg, mapGroup, width, height) {
   svg.call(zoomHandler);
 }
 
-// Main Function
+// Main Function 
 async function createCO2EmissionsMapWorld(containerId, options = {}) {
   const {
     populationData,
