@@ -73,15 +73,13 @@ import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.b28225e4.csv","lastModified":1731701143960,"size":5856});
 
-define({id: "0bea9442", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoPath","scaleSequential","interpolateYlOrRd","zoom","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+define({id: "ad80ef68", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoPath","scaleSequential","interpolateYlOrRd","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,d3) => {
 const [{geoMercator, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
-async function createCO2EmissionsMap(containerId) {
-  // Carica i dataset
+async function createCO2EmissionsMapWorld(containerId) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
 
-  // Mappa per corrispondenza dei nomi dei paesi
   const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
@@ -96,13 +94,9 @@ async function createCO2EmissionsMap(containerId) {
     "United Republic of Tanzania": "Tanzania",
     "The Bahamas": "Bahamas"
   };
-  // Trasforma il dataset della popolazione in una mappa
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
 
-  // Calcola le emissioni totali per ogni paese
-  const emissionsWithPopulation = co_emissions_per_capita
-    .filter(d => d.Year === 2022)
-    .map(d => {
+  const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
       let countryName = d.Entity;
       countryName = countryNameMapping[countryName] || countryName;
 
@@ -160,7 +154,7 @@ async function createCO2EmissionsMap(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    return (value / 1e4).toFixed(2) + " Gigatons";
+    return (value / 1e4).toFixed(2) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -228,13 +222,13 @@ async function createCO2EmissionsMap(containerId) {
 }
 
 // Crea la mappa
-createCO2EmissionsMap("chart-container");
+createCO2EmissionsMapWorld("MapOnechart");
 
 
-return {geoMercator,geoPath,scaleSequential,interpolateYlOrRd,zoom,createCO2EmissionsMap};
+return {geoMercator,geoPath,scaleSequential,interpolateYlOrRd,zoom,createCO2EmissionsMapWorld};
 }});
 
-define({id: "ad3a78a4", inputs: ["FileAttachment","d3"], outputs: ["geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","createCO2EmissionsMap"], body: async (FileAttachment,d3) => {
+define({id: "b30f6dec", inputs: ["FileAttachment","d3"], outputs: ["geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","createCO2EmissionsMapEarth"], body: async (FileAttachment,d3) => {
 const [{geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 //import * as d3 from "d3";
 
@@ -254,7 +248,7 @@ const [{geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom
     "The Bahamas": "Bahamas"
   };
 
-async function createCO2EmissionsMap(containerId) {
+async function createCO2EmissionsMapEarth(containerId) {
   // Carica i dataset
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
@@ -323,8 +317,8 @@ async function createCO2EmissionsMap(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Giga tons";
-    return value.toFixed(2) + " Gigatons";
+    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Billion tons";
+    return value.toFixed(2) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -420,9 +414,9 @@ async function createCO2EmissionsMap(containerId) {
 }
 
 // Crea la mappa
-createCO2EmissionsMap("chart-container");
+createCO2EmissionsMapEarth("MapTwochart");
 
-return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,createCO2EmissionsMap};
+return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNameMapping,createCO2EmissionsMapEarth};
 }});
 
 </script>
@@ -447,28 +441,30 @@ return {geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zoom,countryNa
 <nav>
 <div>Contents</div>
 <ol>
+<li class="observablehq-secondary-link"><a href="#plot-1">Plot 1</a></li>
 <li class="observablehq-secondary-link"><a href="#plot-2">Plot 2</a></li>
 </ol>
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
 <h1 id="co-emissions-map" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-map">CO₂ Emissions Map 🌍</a></h1>
+<br>
 <h2 id="plot-1" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-1">Plot 1</a></h2>
-<div class="observablehq observablehq--block"><!--:0bea9442:--></div>
-<div id="chart-container" style="width: 100%; height: 600px;"></div>
-<br><br>
+<br>
+<div class="observablehq observablehq--block"><!--:ad80ef68:--></div>
+<div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 <p>
 sa
 </p>
 <h2 id="plot-2" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-2">Plot 2</a></h2>
-<div class="observablehq observablehq--block"><!--:ad3a78a4:--></div>
-<div id="chart-container" style="width: 40%; height: 500px; margin-bottom: 50px;"></div>
+<div class="observablehq observablehq--block"><!--:b30f6dec:--></div>
+<div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>
 sa sa
 </p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory2"><span>Section 2</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T11:16:37">Nov 22, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T11:59:08">Nov 22, 2024</a>.</div>
 </footer>
 </div>
 </body>

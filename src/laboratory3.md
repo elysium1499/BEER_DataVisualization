@@ -7,7 +7,11 @@ toc: true
 
 # CO₂ Emissions Map 🌍
 
+<br>
+
 ## Plot 1
+
+<br>
 
 ```js
 import { geoMercator, geoPath } from "d3-geo";
