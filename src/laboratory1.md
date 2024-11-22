@@ -1065,3 +1065,376 @@ In contrast, nations like **Brazil** and other countries in South America exhibi
 **Indonesia** and **Russia** also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.
 
 </p>
+
+
+# CO₂ Emissions Map 🌍
+## Plot 1
+
+```js
+import { geoMercator, geoPath } from "d3-geo";
+import { scaleSequential } from "d3-scale";
+import { interpolateYlOrRd } from "d3-scale-chromatic";
+import { zoom } from "d3-zoom";
+//import * as d3 from "d3";
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.emission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = d3.geoMercator()
+    .scale(140)
+    .translate([width / 2, height / 1.5]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    return (value / 1e4).toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.emission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.emission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Zoom e pan
+  const zoomHandler = zoom()
+    .scaleExtent([1, 8])
+    .translateExtent([[-width, -height], [2 * width, 2 * height]])
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(10).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+
+```
+<div id="chart-container" style="width: 100%; height: 600px;"></div>
+
+
+<p>
+sa
+</p>
+
+## Plot 2
+```js
+import { geoOrthographic, geoPath } from "d3-geo";
+import { scaleSequential } from "d3-scale";
+import { interpolateYlOrRd } from "d3-scale-chromatic";
+import { zoom } from "d3-zoom";
+//import * as d3 from "d3";
+
+  // Mappa per corrispondenza dei nomi dei paesi
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
+
+async function createCO2EmissionsMap(containerId) {
+  // Carica i dataset
+  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+
+  // Trasforma il dataset della popolazione in una mappa
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calcola le emissioni totali per ogni paese
+  const emissionsWithPopulation = co_emissions_per_capita
+    .filter(d => d.Year === 2022)
+    .map(d => {
+      let countryName = d.Entity;
+      countryName = countryNameMapping[countryName] || countryName;
+
+      const population = populationMap.get(countryName);
+      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+      return {
+        ...d,
+        Population: population,
+        TotalEmissions: totalEmissions,
+      };
+    });
+
+  // Ordina i paesi per emissioni totali
+  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
+  // URL del file GeoJSON
+  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
+  const worldData = await fetch(url).then(response => response.json());
+
+  // Crea una mappa delle emissioni totali
+  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
+
+  // Aggiorna il GeoJSON con i dati
+  const countriesWithEmissions = worldData.features.map(feature => {
+    let countryName = feature.properties.name;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const emission = emissionMap.get(countryName);
+    feature.properties.totalEmission = emission;
+    return feature;
+  });
+
+  // Dimensioni del contenitore
+  const container = d3.select("#" + containerId);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  // Proiezione e path
+  const projection = geoOrthographic()
+    .scale(200)
+    .translate([width / 2, height / 2]);
+
+  const path = geoPath().projection(projection);
+
+  // Scala colori basata sulle emissioni totali
+  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
+  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // SVG e gruppo mappa
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const mapGroup = svg.append("g");
+
+  // Funzione di formattazione personalizzata
+  function customFormat(value) {
+    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Giga tons";
+    return value.toFixed(2) + " Gigatons";
+  }
+
+  // Disegna la mappa
+  mapGroup.selectAll("path")
+    .data(countriesWithEmissions)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", d => {
+      const emissions = d.properties.totalEmission;
+      return emissions ? colorScale(emissions) : "#ccc";
+    })
+    .attr("stroke", "white")
+    .attr("stroke-width", 0.5)
+    .append("title")
+    .text(d => {
+      const emissions = d.properties.totalEmission;
+      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+    });
+
+  // Trascinamento per ruotare il globo
+  let rotate = [0, 0];
+  let isDragging = false;
+  let lastPosition = null;
+
+  svg.on("mousedown", (event) => {
+    isDragging = true;
+    lastPosition = [event.clientX, event.clientY];
+  });
+
+  svg.on("mousemove", (event) => {
+    if (isDragging) {
+      const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
+      rotate[0] += dx / 5;
+      rotate[1] -= dy / 5;
+      projection.rotate(rotate);
+      mapGroup.selectAll("path").attr("d", path);
+      lastPosition = [event.clientX, event.clientY];
+    }
+  });
+
+  svg.on("mouseup", () => {
+    isDragging = false;
+  });
+
+  svg.on("mouseleave", () => {
+    isDragging = false;
+  });
+
+  // Zoom per ingrandire/rimpicciolire
+  const zoomHandler = zoom()
+    .scaleExtent([0.5, 8]) // Zoom minimo e massimo
+    .on("zoom", (event) => {
+      mapGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoomHandler);
+
+  // Aggiungi la legenda
+  const legendWidth = 300;
+  const legendHeight = 20;
+
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, maxEmission])
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(20).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t)
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => customFormat(d)))
+    .select(".domain").remove();
+}
+
+// Crea la mappa
+createCO2EmissionsMap("chart-container");
+
+```
+<div id="chart-container" style="width: 40%; height: 500px;"></div>
+
+<p>
+sa sa
+</p>
