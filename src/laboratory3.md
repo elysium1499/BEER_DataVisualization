@@ -15,12 +15,10 @@ import { scaleSequential } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
 
-async function createCO2EmissionsMap(containerId) {
-  // Carica i dataset
+async function createCO2EmissionsMapWorld(containerId) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-  // Mappa per corrispondenza dei nomi dei paesi
   const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
@@ -35,13 +33,9 @@ async function createCO2EmissionsMap(containerId) {
     "United Republic of Tanzania": "Tanzania",
     "The Bahamas": "Bahamas"
   };
-  // Trasforma il dataset della popolazione in una mappa
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
 
-  // Calcola le emissioni totali per ogni paese
-  const emissionsWithPopulation = co_emissions_per_capita
-    .filter(d => d.Year === 2022)
-    .map(d => {
+  const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
       let countryName = d.Entity;
       countryName = countryNameMapping[countryName] || countryName;
 
@@ -99,7 +93,7 @@ async function createCO2EmissionsMap(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    return (value / 1e4).toFixed(2) + " Gigatons";
+    return (value / 1e4).toFixed(2) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -167,12 +161,11 @@ async function createCO2EmissionsMap(containerId) {
 }
 
 // Crea la mappa
-createCO2EmissionsMap("chart-container");
+createCO2EmissionsMapWorld("MapOnechart");
 
 
 ```
-<div id="chart-container" style="width: 100%; height: 600px;"></div>
-<br><br>
+<div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 
 
 <p>
@@ -203,7 +196,7 @@ import { zoom } from "d3-zoom";
     "The Bahamas": "Bahamas"
   };
 
-async function createCO2EmissionsMap(containerId) {
+async function createCO2EmissionsMapEarth(containerId) {
   // Carica i dataset
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
@@ -272,8 +265,8 @@ async function createCO2EmissionsMap(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Giga tons";
-    return value.toFixed(2) + " Gigatons";
+    if (value >= 1e4) return (value / 1e4).toFixed(2) + " Billion tons";
+    return value.toFixed(2) + " BillionTons";
   }
 
   // Disegna la mappa
@@ -369,10 +362,10 @@ async function createCO2EmissionsMap(containerId) {
 }
 
 // Crea la mappa
-createCO2EmissionsMap("chart-container");
+createCO2EmissionsMapEarth("MapTwochart");
 
 ```
-<div id="chart-container" style="width: 40%; height: 500px; margin-bottom: 50px;"></div>
+<div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
 sa sa
