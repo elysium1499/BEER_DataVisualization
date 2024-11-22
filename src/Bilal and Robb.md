@@ -180,17 +180,12 @@ function addLegend(svg, colorScale, width, height, maxEmission) {
         .select(".domain").remove();
 }
 
-// Example usage
 createCO2EmissionsMap("MapOnechart", "mercator", "absolute_value");
 createCO2EmissionsMap("MapTwochart", "orthographic", "absolute_value");
 createCO2EmissionsMap("MapThreechart", "mercator", "density");
 createCO2EmissionsMap("MapFourchart", "orthographic", "density");
-
-
-
-
-
 ```
+
 
 # CO₂ Emissions Map 🌍
 ## Plot 1
