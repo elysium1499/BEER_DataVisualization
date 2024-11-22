@@ -170,7 +170,7 @@ svg.on("mousemove", (event) => {
 }
 
 // Add legend
-function addLegend(svg, colorScale, width, height, maxEmission) {
+function addLegend(svg, colorScale, width, height, maxEmission,aggregation_type ) {
     const legendWidth = 300;
     const legendHeight = 20;
 
