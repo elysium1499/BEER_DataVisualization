@@ -47,7 +47,6 @@ async function loadData() {
     return processedData;
 }
 
-// Reusable function to create map
 async function createCO2EmissionsMap(containerId, mapType) {
     const data = await loadData();
     const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
@@ -64,9 +63,18 @@ async function createCO2EmissionsMap(containerId, mapType) {
     const width = container.node().clientWidth;
     const height = container.node().clientHeight;
 
-    const projection = mapType === "mercator"
-        ? geoMercator().scale(140).translate([width / 2, height / 1.5])
-        : geoOrthographic().scale(200).translate([width / 2, height / 2]);
+    let projection;
+    if (mapType === "mercator") {
+        projection = geoMercator()
+            .scale(140)
+            .translate([width / 2, height / 1.5]);
+    } else if (mapType === "orthographic") {
+        projection = geoOrthographic()
+            .scale(200)
+            .translate([width / 2, height / 2]);
+    } else {
+        throw new Error(`Unsupported mapType: ${mapType}`);
+    }
 
     const path = geoPath().projection(projection);
 
@@ -89,16 +97,17 @@ async function createCO2EmissionsMap(containerId, mapType) {
         .append("title")
         .text(d => `${d.properties.name}: ${d.properties.emission || "No data"}`);
 
+    // Add specific interactivity based on mapType
     if (mapType === "orthographic") {
         addGlobeInteractivity(svg, mapGroup, projection, path);
-    } else {
+    } else if (mapType === "mercator") {
         addZoom(svg, mapGroup, width, height);
     }
 
     addLegend(svg, colorScale, width, height, maxEmission);
 }
 
-// Add zoom functionality
+
 function addZoom(svg, mapGroup, width, height) {
     const zoomHandler = zoom()
         .scaleExtent([1, 8])
@@ -107,7 +116,6 @@ function addZoom(svg, mapGroup, width, height) {
     svg.call(zoomHandler);
 }
 
-// Add globe interactivity
 function addGlobeInteractivity(svg, mapGroup, projection, path) {
     let isDragging = false;
     let lastPosition = null;
@@ -129,7 +137,6 @@ function addGlobeInteractivity(svg, mapGroup, projection, path) {
     svg.on("mouseup mouseleave", () => (isDragging = false));
 }
 
-// Add legend
 function addLegend(svg, colorScale, width, height, maxEmission) {
     const legendWidth = 300;
     const legendHeight = 20;
