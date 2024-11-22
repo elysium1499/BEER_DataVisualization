@@ -80,6 +80,18 @@ async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "a
 
     const svg = container.append("svg").attr("width", width).attr("height", height);
 
+            // Add ocean background first for orthographic map
+if (mapType === "conicEquidistant") {
+    
+    svg.append("ellipse")
+        .attr("cx", width / 2) // Center horizontally
+        .attr("cy", height / 2 -160) // Center vertically
+        .attr("rx", width / 2 - 120) // Horizontal radius (covers full width)
+        .attr("ry", height / 1.5) // Vertical radius (slightly shorter than height)
+        .attr("fill", "#A6D8FF") // Light blue ocean color     
+}
+
+
         // Add ocean background first for orthographic map
 if (mapType === "orthographic") {
     svg.append("circle")
@@ -117,7 +129,9 @@ if (mapType === "orthographic") {
         addGlobeInteractivity(svg, mapGroup, projection, path);
     } else if (mapType === "mercator") {
         addZoom(svg, mapGroup, width, height);
-    }
+    } else if (mapType === "equirectangular") {
+        addZoom(svg, mapGroup, width, height); // Add zoom functionality for the equirectangular map
+}
 
     addLegend(svg, colorScale, width, height, maxEmission);
 }
