@@ -162,7 +162,7 @@ function addLegend(svg, colorScale, width, height, maxEmission) {
             color: colorScale(t)
         })))
         .join("stop")
-        .attr("offset", d => d.offset)
+        .attr("offset", d => d.offset) 
         .attr("stop-color", d => d.color);
 
     legendGroup.append("rect")
