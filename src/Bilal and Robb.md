@@ -41,13 +41,21 @@ const countryNameMapping = {
 
 
 ```js
-async function createCO2EmissionsMapWorld(containerId) {
+// Utility Functions
+async function fetchGeoJSON(url) {
+  const response = await fetch(url);
+  return response.json();
+}
 
-  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-  const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
-      let countryName = d.Entity;
-      countryName = countryNameMapping[countryName] || countryName;
+function mapPopulationToEntities(data) {
+  return new Map(data.map(d => [d.Entity, d.Population2022]));
+}
 
+function calculateEmissions(emissionsData, populationMap, year, countryNameMapping) {
+  return emissionsData
+    .filter(d => d.Year === year)
+    .map(d => {
+      let countryName = countryNameMapping[d.Entity] || d.Entity;
       const population = populationMap.get(countryName);
       const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
       return {
@@ -56,56 +64,67 @@ async function createCO2EmissionsMapWorld(containerId) {
         TotalEmissions: totalEmissions,
       };
     });
+}
 
-  // Ordina i paesi per emissioni totali
-  const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
-
-  // URL del file GeoJSON
-  const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
-  const worldData = await fetch(url).then(response => response.json());
-
-  // Crea una mappa delle emissioni totali
-  const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
-
-  // Aggiorna il GeoJSON con i dati
-  const countriesWithEmissions = worldData.features.map(feature => {
-    let countryName = feature.properties.name;
-    countryName = countryNameMapping[countryName] || countryName;
-
-    const emission = emissionMap.get(countryName);
-    feature.properties.emission = emission;
+function updateGeoJSONWithEmissions(worldData, emissionsMap, countryNameMapping) {
+  return worldData.features.map(feature => {
+    let countryName = countryNameMapping[feature.properties.name] || feature.properties.name;
+    feature.properties.emission = emissionsMap.get(countryName);
     return feature;
   });
+}
 
-  // Dimensioni del contenitore
-  const container = d3.select("#" + containerId);
-  const width = container.node().clientWidth;
-  const height = container.node().clientHeight;
+function createColorScale(emissionsData, interpolateScheme) {
+  const maxEmission = d3.max(emissionsData, d => d.TotalEmissions);
+  return d3.scaleSequential(interpolateScheme).domain([0, maxEmission]);
+}
 
-  // Proiezione e path
-  const projection = d3.geoMercator()
-    .scale(140)
-    .translate([width / 2, height / 1.5]);
+function createProjection(width, height) {
+  return d3.geoMercator().scale(140).translate([width / 2, height / 1.5]);
+}
 
-  const path = geoPath().projection(projection);
+function addLegend(svg, colorScale, width, height, customFormat) {
+  const legendWidth = 300;
+  const legendHeight = 20;
 
-  // Scala colori basata sulle emissioni totali
-  const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
-  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
 
-  // SVG e gruppo mappa
+  const legendScale = d3.scaleLinear()
+    .domain(colorScale.domain())
+    .range([0, legendWidth]);
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient").attr("id", "legend-gradient");
+
+  linearGradient.selectAll("stop")
+    .data(colorScale.ticks(10).map((t, i, n) => ({
+      offset: `${(100 * i) / (n.length - 1)}%`,
+      color: colorScale(t),
+    })))
+    .join("stop")
+    .attr("offset", d => d.offset)
+    .attr("stop-color", d => d.color);
+
+  legendGroup.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendGroup.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(d3.axisBottom(legendScale).ticks(3).tickFormat(customFormat))
+    .select(".domain").remove();
+}
+
+function drawMap(container, countriesWithEmissions, projection, colorScale, customFormat) {
+  const path = d3.geoPath().projection(projection);
   const svg = container.append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", container.node().clientWidth)
+    .attr("height", container.node().clientHeight);
 
   const mapGroup = svg.append("g");
 
-  // Funzione di formattazione personalizzata
-  function customFormat(value) {
-    return (value / 1_000_000_000).toFixed(4) + " BillionTons";
-  }
-
-  // Disegna la mappa
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -122,55 +141,57 @@ async function createCO2EmissionsMapWorld(containerId) {
       return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
     });
 
-  // Zoom e pan
-  const zoomHandler = zoom()
-    .scaleExtent([1, 8])
-    .translateExtent([[-width, -height], [2 * width, 2 * height]])
-    .on("zoom", (event) => {
-      mapGroup.attr("transform", event.transform);
-    });
-
-  svg.call(zoomHandler);
-
-  // Aggiungi la legenda
-  const legendWidth = 300;
-  const legendHeight = 20;
-
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
-
-  const legendScale = d3.scaleLinear()
-    .domain([0, maxEmission])
-    .range([0, legendWidth]);
-
-  const defs = svg.append("defs");
-  const linearGradient = defs.append("linearGradient")
-    .attr("id", "legend-gradient");
-
-  linearGradient.selectAll("stop")
-    .data(colorScale.ticks(10).map((t, i, n) => ({
-      offset: `${(100 * i) / (n.length - 1)}%`,
-      color: colorScale(t)
-    })))
-    .join("stop")
-    .attr("offset", d => d.offset)
-    .attr("stop-color", d => d.color);
-
-  legendGroup.append("rect")
-    .attr("width", legendWidth)
-    .attr("height", legendHeight)
-    .style("fill", "url(#legend-gradient)");
-
-  legendGroup.append("g")
-    .attr("transform", `translate(0, ${legendHeight})`)
-    .call(d3.axisBottom(legendScale)
-      .ticks(3)
-      .tickFormat(d => customFormat(d)))
-    .select(".domain").remove();
+  return { svg, mapGroup };
 }
 
-// Crea la mappa
-createCO2EmissionsMapWorld("MapOnechart");
+function addZoom(svg, mapGroup, width, height) {
+  const zoomHandler = d3.zoom()
+    .scaleExtent([1, 8])
+    .translateExtent([[-width, -height], [2 * width, 2 * height]])
+    .on("zoom", event => mapGroup.attr("transform", event.transform));
+
+  svg.call(zoomHandler);
+}
+
+// Main Function
+async function createCO2EmissionsMapWorld(containerId, options = {}) {
+  const {
+    populationData,
+    emissionsData,
+    countryNameMapping,
+    geoJSONUrl,
+    year = 2022,
+    colorScheme = d3.interpolateYlOrRd,
+    customFormat = value => (value / 1_000_000_000).toFixed(4) + " BillionTons",
+  } = options;
+
+  const container = d3.select(`#${containerId}`);
+  const width = container.node().clientWidth;
+  const height = container.node().clientHeight;
+
+  const populationMap = mapPopulationToEntities(populationData);
+  const emissionsWithPopulation = calculateEmissions(emissionsData, populationMap, year, countryNameMapping);
+  const emissionsMap = new Map(emissionsWithPopulation.map(d => [d.Entity, d.TotalEmissions]));
+
+  const worldData = await fetchGeoJSON(geoJSONUrl);
+  const countriesWithEmissions = updateGeoJSONWithEmissions(worldData, emissionsMap, countryNameMapping);
+
+  const colorScale = createColorScale(emissionsWithPopulation, colorScheme);
+  const projection = createProjection(width, height);
+
+  const { svg, mapGroup } = drawMap(container, countriesWithEmissions, projection, colorScale, customFormat);
+
+  addZoom(svg, mapGroup, width, height);
+  addLegend(svg, colorScale, width, height, customFormat);
+}
+
+createCO2EmissionsMapWorld("MapOnechart", {
+  populationData: region_population,
+  emissionsData: co_emissions_per_capita,
+  countryNameMapping: countryNameMapping,
+  geoJSONUrl: "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
+});
+
 
 
 ```
