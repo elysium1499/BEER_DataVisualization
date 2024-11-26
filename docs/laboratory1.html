@@ -12,11 +12,11 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
-<link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
+<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
 <link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.3e4c82b9.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
@@ -58,13 +58,13 @@
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.6b525bf7.js";
-import {registerFile} from "./_observablehq/stdlib.3ac83553.js";
+import {define} from "./_observablehq/client.7782eb36.js";
+import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
-registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731709379255,"size":179331});
-registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.f95469a5.csv","lastModified":1732188783030,"size":322449});
-registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731709379265,"size":4099});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613356019,"size":5854});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.14870976.csv","lastModified":1731701676493,"size":316369});
+registerFile("./data/region_entities.csv", {"name":"./data/region_entities.csv","mimeType":"text/csv","path":"./_file/data/region_entities.6897ee96.csv","lastModified":1731701143960,"size":4099});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
 define({id: "f920bdb6", inputs: ["FileAttachment"], outputs: ["dataset","RegionDataset","populationDataset","datasetFossil"], body: async (FileAttachment) => {
 //column: Entity,Code,Year,Annual CO₂ emissions (per capita)
@@ -79,7 +79,7 @@ const datasetFossil = await FileAttachment("./data/co2-fossil-plus-land-use.csv"
 return {dataset,RegionDataset,populationDataset,datasetFossil};
 }});
 
-define({id: "a29392ac", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
+define({id: "08d4b376", inputs: ["dataset","view","Inputs","Plot"], outputs: ["uniqueEntities","year","EmissionsByCapitalYear"], body: (dataset,view,Inputs,Plot) => {
 const uniqueEntities = [...new Set(dataset.map(d => d.Year.toString()))].sort((a, b) => b - a);
 const year = view(Inputs.select(uniqueEntities, {label: "📅 Choose Year"}));
 
@@ -94,33 +94,12 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     .sort((a, b) => b.co2Emissions - a.co2Emissions)
     .slice(0, 20);
 
-    const colorPalette = [
-    "#FFDFBA", // Light Apricot
-    "#FFD700", // Gold
-    "#FF8C00", // Dark Orange
-    "#FF4500", // Orange Red
-    "#6B8E23", // Olive Drab
-    "#3CB371", // Medium Sea Green
-    "#2E8B57", // Sea Green
-    "#20B2AA", // Light Sea Green
-    "#4682B4", // Steel Blue
-    "#4169E1", // Royal Blue
-    "#6A5ACD", // Slate Blue
-    "#8A2BE2", // Blue Violet
-    "#7B68EE", // Medium Slate Blue
-    "#A0522D", // Sienna
-    "#D2691E", // Chocolate
-    "#B22222", // Firebrick
-    "#696969", // Dim Gray
-    "#A9A9A9", // Dark Gray
-    "#90EE90", // Light Green
-    "#8B008B"  // Dark Magenta
-];
+    const colorPalette = "#2E8B57";
 
 
     const coloredData = filteredData.map((cityData, index) => ({
         ...cityData,
-        color: colorPalette[index % colorPalette.length]
+        color: colorPalette
     }));
 
     return Plot.plot({
@@ -136,7 +115,8 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
         },
         y: {
             label: "Annual CO₂ Emissions (per capita) - Billion tons",
-            grid: true
+            grid: true, 
+            tickFormat: d => `${d} BT`
         },
         marks: [
             Plot.barY(coloredData, { 
@@ -157,7 +137,7 @@ resize((width) => EmissionsByCapitalYear(dataset, year, {width}))
 ))
 }});
 
-define({id: "ce8e7431", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
+define({id: "f90a5d74", inputs: ["Plot"], outputs: ["EmissionsByCapital"], body: (Plot) => {
 function EmissionsByCapital(data, { width = 800 } = {}) {
     const totalEmissions = data
         .filter(d => d.Year >= 2011 && d.Year <= 2022)
@@ -178,30 +158,11 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 
     const uniqueEmissions = [...new Set(topCities.map(d => d.co2Emissions))];
 
-    const colorPalette = [
-        "#FFE5B4", // Light Apricot
-        "#FFD700", // Gold
-        "#FF8C00", // Dark Orange
-        "#FF4500", // Orange Red
-        "#6B8E23", // Olive Drab
-        "#3CB371", // Medium Sea Green
-        "#2E8B57", // Sea Green
-        "#20B2AA", // Light Sea Green
-        "#4682B4", // Steel Blue
-        "#4169E1", // Royal Blue
-        "#6A5ACD", // Slate Blue
-        "#8A2BE2", // Blue Violet
-        "#7B68EE", // Medium Slate Blue
-        "#A0522D", // Sienna
-        "#D2691E", // Chocolate
-        "#B22222", // Firebrick
-        "#696969", // Dim Gray
-        "#A9A9A9", // Dark Gray
-    ];
+    const colorPalette = "#4682B4";
 
     const emissionColorMap = {};
     uniqueEmissions.forEach((emission, index) => {
-        emissionColorMap[emission] = colorPalette[index % colorPalette.length];
+        emissionColorMap[emission] = colorPalette;
     });
 
     const coloredCities = topCities.map(cityData => ({
@@ -217,7 +178,8 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         x: {
             label: "Total CO₂ Emissions (per capita) - Billion Tons",
             grid: true,
-            nice: true
+            nice: true, 
+            tickFormat: d => `${d} BT`
         },
         y: {
             label: "Country",
@@ -843,7 +805,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <h2 id="exploring-data" tabindex="-1"><a class="observablehq-header-anchor" href="#exploring-data">Exploring data</a></h2>
 <br>
 <h3 id="top-20-countries-with-high-co-emissions-per-capita-in-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-the-years">Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:a29392ac:--></div>
+<div class="observablehq observablehq--block"><!--:08d4b376:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
 </div>
@@ -855,7 +817,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
 <br>
 <h3 id="top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022">Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:ce8e7431:--></div>
+<div class="observablehq observablehq--block"><!--:f90a5d74:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
 </div>
@@ -929,7 +891,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./Bilal%20and%20Rob"><span>Bilal Rob</span></a><a rel="next" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T10:49:44">Nov 26, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T10:42:15">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>

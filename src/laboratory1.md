@@ -46,33 +46,12 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     .sort((a, b) => b.co2Emissions - a.co2Emissions)
     .slice(0, 20);
 
-    const colorPalette = [
-    "#FFDFBA", // Light Apricot
-    "#FFD700", // Gold
-    "#FF8C00", // Dark Orange
-    "#FF4500", // Orange Red
-    "#6B8E23", // Olive Drab
-    "#3CB371", // Medium Sea Green
-    "#2E8B57", // Sea Green
-    "#20B2AA", // Light Sea Green
-    "#4682B4", // Steel Blue
-    "#4169E1", // Royal Blue
-    "#6A5ACD", // Slate Blue
-    "#8A2BE2", // Blue Violet
-    "#7B68EE", // Medium Slate Blue
-    "#A0522D", // Sienna
-    "#D2691E", // Chocolate
-    "#B22222", // Firebrick
-    "#696969", // Dim Gray
-    "#A9A9A9", // Dark Gray
-    "#90EE90", // Light Green
-    "#8B008B"  // Dark Magenta
-];
+    const colorPalette = "#2E8B57";
 
 
     const coloredData = filteredData.map((cityData, index) => ({
         ...cityData,
-        color: colorPalette[index % colorPalette.length]
+        color: colorPalette
     }));
 
     return Plot.plot({
@@ -88,7 +67,8 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
         },
         y: {
             label: "Annual CO₂ Emissions (per capita) - Billion tons",
-            grid: true
+            grid: true, 
+            tickFormat: d => `${d} BT`
         },
         marks: [
             Plot.barY(coloredData, { 
@@ -140,30 +120,11 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 
     const uniqueEmissions = [...new Set(topCities.map(d => d.co2Emissions))];
 
-    const colorPalette = [
-        "#FFE5B4", // Light Apricot
-        "#FFD700", // Gold
-        "#FF8C00", // Dark Orange
-        "#FF4500", // Orange Red
-        "#6B8E23", // Olive Drab
-        "#3CB371", // Medium Sea Green
-        "#2E8B57", // Sea Green
-        "#20B2AA", // Light Sea Green
-        "#4682B4", // Steel Blue
-        "#4169E1", // Royal Blue
-        "#6A5ACD", // Slate Blue
-        "#8A2BE2", // Blue Violet
-        "#7B68EE", // Medium Slate Blue
-        "#A0522D", // Sienna
-        "#D2691E", // Chocolate
-        "#B22222", // Firebrick
-        "#696969", // Dim Gray
-        "#A9A9A9", // Dark Gray
-    ];
+    const colorPalette = "#4682B4";
 
     const emissionColorMap = {};
     uniqueEmissions.forEach((emission, index) => {
-        emissionColorMap[emission] = colorPalette[index % colorPalette.length];
+        emissionColorMap[emission] = colorPalette;
     });
 
     const coloredCities = topCities.map(cityData => ({
@@ -179,7 +140,8 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         x: {
             label: "Total CO₂ Emissions (per capita) - Billion Tons",
             grid: true,
-            nice: true
+            nice: true, 
+            tickFormat: d => `${d} BT`
         },
         y: {
             label: "Country",
