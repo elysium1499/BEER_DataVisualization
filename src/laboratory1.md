@@ -447,7 +447,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         marks: [
             Plot.barX(data, {
                 x: "co2Emissions",
-                y: "continent",
+                y: "region",
                 fill: color,
                 title: d => `${d.city}: ${d.co2Emissions.toFixed(2)} Billion Tons of CO₂`,
                 tip: true

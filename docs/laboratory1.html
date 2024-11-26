@@ -321,7 +321,7 @@ resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))
 ))
 }});
 
-define({id: "aa0f2c5e", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
+define({id: "40695053", inputs: ["populationDataset","Plot"], outputs: ["colorPalette","prepareData","calculateRegionalEmissions","selectTopCities","rankEmittersByPosition","generateMiniDatasets","applyColorPaletteMiniDatasets","createSubplot","generateLabels","createSubplotContainer","EmissionsByRegionStackedMultiple"], body: (populationDataset,Plot) => {
 const colorPalette = ["#CC564D", "#D4AC40", "#800080", "#6B8E23"];
 
 // Step 1: Data Preparation
@@ -450,7 +450,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         marks: [
             Plot.barX(data, {
                 x: "co2Emissions",
-                y: "continent",
+                y: "region",
                 fill: color,
                 title: d => `${d.city}: ${d.co2Emissions.toFixed(2)} Billion Tons of CO₂`,
                 tip: true
@@ -847,7 +847,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p></p>
 <br>
 <h3 id="top-3-co-emitters-per-capita-per-continent" tabindex="-1"><a class="observablehq-header-anchor" href="#top-3-co-emitters-per-capita-per-continent">Top 3 CO₂ emitters per capita per continent 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:aa0f2c5e:--></div>
+<div class="observablehq observablehq--block"><!--:40695053:--></div>
 <div class="grid grid-cols-1">
   <div class="card"><observablehq-loading></observablehq-loading><!--:2832f044:--></div>
 </div>
@@ -891,7 +891,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./Bilal%20and%20Rob"><span>Bilal Rob</span></a><a rel="next" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T13:16:36">Nov 26, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T13:22:40">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>
