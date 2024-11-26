@@ -71,9 +71,9 @@ import {define} from "./_observablehq/client.7782eb36.js";
 import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
 registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.3418db7a.csv","lastModified":1732549472602,"size":5829});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
-define({id: "a0bf38f9", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","loadData","createCO2EmissionsMap","createProjection","addZoom","addGlobeInteractivity","addLegend"], body: async (FileAttachment,d3) => {
+define({id: "5536ff0f", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","loadData","createCO2EmissionsMap","createProjection","addZoom","addGlobeInteractivity","addLegend"], body: async (FileAttachment,d3) => {
 const [{geoMercator, geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
 // Shared configurations and constants
@@ -241,7 +241,7 @@ function addGlobeInteractivity(svg, mapGroup, projection, path) {
         lastPosition = [event.clientX, event.clientY];
     });
 
-svg.on("mousemove", (event) => {
+    svg.on("mousemove", (event) => {
         if (isDragging) {
             const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
             const rotation = projection.rotate();
@@ -321,9 +321,9 @@ return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zo
   </ol>
   <ol>
     <li class="observablehq-link observablehq-link-active"><a href="./Bilal%20and%20Rob">Bilal Rob</a></li>
-    <li class="observablehq-link"><a href="./laboratory1">Section 1</a></li>
-    <li class="observablehq-link"><a href="./laboratory2">Section 2</a></li>
-    <li class="observablehq-link"><a href="./laboratory3">Section 3</a></li>
+    <li class="observablehq-link"><a href="./laboratory1">Comparing countries</a></li>
+    <li class="observablehq-link"><a href="./laboratory2">Fossil vs Land</a></li>
+    <li class="observablehq-link"><a href="./laboratory3">Don&#x27;t get confused by maps</a></li>
   </ol>
 </nav>
 <script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
@@ -339,7 +339,7 @@ return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zo
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
-<div class="observablehq observablehq--block"><!--:a0bf38f9:--></div>
+<div class="observablehq observablehq--block"><!--:5536ff0f:--></div>
 <h1 id="co-emissions-map" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-map">CO₂ Emissions Map 🌍</a></h1>
 <h2 id="plot-1" tabindex="-1"><a class="observablehq-header-anchor" href="#plot-1">Plot 1</a></h2>
 <div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
@@ -355,8 +355,8 @@ return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zo
 <p>parole parole parole</p>
 </main>
 <footer id="observablehq-footer">
-<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Section 1</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T09:01:52">Nov 26, 2024</a>.</div>
+<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Comparing countries</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T10:42:15">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>
