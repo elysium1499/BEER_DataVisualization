@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Section 2
+title: Fossil vs Land
 toc: true
 ---
 
@@ -10,10 +10,10 @@ const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").
 ```
 
 
-# Alluvial
+# Fossiv vs Land
 <br>
 
-## Data and Chart Setup
+## How CO₂ emissions are split between Fossil Fuel and Land Use
 
 ```js
 // Import necessary D3 libraries
@@ -34,7 +34,7 @@ console.log("Data for year 2000:", dataYear2000);  // Check filtered data
 function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
   const continentNodes = [];  // Layer 1: Continent nodes
   const countryNodes = [];    // Layer 2: Country nodes
-  const typeNodes = [{ name: "Fossil Use" }, { name: "Land Use" }];  // Layer 3: Emission types
+  const typeNodes = [{ name: "Fossil Fuel" }, { name: "Land Use" }];  // Layer 3: Emission types
   const links = [];
 
   // Step 1: Create unique continent nodes
@@ -69,7 +69,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     if (d["Annual CO₂ emissions from fossil fuel"] > 0) {
       links.push({
         source: countryName,
-        target: "Fossil Use",
+        target: "Fossil Fuel",
         value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
@@ -182,7 +182,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     .style("font-weight", "bold")
     .style("fill", "white")
     .style("font-size", "16px")
-    .text("Region");
+    .text("Continent");
 
   svg.append("text")
     .attr("x", width * 0.5)

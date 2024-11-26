@@ -3,9 +3,9 @@ title: Introduction
 toc: false
 ---
 <div class="hero">
-  <h1>DataVisualization</h1>
-  <h1 style="font-size: 30px;">Welcome to our app! We are the BEER group!</h1>
-  <h2>Members of the group are:</h2>
+  <h1>CO₂ emissions</h1>
+  <h1 style="font-size: 30px;">Welcome to our site! We are the BEER group!</h1>
+  <h2>Members of the group:</h2>
   <div class="cards-container">
     <div class="card">Elisa Calza S4700104</div>
     <div class="card">Bilal Khateeb S5835711</div>

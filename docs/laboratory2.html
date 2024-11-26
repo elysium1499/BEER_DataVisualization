@@ -4,23 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="generator" content="Observable Framework v1.13.0">
-<title>Section 2 | DataVisualization</title>
+<title>Fossil vs Land | DataVisualization</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
-<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
+<link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.7782eb36.js";
-import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
+import {define} from "./_observablehq/client.6b525bf7.js";
+import {registerFile} from "./_observablehq/stdlib.3ac83553.js";
 
-registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.14870976.csv","lastModified":1731701676493,"size":316369});
+registerFile("./data/co2-fossil-plus-land-use.csv", {"name":"./data/co2-fossil-plus-land-use.csv","mimeType":"text/csv","path":"./_file/data/co2-fossil-plus-land-use.f95469a5.csv","lastModified":1732188783030,"size":322449});
 
 define({id: "beacc02c", inputs: ["FileAttachment"], outputs: ["datasetFossil"], body: async (FileAttachment) => {
 //column: Entity,Region,Code,Year,Annual CO₂ emissions,Annual CO₂ emissions from land-use change,Annual CO₂ emissions from fossil fuel
@@ -28,7 +28,7 @@ const datasetFossil = await FileAttachment("./data/co2-fossil-plus-land-use.csv"
 return {datasetFossil};
 }});
 
-define({id: "7c4f44f2", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
+define({id: "b7387b78", inputs: ["datasetFossil"], outputs: ["d3","sankey","sankeyLinkHorizontal","dataYear2000","ContinentCountryEmissionSankeyChart"], body: async (datasetFossil) => {
 // Import necessary D3 libraries
 const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
   import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
@@ -47,7 +47,7 @@ console.log("Data for year 2000:", dataYear2000);  // Check filtered data
 function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
   const continentNodes = [];  // Layer 1: Continent nodes
   const countryNodes = [];    // Layer 2: Country nodes
-  const typeNodes = [{ name: "Fossil Use" }, { name: "Land Use" }];  // Layer 3: Emission types
+  const typeNodes = [{ name: "Fossil Fuel" }, { name: "Land Use" }];  // Layer 3: Emission types
   const links = [];
 
   // Step 1: Create unique continent nodes
@@ -82,7 +82,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     if (d["Annual CO₂ emissions from fossil fuel"] > 0) {
       links.push({
         source: countryName,
-        target: "Fossil Use",
+        target: "Fossil Fuel",
         value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
@@ -195,7 +195,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     .style("font-weight", "bold")
     .style("fill", "white")
     .style("font-size", "16px")
-    .text("Region");
+    .text("Continent");
 
   svg.append("text")
     .attr("x", width * 0.5)
@@ -239,9 +239,9 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
     <li class="observablehq-link"><a href="./">DataVisualization</a></li>
   </ol>
   <ol>
-    <li class="observablehq-link"><a href="./laboratory1">Section 1</a></li>
-    <li class="observablehq-link observablehq-link-active"><a href="./laboratory2">Section 2</a></li>
-    <li class="observablehq-link"><a href="./laboratory3">Section 3</a></li>
+    <li class="observablehq-link"><a href="./laboratory1">Comparing countries</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory2">Fossil vs Land</a></li>
+    <li class="observablehq-link"><a href="./laboratory3">Don&#x27;t get confused by maps</a></li>
   </ol>
 </nav>
 <script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
@@ -250,16 +250,16 @@ resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))
 <nav>
 <div>Contents</div>
 <ol>
-<li class="observablehq-secondary-link"><a href="#data-and-chart-setup">Data and Chart Setup</a></li>
+<li class="observablehq-secondary-link"><a href="#how-co-emissions-are-split-between-fossil-fuel-and-land-use">How CO₂ emissions are split between Fossil Fuel and Land Use</a></li>
 </ol>
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
 <div class="observablehq observablehq--block"><!--:beacc02c:--></div>
-<h1 id="alluvial" tabindex="-1"><a class="observablehq-header-anchor" href="#alluvial">Alluvial</a></h1>
+<h1 id="fossiv-vs-land" tabindex="-1"><a class="observablehq-header-anchor" href="#fossiv-vs-land">Fossiv vs Land</a></h1>
 <br>
-<h2 id="data-and-chart-setup" tabindex="-1"><a class="observablehq-header-anchor" href="#data-and-chart-setup">Data and Chart Setup</a></h2>
-<div class="observablehq observablehq--block"><!--:7c4f44f2:--></div>
+<h2 id="how-co-emissions-are-split-between-fossil-fuel-and-land-use" tabindex="-1"><a class="observablehq-header-anchor" href="#how-co-emissions-are-split-between-fossil-fuel-and-land-use">How CO₂ emissions are split between Fossil Fuel and Land Use</a></h2>
+<div class="observablehq observablehq--block"><!--:b7387b78:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:40e98c05:--></div> 
 </div>
@@ -275,8 +275,8 @@ In contrast, nations like <strong>Brazil</strong> and other countries in South A
 <p></p>
 </main>
 <footer id="observablehq-footer">
-<nav><a rel="prev" href="./laboratory1"><span>Section 1</span></a><a rel="next" href="./laboratory3"><span>Section 3</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-22T11:59:08">Nov 22, 2024</a>.</div>
+<nav><a rel="prev" href="./laboratory1"><span>Comparing countries</span></a><a rel="next" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T10:21:50">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>

@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Section 1
+title: Comparing countries
 toc: true
 ---
 
@@ -47,25 +47,28 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     .slice(0, 20);
 
     const colorPalette = [
-        "#FFDFBA", // Light Apricot
-        "#FFD700", // Gold
-        "#FF8C00", // Dark Orange
-        "#FF4500", // Orange Red
-        "#6B8E23", // Olive Drab
-        "#3CB371", // Medium Sea Green
-        "#2E8B57", // Sea Green
-        "#20B2AA", // Light Sea Green
-        "#4682B4", // Steel Blue
-        "#4169E1", // Royal Blue
-        "#6A5ACD", // Slate Blue
-        "#8A2BE2", // Blue Violet
-        "#7B68EE", // Medium Slate Blue
-        "#A0522D", // Sienna
-        "#D2691E", // Chocolate
-        "#B22222", // Firebrick
-        "#696969", // Dim Gray
-        "#A9A9A9", // Dark Gray
-    ];
+    "#FFDFBA", // Light Apricot
+    "#FFD700", // Gold
+    "#FF8C00", // Dark Orange
+    "#FF4500", // Orange Red
+    "#6B8E23", // Olive Drab
+    "#3CB371", // Medium Sea Green
+    "#2E8B57", // Sea Green
+    "#20B2AA", // Light Sea Green
+    "#4682B4", // Steel Blue
+    "#4169E1", // Royal Blue
+    "#6A5ACD", // Slate Blue
+    "#8A2BE2", // Blue Violet
+    "#7B68EE", // Medium Slate Blue
+    "#A0522D", // Sienna
+    "#D2691E", // Chocolate
+    "#B22222", // Firebrick
+    "#696969", // Dim Gray
+    "#A9A9A9", // Dark Gray
+    "#90EE90", // Light Green
+    "#8B008B"  // Dark Magenta
+];
+
 
     const coloredData = filteredData.map((cityData, index) => ({
         ...cityData,
