@@ -42,20 +42,20 @@ const countryNameMapping = {
 
 ```js
 async function createCO2EmissionsMapWorld(containerId) {
-
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-  const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
-      let countryName = d.Entity;
-      countryName = countryNameMapping[countryName] || countryName;
 
-      const population = populationMap.get(countryName);
-      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-      return {
-        ...d,
-        Population: population,
-        TotalEmissions: totalEmissions,
-      };
-    });
+  const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
+    let countryName = d.Entity;
+    countryName = countryNameMapping[countryName] || countryName;
+
+    const population = populationMap.get(countryName);
+    const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+    return {
+      ...d,
+      Population: population,
+      TotalEmissions: totalEmissions,
+    };
+  });
 
   // Ordina i paesi per emissioni totali
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
@@ -89,9 +89,31 @@ async function createCO2EmissionsMapWorld(containerId) {
 
   const path = geoPath().projection(projection);
 
-  // Scala colori basata sulle emissioni totali
+  // Calcola il minimo e massimo valore delle emissioni
+  const minEmission = d3.min(topEmissions, d => d.TotalEmissions || 0);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
-  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+
+  // Define custom percentiles (e.g., 10th, 30th, 50th, 70th, 90th)
+  const customPercentiles = [0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 0.8, 0.85, 0.9, 0.96, 0.98, 0.99];
+
+  // Calculate the actual values for those percentiles
+  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
+
+  // Add the min and max values to the quantile breaks
+  quantileValues.unshift(minEmission);
+  quantileValues.push(maxEmission);
+
+  // Sort the quantile breaks (it ensures they are in order)
+  quantileValues.sort((a, b) => a - b);
+
+  // Use d3.scaleQuantile for quantile-based color scaling
+  const colorScale = d3.scaleQuantile()
+    .domain(quantileValues) // Apply the custom quantile breaks as the domain
+    .range([
+      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00", 
+      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f", 
+      "#c62828", "#b71c1c"
+    ]);
 
   // SVG e gruppo mappa
   const svg = container.append("svg")
@@ -102,7 +124,7 @@ async function createCO2EmissionsMapWorld(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    return (value / 1_000_000_000).toFixed(4) + " BillionTons";
+    return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
   // Disegna la mappa
@@ -140,7 +162,7 @@ async function createCO2EmissionsMapWorld(containerId) {
     .attr("transform", `translate(${(width - legendWidth) / 2}, ${height - 50})`);
 
   const legendScale = d3.scaleLinear()
-    .domain([0, maxEmission])
+    .domain([minEmission, maxEmission])
     .range([0, legendWidth]);
 
   const defs = svg.append("defs");
@@ -148,7 +170,7 @@ async function createCO2EmissionsMapWorld(containerId) {
     .attr("id", "legend-gradient");
 
   linearGradient.selectAll("stop")
-    .data(colorScale.ticks(10).map((t, i, n) => ({
+    .data(quantileValues.map((t, i, n) => ({
       offset: `${(100 * i) / (n.length - 1)}%`,
       color: colorScale(t)
     })))
@@ -176,7 +198,6 @@ createCO2EmissionsMapWorld("MapOnechart");
 ```
 <div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 
-
 <p>
 parole parole parole
 </p>
@@ -185,7 +206,6 @@ parole parole parole
 ```js
 
 async function createCO2EmissionsMapEarth(containerId) {
-
   // Trasforma il dataset della popolazione in una mappa
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
 
@@ -237,9 +257,29 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   const path = geoPath().projection(projection);
 
-  // Scala colori basata sulle emissioni totali
+  // Define custom percentiles for color breaks
+  const customPercentiles = [0.05, 0.1, 0.15, 0.2, 0.3, 0.5, 0.7, 0.8, 0.85, 0.9, 0.96, 0.98, 0.99];
+
+  // Calculate the quantile values based on custom percentiles
+  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
+
+  // Add min and max values to the quantile breaks
+  const minEmission = d3.min(topEmissions, d => d.TotalEmissions);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
-  const colorScale = scaleSequential(interpolateYlOrRd).domain([0, maxEmission]);
+  quantileValues.unshift(minEmission);
+  quantileValues.push(maxEmission);
+
+  // Sort the quantile values (this ensures they are in order)
+  quantileValues.sort((a, b) => a - b);
+
+  // Use d3.scaleQuantile for quantile-based color scaling
+  const colorScale = d3.scaleQuantile()
+    .domain(quantileValues) // Apply the custom quantile breaks as the domain
+    .range([
+      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00", 
+      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f", 
+      "#c62828", "#b71c1c"
+    ]);
 
   // SVG e gruppo mappa
   const svg = container.append("svg")
@@ -250,8 +290,7 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   // Funzione di formattazione personalizzata
   function customFormat(value) {
-    if (value >= 1e4) return (value / 1_000_000_000).toFixed(4) + " Billion tons";
-    return value + " BillionTons";
+    return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
   // Disegna la mappa
@@ -271,34 +310,25 @@ async function createCO2EmissionsMapEarth(containerId) {
       return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
     });
 
-  // Trascinamento per ruotare il globo
-  let rotate = [0, 0];
-  let isDragging = false;
-  let lastPosition = null;
+  // Gestione del trascinamento per rotazione
+  let lastX = 0;
+  let lastY = 0;
 
-  svg.on("mousedown", (event) => {
-    isDragging = true;
-    lastPosition = [event.clientX, event.clientY];
-  });
-
-  svg.on("mousemove", (event) => {
-    if (isDragging) {
-      const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
-      rotate[0] += dx / 5;
-      rotate[1] -= dy / 5;
-      projection.rotate(rotate);
+  svg.call(d3.drag()
+    .on("start", (event) => {
+      lastX = event.x;
+      lastY = event.y;
+    })
+    .on("drag", (event) => {
+      const dx = event.x - lastX;
+      const dy = event.y - lastY;
+      const rotation = projection.rotate();
+      projection.rotate([rotation[0] + dx / 2, rotation[1] - dy / 2]); // Modifica i parametri per regolare la sensibilità della rotazione
       mapGroup.selectAll("path").attr("d", path);
-      lastPosition = [event.clientX, event.clientY];
-    }
-  });
-
-  svg.on("mouseup", () => {
-    isDragging = false;
-  });
-
-  svg.on("mouseleave", () => {
-    isDragging = false;
-  });
+      lastX = event.x;
+      lastY = event.y;
+    })
+  );
 
   // Zoom per ingrandire/rimpicciolire
   const zoomHandler = zoom()
@@ -348,6 +378,7 @@ async function createCO2EmissionsMapEarth(containerId) {
 
 // Crea la mappa
 createCO2EmissionsMapEarth("MapTwochart");
+
 
 ```
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>

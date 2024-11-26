@@ -176,7 +176,7 @@ function addGlobeInteractivity(svg, mapGroup, projection, path) {
         lastPosition = [event.clientX, event.clientY];
     });
 
-svg.on("mousemove", (event) => {
+    svg.on("mousemove", (event) => {
         if (isDragging) {
             const [dx, dy] = [event.clientX - lastPosition[0], event.clientY - lastPosition[1]];
             const rotation = projection.rotate();
