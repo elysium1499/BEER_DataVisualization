@@ -14,7 +14,7 @@ toc: true
 <br>
 
 ```js
-import { geoMercator, geoPath } from "d3-geo";
+import { geoMercator, geoOrthographic, geoPath } from "d3-geo";
 import { scaleSequential } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
@@ -23,7 +23,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-  const countryNameMapping = {
+const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
     "Czech Republic": "Czechia",
@@ -43,7 +43,17 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
+    let countryName = d.Entity;
+    countryName = countryNameMapping[countryName] || countryName;
 
+    const population = populationMap.get(countryName);
+    const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
+    return {
+      ...d,
+      Population: population,
+      TotalEmissions: totalEmissions,
+    };
+  });
     const population = populationMap.get(countryName);
     const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
     return {
@@ -106,6 +116,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   const mapGroup = svg.append("g");
 
   function customFormat(value) {
+    return (value / 1e9).toFixed(2) + " Billion Tons";
     return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
@@ -189,34 +200,12 @@ createCO2EmissionsMapWorld("MapOnechart");
 ```
 <div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
 
-
 <p>
-sa
+parole parole parole
 </p>
 
 ## Orthografic
 ```js
-import { geoOrthographic, geoPath } from "d3-geo";
-import { scaleSequential } from "d3-scale";
-import { interpolateYlOrRd } from "d3-scale-chromatic";
-import { zoom } from "d3-zoom";
-//import * as d3 from "d3";
-
-  // Mappa per corrispondenza dei nomi dei paesi
-  const countryNameMapping = {
-    "USA": "United States",
-    "England": "United Kingdom",
-    "Czech Republic": "Czechia",
-    "Republic of Serbia": "Serbia",
-    "Guinea Bissau": "Guinea-Bissau",
-    "Macedonia": "North Macedonia",
-    "Ivory Coast": "Cote d'Ivoire",
-    "Somaliland": "Somalia",
-    "Republic of the Congo": "Congo",
-    "Democratic Republic of the Congo": "Congo",
-    "United Republic of Tanzania": "Tanzania",
-    "The Bahamas": "Bahamas"
-  };
 
 async function createCO2EmissionsMapEarth(containerId) {
   // Load datasets
@@ -302,6 +291,7 @@ async function createCO2EmissionsMapEarth(containerId) {
   // Custom formatting function
   function customFormat(value) {
     return (value / 1e9).toFixed(2) + " Billion Tons";
+    return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
   // Draw the map
@@ -335,6 +325,10 @@ async function createCO2EmissionsMapEarth(containerId) {
       const rotation = projection.rotate();
       projection.rotate([rotation[0] + dx / 2, rotation[1] - dy / 2]);
       mapGroup.selectAll("path").attr("d", path);
+      lastX = event.x;
+      lastY = event.y;
+    })
+  );
       lastX = event.x;
       lastY = event.y;
     })
@@ -400,9 +394,10 @@ async function createCO2EmissionsMapEarth(containerId) {
 createCO2EmissionsMapEarth("MapTwochart");
 
 
+
 ```
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
-sa sa
+parole parole parole
 </p>
