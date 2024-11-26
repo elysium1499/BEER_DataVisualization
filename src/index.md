@@ -2,6 +2,7 @@
 title: Introduction
 toc: false
 ---
+
 <div class="hero">
   <h1>CO₂ emissions</h1>
   <h1 style="font-size: 30px;">Welcome to our site! We are the BEER group!</h1>
