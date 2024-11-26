@@ -4,7 +4,6 @@ title: Don't get confused by maps
 toc: true
 ---
 
-
 # CO₂ Emissions Map 🌍
 
 <br>
@@ -14,8 +13,8 @@ toc: true
 <br>
 
 ```js
-import { geoMercator, geoOrthographic, geoPath } from "d3-geo";
-import { scaleSequential } from "d3-scale";
+import { geoMercator, geoPath } from "d3-geo";
+import { scaleSequential, scaleQuantile } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
 
@@ -23,7 +22,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-const countryNameMapping = {
+  const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
     "Czech Republic": "Czechia",
@@ -43,17 +42,7 @@ const countryNameMapping = {
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
-    let countryName = d.Entity;
-    countryName = countryNameMapping[countryName] || countryName;
 
-    const population = populationMap.get(countryName);
-    const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-    return {
-      ...d,
-      Population: population,
-      TotalEmissions: totalEmissions,
-    };
-  });
     const population = populationMap.get(countryName);
     const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
     return {
@@ -83,7 +72,7 @@ const countryNameMapping = {
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
-  const projection = d3.geoMercator()
+  const projection = geoMercator()
     .scale(90)
     .translate([(width / 2) - 90, height / 1.5]);
 
@@ -92,20 +81,20 @@ const countryNameMapping = {
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions || 0);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
-  // Calculate the quantiles based on the customPercentiles parameter
-  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
+  const quantileValues = customPercentiles.map(p =>
+    d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
+  );
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
 
   quantileValues.sort((a, b) => a - b);
 
-  // Use d3.scaleQuantile for quantile-based color scaling
-  const colorScale = d3.scaleQuantile()
+  const colorScale = scaleQuantile()
     .domain(quantileValues)
     .range([
-      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00", 
-      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f", 
+      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
       "#c62828", "#b71c1c"
     ]);
 
@@ -117,10 +106,8 @@ const countryNameMapping = {
 
   function customFormat(value) {
     return (value / 1e9).toFixed(2) + " Billion Tons";
-    return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
-  // Draw the map
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -137,7 +124,6 @@ const countryNameMapping = {
       return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
     });
 
-  // Zoom and pan functionality
   const zoomHandler = zoom()
     .scaleExtent([1, 8])
     .translateExtent([[-width, -height], [2 * width, 2 * height]])
@@ -147,25 +133,19 @@ const countryNameMapping = {
 
   svg.call(zoomHandler);
 
-  // Add the legend group (positioned on the right)
-  const legendWidth = 150;
-  const legendHeight = 350;
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${width - 170}, ${height - 350 - 50})`);
+
   const legendRectSize = 20;
   const legendSpacing = 5;
 
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(${width - 170}, ${height - legendHeight - 50})`);
-
   function updateLegend() {
-    // Create the legend breaks based on quantiles
     const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
 
-    // Remove any existing rectangles and labels in the legend group
     legendGroup.selectAll("*").remove();
 
-    // Draw the legend rectangles vertically (matching the number of quantile breaks)
     legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))  // Exclude the last quantile for the rectangles
+      .data(quantileBreaks.slice(0, -1))
       .join("rect")
       .attr("x", 0)
       .attr("y", (d, i) => i * (legendRectSize + legendSpacing))
@@ -173,29 +153,26 @@ const countryNameMapping = {
       .attr("height", legendRectSize)
       .style("fill", (d, i) => colorScale(d));
 
-    // Add labels with emission * population range
     legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))  // Exclude the last quantile for the labels
+      .data(quantileBreaks.slice(0, -1))
       .join("text")
       .attr("x", legendRectSize + 5)
       .attr("y", (d, i) => i * (legendRectSize + legendSpacing) + legendRectSize / 2)
       .attr("text-anchor", "start")
+      .style("fill", "white")
       .style("font-size", "12px")
-      .style("fill", "white") // Text color
       .text((d, i) => {
         const lower = quantileBreaks[i];
         const upper = quantileBreaks[i + 1];
-        return `${(lower / 1e9).toFixed(5) + " Bt"} - ${(upper / 1e9).toFixed(5) + " Bt"}`;
+        return `${(lower / 1e9).toFixed(2)} - ${(upper / 1e9).toFixed(2)} Bt`;
       });
   }
 
-  // Initial legend rendering
   updateLegend();
 }
 
 // Crea la mappa
 createCO2EmissionsMapWorld("MapOnechart");
-
 
 ```
 <div id="MapOnechart" style="width: 100%; height: 600px; margin-bottom: 50px;"></div>
@@ -207,10 +184,28 @@ parole parole parole
 ## Orthografic
 ```js
 
+
+
 async function createCO2EmissionsMapEarth(containerId) {
   // Load datasets
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+
+
+  const countryNameMapping = {
+    "USA": "United States",
+    "England": "United Kingdom",
+    "Czech Republic": "Czechia",
+    "Republic of Serbia": "Serbia",
+    "Guinea Bissau": "Guinea-Bissau",
+    "Macedonia": "North Macedonia",
+    "Ivory Coast": "Cote d'Ivoire",
+    "Somaliland": "Somalia",
+    "Republic of the Congo": "Congo",
+    "Democratic Republic of the Congo": "Congo",
+    "United Republic of Tanzania": "Tanzania",
+    "The Bahamas": "Bahamas"
+  };
 
   // Transform the population dataset into a map
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
@@ -291,7 +286,6 @@ async function createCO2EmissionsMapEarth(containerId) {
   // Custom formatting function
   function customFormat(value) {
     return (value / 1e9).toFixed(2) + " Billion Tons";
-    return (value / 1e9).toFixed(2) + " Billion Tons";
   }
 
   // Draw the map
@@ -311,7 +305,7 @@ async function createCO2EmissionsMapEarth(containerId) {
       return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
     });
 
-  // Drag and zoom interactions
+  // Drag interactions
   let lastX = 0;
   let lastY = 0;
   svg.call(d3.drag()
@@ -329,11 +323,8 @@ async function createCO2EmissionsMapEarth(containerId) {
       lastY = event.y;
     })
   );
-      lastX = event.x;
-      lastY = event.y;
-    })
-  );
 
+  // Zoom interactions
   const zoomHandler = d3.zoom()
     .scaleExtent([0.5, 8])
     .on("zoom", (event) => {
@@ -341,8 +332,7 @@ async function createCO2EmissionsMapEarth(containerId) {
     });
   svg.call(zoomHandler);
 
-
-  // Add the legend group (positioned on the right)
+  // Add the legend group
   const legendWidth = 150;
   const legendHeight = 350;
   const legendRectSize = 20;
@@ -358,9 +348,9 @@ async function createCO2EmissionsMapEarth(containerId) {
     // Remove any existing rectangles and labels in the legend group
     legendGroup.selectAll("*").remove();
 
-    // Draw the legend rectangles vertically (matching the number of quantile breaks)
+    // Draw the legend rectangles
     legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))  // Exclude the last quantile for the rectangles
+      .data(quantileBreaks.slice(0, -1))
       .join("rect")
       .attr("x", 0)
       .attr("y", (d, i) => i * (legendRectSize + legendSpacing))
@@ -368,19 +358,19 @@ async function createCO2EmissionsMapEarth(containerId) {
       .attr("height", legendRectSize)
       .style("fill", (d, i) => colorScale(d));
 
-    // Add labels with emission * population range
+    // Add labels
     legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))  // Exclude the last quantile for the labels
+      .data(quantileBreaks.slice(0, -1))
       .join("text")
       .attr("x", legendRectSize + 5)
       .attr("y", (d, i) => i * (legendRectSize + legendSpacing) + legendRectSize / 2)
       .attr("text-anchor", "start")
       .style("font-size", "12px")
-      .style("fill", "white") // Text color
+      .style("fill", "white")
       .text((d, i) => {
         const lower = quantileBreaks[i];
         const upper = quantileBreaks[i + 1];
-        return `${(lower / 1e9).toFixed(5) + " Bt"} - ${(upper / 1e9).toFixed(5) + " Bt"}`;
+        return `${(lower / 1e9).toFixed(2)} - ${(upper / 1e9).toFixed(2)} Bt`;
       });
   }
 
@@ -388,10 +378,9 @@ async function createCO2EmissionsMapEarth(containerId) {
   updateLegend();
 }
 
-
-
 // Crea la mappa
 createCO2EmissionsMapEarth("MapTwochart");
+
 
 
 
