@@ -278,17 +278,8 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     color: {
       domain: ["First Emitter", "Second Emitter", "Third Emitter"],
       range: colorPalette.slice(0, 3).concat("#303080"), // Usa i primi tre colori dell'array colorPalette e un colore per "Other Countries"
-      legend: true,
+      legend: true
     },
-
-    layout: {
-      color: {
-        position: "right" // Tentativo di posizionare la legenda a destra
-      }
-    },
-
-
-
     marks: [
       Plot.barX(topCities, {
         x: "co2Emissions",
@@ -668,10 +659,6 @@ In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egyp
 
 
 ```js
-
-const globalMinEmissions = d3.min(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
-const globalMaxEmissions = d3.max(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
-
 // Prepare the data for the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
@@ -720,7 +707,7 @@ function renderHeatmap(data, year) {
     },
     color: {
       type: "linear",
-      domain: [-0.1, 0, globalMaxEmissions], // Adjust the domain to handle negative values as well
+      domain: [-0.1, 0, 12], // Adjust the domain to handle negative values as well
       range: ["green", "white", "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
       label: "CO₂ Emissions (billion tons)",
       legend: true,

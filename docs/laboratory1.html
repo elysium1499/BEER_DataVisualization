@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="generator" content="Observable Framework v1.13.0">
-<title>Comparing countries | DataVisualization</title>
+<title>Comparing countries | CO₂ emissions</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
@@ -14,13 +14,14 @@
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
 <link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
-<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.3e4c82b9.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
 <link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
@@ -50,10 +51,9 @@
 <link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
 <link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
 <link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
-<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
 <link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
-<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
@@ -206,7 +206,7 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
-define({id: "7fe05465", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
+define({id: "4d1d06d5", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -299,17 +299,8 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     color: {
       domain: ["First Emitter", "Second Emitter", "Third Emitter"],
       range: colorPalette.slice(0, 3).concat("#303080"), // Usa i primi tre colori dell'array colorPalette e un colore per "Other Countries"
-      legend: true,
+      legend: true
     },
-
-    layout: {
-      color: {
-        position: "right" // Tentativo di posizionare la legenda a destra
-      }
-    },
-
-
-
     marks: [
       Plot.barX(topCities, {
         x: "co2Emissions",
@@ -645,10 +636,7 @@ resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { w
 ))
 }});
 
-define({id: "c0c5995a", inputs: ["d3","datasetFossil","Plot"], outputs: ["globalMinEmissions","globalMaxEmissions","prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (d3,datasetFossil,Plot) => {
-const globalMinEmissions = d3.min(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
-const globalMaxEmissions = d3.max(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
-
+define({id: "7a15ca4f", inputs: ["Plot","datasetFossil"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,datasetFossil) => {
 // Prepare the data for the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
@@ -697,7 +685,7 @@ function renderHeatmap(data, year) {
     },
     color: {
       type: "linear",
-      domain: [-0.1, 0, globalMaxEmissions], // Adjust the domain to handle negative values as well
+      domain: [-0.1, 0, 12], // Adjust the domain to handle negative values as well
       range: ["green", "white", "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
       label: "CO₂ Emissions (billion tons)",
       legend: true,
@@ -778,7 +766,7 @@ document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(datas
 // Call the initialize function with the dataset
 initializeDropdown(datasetFossil);
 
-return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
+return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,toggleAutoPlay};
 }});
 
 </script>
@@ -789,7 +777,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <nav id="observablehq-sidebar">
   <ol>
     <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
-    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+    <li class="observablehq-link"><a href="./">CO₂ emissions</a></li>
   </ol>
   <ol>
     <li class="observablehq-link"><a href="./Bilal%20and%20Rob">Bilal Rob</a></li>
@@ -846,7 +834,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <h2 id="country-comparison-per-continent-in-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#country-comparison-per-continent-in-2022">Country Comparison per continent in 2022</a></h2>
 <br>
 <h3 id="continent-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#continent-with-high-co-emissions">Continent with high CO₂ Emissions 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:7fe05465:--></div>
+<div class="observablehq observablehq--block"><!--:4d1d06d5:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
 </div>
@@ -885,7 +873,7 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <h2 id="co-emissions-comparison-per-type-fossil-land-use" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></h2>
 <br>
 <h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:c0c5995a:--></div>
+<div class="observablehq observablehq--block"><!--:7a15ca4f:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
     <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -901,10 +889,11 @@ return {globalMinEmissions,globalMaxEmissions,prepareDataForYear,renderHeatmap,i
 <p>Countries with large industrial economies and high energy consumption, such as the <strong>USA</strong>, <strong>China</strong>, and <strong>India</strong>, dominate the red spectrum. These nations rely heavily on fossil fuels for electricity, heating, transportation, and manufacturing, driving the bulk of their emissions from these sources. <strong>Europe</strong> also shows significant fossil fuel emissions, particularly in industrialized nations like <strong>Germany</strong> and <strong>Russia</strong>.</p>
 <p>Countries with significant land-use emissions are those with large agricultural sectors or high rates of deforestation. <strong>Brazil</strong> stands out in South America, where deforestation of the Amazon contributes massively to carbon emissions. Similarly, <strong>Indonesia</strong> also shows strong land-use emissions. These emissions primarily result from agricultural practices, land clearing for agriculture, and changes in forest cover.</p>
 <p>This heatmap reveals a global landscape where <strong>fossil fuel consumption</strong> is the dominant source of emissions in highly industrialized countries, whereas <strong>land-use changes</strong> emerge as a major source in continents with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.</p>
-<p></p></main>
+<p></p>
+</main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./Bilal%20and%20Rob"><span>Bilal Rob</span></a><a rel="next" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-28T10:54:03">Nov 28, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T13:22:40">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>

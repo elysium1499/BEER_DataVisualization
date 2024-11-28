@@ -4,26 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="generator" content="Observable Framework v1.13.0">
-<title>Bilal Rob | DataVisualization</title>
+<title>Bilal Rob | CO₂ emissions</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
-<link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
+<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
 <link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
-<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.09b9abd2.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.61617510.js">
 <link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
-<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.93e39acc.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.0e732a91.js">
 <link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
 <link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
 <link rel="modulepreload" href="./_node/d3-format@3.1.0/index.75f84505.js">
 <link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
-<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.8a1d2235.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.20c5f3ca.js">
 <link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
 <link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
 <link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.8e5f73cc.js">
@@ -67,14 +67,14 @@
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.6b525bf7.js";
-import {registerFile} from "./_observablehq/stdlib.3ac83553.js";
+import {define} from "./_observablehq/client.7782eb36.js";
+import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
-registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731709379255,"size":179331});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613356019,"size":5854});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
 define({id: "5536ff0f", inputs: ["FileAttachment","d3"], outputs: ["geoMercator","geoOrthographic","geoPath","scaleSequential","interpolateYlOrRd","zoom","countryNameMapping","loadData","createCO2EmissionsMap","createProjection","addZoom","addGlobeInteractivity","addLegend"], body: async (FileAttachment,d3) => {
-const [{geoMercator, geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+const [{geoMercator, geoOrthographic, geoPath}, {scaleSequential}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
 // Shared configurations and constants
 const countryNameMapping = {
@@ -317,7 +317,7 @@ return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zo
 <nav id="observablehq-sidebar">
   <ol>
     <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
-    <li class="observablehq-link"><a href="./">DataVisualization</a></li>
+    <li class="observablehq-link"><a href="./">CO₂ emissions</a></li>
   </ol>
   <ol>
     <li class="observablehq-link observablehq-link-active"><a href="./Bilal%20and%20Rob">Bilal Rob</a></li>
@@ -355,8 +355,8 @@ return {geoMercator,geoOrthographic,geoPath,scaleSequential,interpolateYlOrRd,zo
 <p>parole parole parole</p>
 </main>
 <footer id="observablehq-footer">
-<nav><a rel="prev" href="./"><span>DataVisualization</span></a><a rel="next" href="./laboratory1"><span>Comparing countries</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-28T10:54:03">Nov 28, 2024</a>.</div>
+<nav><a rel="prev" href="./"><span>CO₂ emissions</span></a><a rel="next" href="./laboratory1"><span>Comparing countries</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T13:22:40">Nov 26, 2024</a>.</div>
 </footer>
 </div>
 </body>
