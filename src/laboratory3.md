@@ -62,6 +62,44 @@ async function getEmissionsData(co_emissions_per_capita) {
   return emissionsData;
 }
 
+
+function updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat) {
+  const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
+
+  // Remove any existing legend elements
+  legendGroup.selectAll("*").remove();
+
+  // Draw the legend rectangles
+  legendGroup.selectAll("rect")
+    .data(quantileBreaks.slice(0, -1))
+    .join("rect")
+    .attr("x", (d, i) => i * (legendRectWidth + legendSpacing))
+    .attr("y", 0)
+    .attr("width", legendRectWidth)
+    .attr("height", legendRectHeight)
+    .style("fill", (d, i) => colorScale(d));
+
+  // Add the text labels for each quantile
+  legendGroup.selectAll("text")
+    .data(quantileBreaks.slice(0, -1))
+    .join("text")
+    .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2) // Center the text below each rect
+    .attr("y", legendRectHeight + 15) // Move the text below the color box
+    .attr("text-anchor", "middle") // Center the text
+    .style("fill", "white")
+    .style("font-size", "9px")
+    .text((d, i) => {
+      const lower = quantileBreaks[i];
+      const upper = quantileBreaks[i + 1];
+      return `${customFormat(lower)} - ${customFormat(upper)}`;
+    });
+}
+
+function insertZoomHandler(mapGroup, height){
+  return zoom().scaleExtent([1, 8]).translateExtent([[-width, -height], [2 * width, 2 * height]]).on("zoom", (event) => {
+    mapGroup.attr("transform", event.transform);
+  });
+}
 ```
 
 ```js
@@ -136,55 +174,16 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
       return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
     });
 
-  const zoomHandler = zoom()
-    .scaleExtent([1, 8])
-    .translateExtent([[-width, -height], [2 * width, 2 * height]])
-    .on("zoom", (event) => {
-      mapGroup.attr("transform", event.transform);
-    });
-
-  svg.call(zoomHandler);
+  svg.call(insertZoomHandler(mapGroup, height));
 
   // Create the legend group below the map (outside the chart area)
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(50, 30)`); // Adjust the position here
+  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
 
-  const legendRectWidth = 70;  // Width of the rectangles
-  const legendRectHeight = 20; // Height of the rectangles
+  const legendRectWidth = 70;
+  const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  function updateLegend() {
-    const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
-
-    legendGroup.selectAll("*").remove();
-
-    // Create color rectangles for the legend
-    legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))
-      .join("rect")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing)) // Horizontal arrangement
-      .attr("y", 0)
-      .attr("width", legendRectWidth)
-      .attr("height", legendRectHeight)
-      .style("fill", (d, i) => colorScale(d));
-
-    // Create text labels for the legend
-    legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))
-      .join("text")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2) // Center the text below each rect
-      .attr("y", legendRectHeight + 15) // Move the text below the color box
-      .attr("text-anchor", "middle") // Center the text
-      .style("fill", "white")
-      .style("font-size", "9px")
-      .text((d, i) => {
-        const lower = quantileBreaks[i];
-        const upper = quantileBreaks[i + 1];
-        return `${customFormat(lower)} - ${customFormat(upper)}`;
-      });
-  }
-
-  updateLegend();
+  updateLegend(legendRectWidth, legendRectHeight, legendSpacing, legendGroup, minEmission, quantileValues, maxEmission, colorScale, customFormat);
 }
 
 // Create the map
@@ -215,6 +214,7 @@ async function createCO2EmissionsMapEarth(containerId) {
   const quantileValues = customPercentiles.map(p =>
     d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
   );
+  
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
@@ -265,11 +265,6 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   const mapGroup = svg.append("g");
 
-  // Custom formatting function
-  //function customFormat(value) {
-    //return (value / 1e9).toFixed(2) + " Billion Tons";
-  //}
-
   function customFormat(value) {
     if (value >= 1e9) {
       return (value / 1e9).toFixed(2) + " Bt";
@@ -279,7 +274,6 @@ async function createCO2EmissionsMapEarth(containerId) {
       return value.toFixed(2) + " t";
     }
   }
-
 
   // Draw the map
   mapGroup.selectAll("path")
@@ -317,57 +311,17 @@ async function createCO2EmissionsMapEarth(containerId) {
     })
   );
 
-  // Zoom interactions
-  const zoomHandler = d3.zoom()
-    .scaleExtent([0.5, 8])
-    .on("zoom", (event) => {
-      mapGroup.attr("transform", event.transform);
-    });
-  svg.call(zoomHandler);
+  svg.call(insertZoomHandler(mapGroup, height));
 
   // Add the legend group
   const legendRectWidth = 70;  // Width of the rectangles
   const legendRectHeight = 20; // Height of the rectangles
   const legendSpacing = 20;
 
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(50,30)`);
+  const legendGroup = svg.append("g").attr("transform", `translate(50,30)`);
 
-  function updateLegend() {
-    // Create the legend breaks based on quantiles
-    const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
 
-    // Remove any existing rectangles and labels in the legend group
-    legendGroup.selectAll("*").remove();
-
-    // Draw the legend rectangles
-    legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))
-      .join("rect")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing))
-      .attr("y", 0)
-      .attr("width", legendRectWidth)
-      .attr("height", legendRectHeight)
-      .style("fill", (d, i) => colorScale(d));
-
-    // Add labels
-    legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))
-      .join("text")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2) // Center the text below each rect
-      .attr("y", legendRectHeight + 15) // Move the text below the color box
-      .attr("text-anchor", "middle") // Center the text
-      .style("fill", "white")
-      .style("font-size", "9px")
-      .text((d, i) => {
-        const lower = quantileBreaks[i];
-        const upper = quantileBreaks[i + 1];
-        return `${customFormat(lower)} - ${customFormat(upper)}`;//`${(lower / 1e9).toFixed(2)} - ${(upper / 1e9).toFixed(2)} Bt`;
-      });
-  }
-
-  // Initial legend rendering
-  updateLegend();
 }
 
 // Crea la mappa
@@ -466,52 +420,17 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
       return `${d.properties.name}: ${customFormat(emissions)}`;
     });
 
-  const zoomHandler = zoom()
-    .scaleExtent([1, 8])
-    .translateExtent([[-width, -height], [2 * width, 2 * height]])
-    .on("zoom", (event) => {
-      mapGroup.attr("transform", event.transform);
-    });
+  svg.call(insertZoomHandler(mapGroup, height));
 
-  svg.call(zoomHandler);
 
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(50, 30)`);
+  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
 
   const legendRectWidth = 70;
   const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  function updateLegend() {
-    const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
 
-    legendGroup.selectAll("*").remove();
-
-    legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))
-      .join("rect")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing))
-      .attr("y", 0)
-      .attr("width", legendRectWidth)
-      .attr("height", legendRectHeight)
-      .style("fill", (d, i) => colorScale(d));
-
-    legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))
-      .join("text")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2)
-      .attr("y", legendRectHeight + 15)
-      .attr("text-anchor", "middle")
-      .style("fill", "white")
-      .style("font-size", "9px")
-      .text((d, i) => {
-        const lower = quantileBreaks[i];
-        const upper = quantileBreaks[i + 1];
-        return `${customFormat(lower)} - ${customFormat(upper)}`;
-      });
-  }
-
-  updateLegend();
 }
 
 createCO2EmissionsMapWorld("MapThreechart");
@@ -621,13 +540,8 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     })
   );
 
-  // Zoom interactions
-  const zoomHandler = d3.zoom()
-    .scaleExtent([0.5, 8])
-    .on("zoom", (event) => {
-      mapGroup.attr("transform", event.transform);
-    });
-  svg.call(zoomHandler);
+  svg.call(insertZoomHandler(mapGroup, height));
+
 
   const legendGroup = svg.append("g")
     .attr("transform", `translate(50, 30)`);
@@ -636,36 +550,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  function updateLegend() {
-    const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
-
-    legendGroup.selectAll("*").remove();
-
-    legendGroup.selectAll("rect")
-      .data(quantileBreaks.slice(0, -1))
-      .join("rect")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing))
-      .attr("y", 0)
-      .attr("width", legendRectWidth)
-      .attr("height", legendRectHeight)
-      .style("fill", (d, i) => colorScale(d));
-
-    legendGroup.selectAll("text")
-      .data(quantileBreaks.slice(0, -1))
-      .join("text")
-      .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2)
-      .attr("y", legendRectHeight + 15)
-      .attr("text-anchor", "middle")
-      .style("fill", "white")
-      .style("font-size", "9px")
-      .text((d, i) => {
-        const lower = quantileBreaks[i];
-        const upper = quantileBreaks[i + 1];
-        return `${customFormat(lower)} - ${customFormat(upper)}`;
-      });
-  }
-
-  updateLegend();
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
 }
 
 createCO2EmissionsMapWorld("MapFourchart");
