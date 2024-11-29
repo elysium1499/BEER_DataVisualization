@@ -10,20 +10,20 @@
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
-<link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
+<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
 <link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
-<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.09b9abd2.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.61617510.js">
 <link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
-<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.93e39acc.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.0e732a91.js">
 <link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
 <link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
 <link rel="modulepreload" href="./_node/d3-format@3.1.0/index.75f84505.js">
 <link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
-<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.8a1d2235.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.20c5f3ca.js">
 <link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
 <link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
 <link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.8e5f73cc.js">
@@ -67,14 +67,14 @@
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.6b525bf7.js";
-import {registerFile} from "./_observablehq/stdlib.3ac83553.js";
+import {define} from "./_observablehq/client.7782eb36.js";
+import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
-registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731709379255,"size":179331});
-registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613356019,"size":5854});
+registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
+registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
 define({id: "10b8fe8d", inputs: ["FileAttachment","d3"], outputs: ["countryNameMapping","geoMercator","geoPath","scaleSequential","scaleQuantile","interpolateYlOrRd","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,d3) => {
-const [{geoMercator, geoPath}, {scaleSequential, scaleQuantile}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+const [{geoMercator, geoPath}, {scaleSequential, scaleQuantile}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
@@ -440,7 +440,7 @@ return {createCO2EmissionsMapEarth};
 }});
 
 define({id: "29631b40", inputs: ["FileAttachment","countryNameMapping","d3"], outputs: ["geoEqualEarth","geoPath","scaleQuantile","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,countryNameMapping,d3) => {
-const [{geoEqualEarth, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+const [{geoEqualEarth, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
@@ -575,7 +575,7 @@ return {geoEqualEarth,geoPath,scaleQuantile,zoom,createCO2EmissionsMapWorld};
 }});
 
 define({id: "3fe303da", inputs: ["FileAttachment","countryNameMapping","d3"], outputs: ["geoAzimuthalEqualArea","geoPath","scaleQuantile","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,countryNameMapping,d3) => {
-const [{geoAzimuthalEqualArea, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.09b9abd2.js"), import("./_node/d3-zoom@3.0.0/index.93e39acc.js")]);
+const [{geoAzimuthalEqualArea, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
@@ -762,8 +762,8 @@ return {geoAzimuthalEqualArea,geoPath,scaleQuantile,zoom,createCO2EmissionsMapWo
 <h1 id="dont-get-confused-by-maps" tabindex="-1"><a class="observablehq-header-anchor" href="#dont-get-confused-by-maps">Don't get confused by maps 🗺️</a></h1>
 <br>
 <p>
-The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.
-</p><p>The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels.</p>
+</p><p>The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.</p>
+<p>The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels.</p>
 <p></p>
 <h2 id="mercator-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#mercator-projection">Mercator projection</a></h2>
 <br>
@@ -797,7 +797,7 @@ This distortion can lead to underestimating the contributions of these distant a
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-29T11:02:29">Nov 29, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-29T11:16:42">Nov 29, 2024</a>.</div>
 </footer>
 </div>
 </body>
