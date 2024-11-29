@@ -486,17 +486,13 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   quantileValues.push(maxEmission);
   quantileValues.sort((a, b) => a - b);
 
-  const colorScale = scaleQuantile()
-    .domain(quantileValues)
-    .range([
-      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
-      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
-      "#c62828", "#b71c1c"
-    ]);
+  const colorScale = scaleQuantile().domain(quantileValues).range([
+    "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+    "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
+    "#c62828", "#b71c1c"
+  ]);
 
-  const svg = container.append("svg")
-    .attr("width", width)
-    .attr("height", height);
+  const svg = container.append("svg").attr("width", width).attr("height", height);
 
   const mapGroup = svg.append("g");
 
@@ -543,8 +539,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   svg.call(insertZoomHandler(mapGroup, height));
 
 
-  const legendGroup = svg.append("g")
-    .attr("transform", `translate(50, 30)`);
+  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
 
   const legendRectWidth = 70;
   const legendRectHeight = 20;
