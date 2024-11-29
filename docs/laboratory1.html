@@ -14,14 +14,13 @@
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
 <link rel="modulepreload" href="./_observablehq/client.6b525bf7.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ac83553.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.3e4c82b9.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
-<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
-<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
 <link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
@@ -51,9 +50,10 @@
 <link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
 <link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
 <link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
-<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
 <link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
 <link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
@@ -206,7 +206,7 @@ resize((width) => EmissionsByCapital(dataset, {width}))
 ))
 }});
 
-define({id: "4d1d06d5", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
+define({id: "ab7fc716", inputs: ["populationDataset","Plot"], outputs: ["prepareStackedData","EmissionsByRegionStacked"], body: (populationDataset,Plot) => {
 function prepareStackedData(data, regionsData) {
   const mergedData = data.filter(d => d.Year === 2022).map(d => {
     const regionData = regionsData.find(region => region.Entity === d.Entity);
@@ -284,6 +284,7 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     width,
     height: 500,
     marginLeft: 100,
+    //marginRight: 250,
     marginBottom: 60,
     x: {
       label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
@@ -299,7 +300,9 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     color: {
       domain: ["First Emitter", "Second Emitter", "Third Emitter"],
       range: colorPalette.slice(0, 3).concat("#303080"), // Usa i primi tre colori dell'array colorPalette e un colore per "Other Countries"
-      legend: true
+      legend: true,
+      labelAnchor: "center",
+      textAlign: "center"
     },
     marks: [
       Plot.barX(topCities, {
@@ -309,7 +312,14 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
         title: d => `${d.city}: ${d.co2Emissions.toFixed(4)} Billion Tons of CO₂`,
         tip: true
       })
-    ]
+    ],
+    style: {
+      legend: {
+        position: "top",   // Posiziona la legenda sopra il grafico
+        offset: 10,        // Regola la distanza tra la legenda e il grafico
+        textAlign: "center" // Centra la legenda orizzontalmente
+      }
+    }
   });
 }
 return {prepareStackedData,EmissionsByRegionStacked};
@@ -636,7 +646,7 @@ resize((width) => EmissionsByRegionStackedPercentage(dataset, RegionDataset, { w
 ))
 }});
 
-define({id: "7a15ca4f", inputs: ["Plot","datasetFossil"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,datasetFossil) => {
+define({id: "5115dc54", inputs: ["Plot","d3","datasetFossil"], outputs: ["prepareDataForYear","renderHeatmap","initializeDropdown","autoPlayInterval","toggleAutoPlay"], body: (Plot,d3,datasetFossil) => {
 // Prepare the data for the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
@@ -684,12 +694,12 @@ function renderHeatmap(data, year) {
       paddingInner: 0.1 // Adjust spacing between rows for bigger cells
     },
     color: {
-      type: "linear",
-      domain: [-0.1, 0, 12], // Adjust the domain to handle negative values as well
-      range: ["green", "white", "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
+      type: "linear", //threshold
+      domain: [-0.1, 0, 4, 8, 12], // Adjust the domain to handle negative values as well
+      range: ["green", "white", "yellow" ,"orange" , "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
       label: "CO₂ Emissions (billion tons)",
       legend: true,
-      ticks: [-0.1, 0, 5, 10],//d3.scaleLinear().domain([globalMinEmissions, 0, globalMaxEmissions]).ticks(5) 
+      ticks: [-0.1, 0, 4, 8, 12],//d3.scaleLinear().domain([globalMinEmissions, 0, globalMaxEmissions]).ticks(5) 
       tickFormat: d3.format(".2f")
     },
     marks: [
@@ -792,7 +802,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <nav>
 <div>Contents</div>
 <ol>
-<li class="observablehq-secondary-link"><a href="#exploring-data">Exploring data</a></li>
+<li class="observablehq-secondary-link"><a href="#country-comparison-over-the-years">Country Comparison over the years</a></li>
 <li class="observablehq-secondary-link"><a href="#country-comparison-per-continent-in-2022">Country Comparison per continent in 2022</a></li>
 <li class="observablehq-secondary-link"><a href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></li>
 </ol>
@@ -802,11 +812,11 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <!-- Load the data -->
 <div class="observablehq observablehq--block"><!--:f920bdb6:--></div>
 <!-- BarPlot that show the emission and the country in one year -->
-<h1 id="co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions">CO₂ emissions</a></h1>
+<h1 id="comparing-countries" tabindex="-1"><a class="observablehq-header-anchor" href="#comparing-countries">Comparing countries</a></h1>
 <br>
-<h2 id="exploring-data" tabindex="-1"><a class="observablehq-header-anchor" href="#exploring-data">Exploring data</a></h2>
+<h2 id="country-comparison-over-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#country-comparison-over-the-years">Country Comparison over the years</a></h2>
 <br>
-<h3 id="top-20-countries-with-high-co-emissions-per-capita-in-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-the-years">Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍</a></h3>
+<h3 id="top-20-countries-with-high-co-emissions-per-capita-over-the-years" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-over-the-years">Top 20 Countries with high CO₂ Emissions Per Capita over the Years 🌍</a></h3>
 <div class="observablehq observablehq--block"><!--:08d4b376:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:c5890bb6:--> </div> 
@@ -818,7 +828,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p></p>
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
 <br>
-<h3 id="top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-nearest-decade-2011-to-2022">Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍</a></h3>
+<h3 id="top-20-countries-with-high-co-emissions-per-capita-in-the-nearest-decade-2011-to-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#top-20-countries-with-high-co-emissions-per-capita-in-the-nearest-decade-2011-to-2022">Top 20 Countries with high CO₂ Emissions Per Capita in the nearest decade (2011 to 2022) 🌍</a></h3>
 <div class="observablehq observablehq--block"><!--:f90a5d74:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card"> <observablehq-loading></observablehq-loading><!--:a24953ee:--> </div> 
@@ -834,7 +844,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <h2 id="country-comparison-per-continent-in-2022" tabindex="-1"><a class="observablehq-header-anchor" href="#country-comparison-per-continent-in-2022">Country Comparison per continent in 2022</a></h2>
 <br>
 <h3 id="continent-with-high-co-emissions" tabindex="-1"><a class="observablehq-header-anchor" href="#continent-with-high-co-emissions">Continent with high CO₂ Emissions 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:4d1d06d5:--></div>
+<div class="observablehq observablehq--block"><!--:ab7fc716:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:0f6b3f90:--> </div>
 </div>
@@ -873,7 +883,7 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <h2 id="co-emissions-comparison-per-type-fossil-land-use" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-comparison-per-type-fossil-land-use">CO₂ emissions comparison per type (fossil/land-use)</a></h2>
 <br>
 <h3 id="co-emissions-heatmap" tabindex="-1"><a class="observablehq-header-anchor" href="#co-emissions-heatmap">CO₂ Emissions Heatmap 🌍</a></h3>
-<div class="observablehq observablehq--block"><!--:7a15ca4f:--></div>
+<div class="observablehq observablehq--block"><!--:5115dc54:--></div>
 <div class="grid grid-cols-1"> 
   <div class="card">
     <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -889,11 +899,10 @@ return {prepareDataForYear,renderHeatmap,initializeDropdown,autoPlayInterval,tog
 <p>Countries with large industrial economies and high energy consumption, such as the <strong>USA</strong>, <strong>China</strong>, and <strong>India</strong>, dominate the red spectrum. These nations rely heavily on fossil fuels for electricity, heating, transportation, and manufacturing, driving the bulk of their emissions from these sources. <strong>Europe</strong> also shows significant fossil fuel emissions, particularly in industrialized nations like <strong>Germany</strong> and <strong>Russia</strong>.</p>
 <p>Countries with significant land-use emissions are those with large agricultural sectors or high rates of deforestation. <strong>Brazil</strong> stands out in South America, where deforestation of the Amazon contributes massively to carbon emissions. Similarly, <strong>Indonesia</strong> also shows strong land-use emissions. These emissions primarily result from agricultural practices, land clearing for agriculture, and changes in forest cover.</p>
 <p>This heatmap reveals a global landscape where <strong>fossil fuel consumption</strong> is the dominant source of emissions in highly industrialized countries, whereas <strong>land-use changes</strong> emerge as a major source in continents with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.</p>
-<p></p>
-</main>
+<p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./Bilal%20and%20Rob"><span>Bilal Rob</span></a><a rel="next" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-26T13:22:40">Nov 26, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-29T10:54:52">Nov 29, 2024</a>.</div>
 </footer>
 </div>
 </body>
