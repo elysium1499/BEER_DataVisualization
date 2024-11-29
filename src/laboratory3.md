@@ -9,7 +9,6 @@ toc: true
 <br>
 
 <p>
-
 The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.
 
 The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels. 
@@ -35,35 +34,46 @@ const countryNameMapping = {
     "The Bahamas": "Bahamas"
 };
 
-import { geoMercator, geoPath } from "d3-geo";
+import { geoMercator, geoEqualEarth, geoAzimuthalEqualArea, geoPath } from "d3-geo";
 import { scaleSequential, scaleQuantile } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
 
-async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
-  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
-
-const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-
+async function getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping) {
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
 
     const population = populationMap.get(countryName);
     const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-    return {
-      ...d,
-      Population: population,
-      TotalEmissions: totalEmissions,
-    };
+
+    return {...d, Population: population, TotalEmissions: totalEmissions};
   });
+  return emissionsWithPopulation;
+}
 
+async function getEmissionsData(co_emissions_per_capita) {
+  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
+    Entity: d.Entity,
+    Emissions: d["Annual CO₂ emissions (per capita)"],
+  }));
+
+  return emissionsData;
+}
+
+```
+
+```js
+async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
+  const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
+
+  const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
+  
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
-
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
-
   const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
 
   const countriesWithEmissions = worldData.features.map(feature => {
@@ -79,36 +89,25 @@ const populationMap = new Map(region_population.map(d => [d.Entity, d.Population
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
-  const projection = geoMercator()
-    .scale(100)
-    .translate([(width / 2), height / 1.5]);
-
+  const projection = geoMercator().scale(100).translate([(width / 2), height / 1.5]);
   const path = geoPath().projection(projection);
 
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions || 0);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
-  const quantileValues = customPercentiles.map(p =>
-    d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
-  );
+  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
-  const colorScale = scaleQuantile()
-    .domain(quantileValues)
-    .range([
-      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
-      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
-      "#c62828", "#b71c1c"
-    ]);
+  const colorScale = scaleQuantile().domain(quantileValues).range([
+    "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+    "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
+    "#c62828", "#b71c1c"
+  ]);
 
-  const svg = container.append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
+  const svg = container.append("svg").attr("width", width).attr("height", height);
   const mapGroup = svg.append("g");
 
   function customFormat(value) {
@@ -206,24 +205,7 @@ async function createCO2EmissionsMapEarth(containerId) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-  // Transform the population dataset into a map
-  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-
-  // Calculate total emissions for each country
-  const emissionsWithPopulation = co_emissions_per_capita
-    .filter(d => d.Year === 2022)
-    .map(d => {
-      let countryName = d.Entity;
-      countryName = countryNameMapping[countryName] || countryName;
-
-      const population = populationMap.get(countryName);
-      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-      return {
-        ...d,
-        Population: population,
-        TotalEmissions: totalEmissions,
-      };
-    });
+  const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
 
   // Sort countries by total emissions
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
@@ -238,6 +220,7 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
+  quantileValues.sort((a, b) => a - b);
 
   const colorScale = d3.scaleQuantile()
     .domain(quantileValues)
@@ -394,10 +377,9 @@ createCO2EmissionsMapEarth("MapTwochart");
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
+In the Mercator projection, northern countries like the USA, Russia, and Canada are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.
 
-In the *Mercator* projection, northern countries like the **USA**, **Russia**, and **Canada** are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.
-
-On the other hand, the *Orthographic* projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to *Mercator*, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of **Africa**, **South America**, or **Oceania**. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO₂ emissions.
+On the other hand, the Orthographic projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to Mercator, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of Africa, South America, or Oceania. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO2 emissions.
 </p>
 
 <br>
@@ -409,17 +391,9 @@ These maps shift the focus from absolute values to emissions normalized per pers
 ## Equal Earth projection
 
 ```js
-import { geoEqualEarth, geoPath } from "d3-geo";
-import { scaleQuantile } from "d3-scale";
-import { zoom } from "d3-zoom";
-
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-
-  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
-    Entity: d.Entity,
-    Emissions: d["Annual CO₂ emissions (per capita)"]
-  }));
+  const emissionsData = await getEmissionsData(co_emissions_per_capita);
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
@@ -456,7 +430,6 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
   const colorScale = scaleQuantile()
@@ -553,17 +526,9 @@ createCO2EmissionsMapWorld("MapThreechart");
 
 ## Azimuthal Equal Area projection
 ```js
-import { geoAzimuthalEqualArea, geoPath } from "d3-geo";
-import { scaleQuantile } from "d3-scale";
-import { zoom } from "d3-zoom";
-
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-
-  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
-    Entity: d.Entity,
-    Emissions: d["Annual CO₂ emissions (per capita)"]
-  }));
+  const emissionsData = await getEmissionsData(co_emissions_per_capita);
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
@@ -600,7 +565,6 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
   const colorScale = scaleQuantile()
@@ -709,9 +673,8 @@ createCO2EmissionsMapWorld("MapFourchart");
 <div id="MapFourchart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
+The Equal Earth projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.
 
-The *Equal Earth* projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.
-
-The *Azimuthal Equal Area* projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on **Europe** will accurately display area relationships within and around **Europe** but may visually downplay emissions from continents such as **South America**, **Africa**, or **Oceania** due to their peripheral placement.
+The Azimuthal Equal Area projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on Europe will accurately display area relationships within and around Europe but may visually downplay emissions from continents such as South America, Africa, or Oceania due to their peripheral placement.
 This distortion can lead to underestimating the contributions of these distant areas to global emissions. To effectively interpret this map, users should consider how the choice of center influences the visibility and perceived importance of emissions in various continents. Navigating the map to shift the center can help provide a more comprehensive understanding of emissions across different parts of the globe, reducing the potential for bias introduced by the fixed focus of static maps.
 </p>

@@ -73,8 +73,8 @@ import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
-define({id: "10b8fe8d", inputs: ["FileAttachment","d3"], outputs: ["countryNameMapping","geoMercator","geoPath","scaleSequential","scaleQuantile","interpolateYlOrRd","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,d3) => {
-const [{geoMercator, geoPath}, {scaleSequential, scaleQuantile}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
+define({id: "316b9347", outputs: ["countryNameMapping","geoMercator","geoEqualEarth","geoAzimuthalEqualArea","geoPath","scaleSequential","scaleQuantile","interpolateYlOrRd","zoom","getEmissionsWithPopulation","getEmissionsData"], body: async () => {
+const [{geoMercator, geoEqualEarth, geoAzimuthalEqualArea, geoPath}, {scaleSequential, scaleQuantile}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 const countryNameMapping = {
     "USA": "United States",
     "England": "United Kingdom",
@@ -91,30 +91,42 @@ const countryNameMapping = {
 };
 
 
-async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
-  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
-
-const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-
+async function getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping) {
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
 
     const population = populationMap.get(countryName);
     const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-    return {
-      ...d,
-      Population: population,
-      TotalEmissions: totalEmissions,
-    };
+
+    return {...d, Population: population, TotalEmissions: totalEmissions};
   });
+  return emissionsWithPopulation;
+}
 
+async function getEmissionsData(co_emissions_per_capita) {
+  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
+    Entity: d.Entity,
+    Emissions: d["Annual CO₂ emissions (per capita)"],
+  }));
+
+  return emissionsData;
+}
+
+return {countryNameMapping,geoMercator,geoEqualEarth,geoAzimuthalEqualArea,geoPath,scaleSequential,scaleQuantile,interpolateYlOrRd,zoom,getEmissionsWithPopulation,getEmissionsData};
+}});
+
+define({id: "0751a2a3", inputs: ["FileAttachment","getEmissionsWithPopulation","countryNameMapping","d3","geoMercator","geoPath","scaleQuantile","zoom"], outputs: ["createCO2EmissionsMapWorld"], body: (FileAttachment,getEmissionsWithPopulation,countryNameMapping,d3,geoMercator,geoPath,scaleQuantile,zoom) => {
+async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
+  const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+  const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
+
+  const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
+  
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
-
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
-
   const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
 
   const countriesWithEmissions = worldData.features.map(feature => {
@@ -130,36 +142,25 @@ const populationMap = new Map(region_population.map(d => [d.Entity, d.Population
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
-  const projection = geoMercator()
-    .scale(100)
-    .translate([(width / 2), height / 1.5]);
-
+  const projection = geoMercator().scale(100).translate([(width / 2), height / 1.5]);
   const path = geoPath().projection(projection);
 
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions || 0);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
-  const quantileValues = customPercentiles.map(p =>
-    d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
-  );
+  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
-  const colorScale = scaleQuantile()
-    .domain(quantileValues)
-    .range([
-      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
-      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
-      "#c62828", "#b71c1c"
-    ]);
+  const colorScale = scaleQuantile().domain(quantileValues).range([
+    "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+    "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
+    "#c62828", "#b71c1c"
+  ]);
 
-  const svg = container.append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
+  const svg = container.append("svg").attr("width", width).attr("height", height);
   const mapGroup = svg.append("g");
 
   function customFormat(value) {
@@ -243,33 +244,16 @@ const populationMap = new Map(region_population.map(d => [d.Entity, d.Population
 createCO2EmissionsMapWorld("MapOnechart");
 
 
-return {countryNameMapping,geoMercator,geoPath,scaleSequential,scaleQuantile,interpolateYlOrRd,zoom,createCO2EmissionsMapWorld};
+return {createCO2EmissionsMapWorld};
 }});
 
-define({id: "4a94469b", inputs: ["FileAttachment","countryNameMapping","d3"], outputs: ["createCO2EmissionsMapEarth"], body: (FileAttachment,countryNameMapping,d3) => {
+define({id: "e06fe3e8", inputs: ["FileAttachment","getEmissionsWithPopulation","countryNameMapping","d3"], outputs: ["createCO2EmissionsMapEarth"], body: (FileAttachment,getEmissionsWithPopulation,countryNameMapping,d3) => {
 async function createCO2EmissionsMapEarth(containerId) {
   // Load datasets
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
 
-  // Transform the population dataset into a map
-  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
-
-  // Calculate total emissions for each country
-  const emissionsWithPopulation = co_emissions_per_capita
-    .filter(d => d.Year === 2022)
-    .map(d => {
-      let countryName = d.Entity;
-      countryName = countryNameMapping[countryName] || countryName;
-
-      const population = populationMap.get(countryName);
-      const totalEmissions = population ? d["Annual CO₂ emissions (per capita)"] * population : null;
-      return {
-        ...d,
-        Population: population,
-        TotalEmissions: totalEmissions,
-      };
-    });
+  const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
 
   // Sort countries by total emissions
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
@@ -284,6 +268,7 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
+  quantileValues.sort((a, b) => a - b);
 
   const colorScale = d3.scaleQuantile()
     .domain(quantileValues)
@@ -439,16 +424,10 @@ createCO2EmissionsMapEarth("MapTwochart");
 return {createCO2EmissionsMapEarth};
 }});
 
-define({id: "29631b40", inputs: ["FileAttachment","countryNameMapping","d3"], outputs: ["geoEqualEarth","geoPath","scaleQuantile","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,countryNameMapping,d3) => {
-const [{geoEqualEarth, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
-
+define({id: "7374a3b8", inputs: ["FileAttachment","getEmissionsData","countryNameMapping","d3","geoEqualEarth","geoPath","scaleQuantile","zoom"], outputs: ["createCO2EmissionsMapWorld"], body: (FileAttachment,getEmissionsData,countryNameMapping,d3,geoEqualEarth,geoPath,scaleQuantile,zoom) => {
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-
-  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
-    Entity: d.Entity,
-    Emissions: d["Annual CO₂ emissions (per capita)"]
-  }));
+  const emissionsData = await getEmissionsData(co_emissions_per_capita);
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
@@ -485,7 +464,6 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
   const colorScale = scaleQuantile()
@@ -571,19 +549,13 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 }
 
 createCO2EmissionsMapWorld("MapThreechart");
-return {geoEqualEarth,geoPath,scaleQuantile,zoom,createCO2EmissionsMapWorld};
+return {createCO2EmissionsMapWorld};
 }});
 
-define({id: "3fe303da", inputs: ["FileAttachment","countryNameMapping","d3"], outputs: ["geoAzimuthalEqualArea","geoPath","scaleQuantile","zoom","createCO2EmissionsMapWorld"], body: async (FileAttachment,countryNameMapping,d3) => {
-const [{geoAzimuthalEqualArea, geoPath}, {scaleQuantile}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
-
+define({id: "13ee5e43", inputs: ["FileAttachment","getEmissionsData","countryNameMapping","d3","geoAzimuthalEqualArea","geoPath","scaleQuantile"], outputs: ["createCO2EmissionsMapWorld"], body: (FileAttachment,getEmissionsData,countryNameMapping,d3,geoAzimuthalEqualArea,geoPath,scaleQuantile) => {
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-
-  const emissionsData = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => ({
-    Entity: d.Entity,
-    Emissions: d["Annual CO₂ emissions (per capita)"]
-  }));
+  const emissionsData = await getEmissionsData(co_emissions_per_capita);
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
@@ -620,7 +592,6 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-
   quantileValues.sort((a, b) => a - b);
 
   const colorScale = scaleQuantile()
@@ -725,7 +696,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 }
 
 createCO2EmissionsMapWorld("MapFourchart");
-return {geoAzimuthalEqualArea,geoPath,scaleQuantile,zoom,createCO2EmissionsMapWorld};
+return {createCO2EmissionsMapWorld};
 }});
 
 </script>
@@ -762,42 +733,43 @@ return {geoAzimuthalEqualArea,geoPath,scaleQuantile,zoom,createCO2EmissionsMapWo
 <h1 id="dont-get-confused-by-maps" tabindex="-1"><a class="observablehq-header-anchor" href="#dont-get-confused-by-maps">Don't get confused by maps 🗺️</a></h1>
 <br>
 <p>
-</p><p>The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.</p>
-<p>The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels.</p>
+The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.
+</p><p>The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels.</p>
 <p></p>
 <h2 id="mercator-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#mercator-projection">Mercator projection</a></h2>
 <br>
-<div class="observablehq observablehq--block"><!--:10b8fe8d:--></div>
+<div class="observablehq observablehq--block"><!--:316b9347:--></div>
+<div class="observablehq observablehq--block"><!--:0751a2a3:--></div>
 <div id="MapOnechart" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
 <p>
 </p>
 <h2 id="orthografic-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#orthografic-projection">Orthografic projection</a></h2>
-<div class="observablehq observablehq--block"><!--:4a94469b:--></div>
+<div class="observablehq observablehq--block"><!--:e06fe3e8:--></div>
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>
-</p><p>In the <em>Mercator</em> projection, northern countries like the <strong>USA</strong>, <strong>Russia</strong>, and <strong>Canada</strong> are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.</p>
-<p>On the other hand, the <em>Orthographic</em> projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to <em>Mercator</em>, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of <strong>Africa</strong>, <strong>South America</strong>, or <strong>Oceania</strong>. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO₂ emissions.</p>
+In the Mercator projection, northern countries like the USA, Russia, and Canada are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.
+</p><p>On the other hand, the Orthographic projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to Mercator, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of Africa, South America, or Oceania. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO2 emissions.</p>
 <p></p>
 <br>
 <p>
 These maps shift the focus from absolute values to emissions normalized per person. This is crucial for understanding individual-level contributions and comparing nations with vastly different population sizes. However, here too, map distortions might confuse viewers.
 </p>
 <h2 id="equal-earth-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#equal-earth-projection">Equal Earth projection</a></h2>
-<div class="observablehq observablehq--block"><!--:29631b40:--></div>
+<div class="observablehq observablehq--block"><!--:7374a3b8:--></div>
 <div id="MapThreechart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>
 </p>
 <h2 id="azimuthal-equal-area-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#azimuthal-equal-area-projection">Azimuthal Equal Area projection</a></h2>
-<div class="observablehq observablehq--block"><!--:3fe303da:--></div>
+<div class="observablehq observablehq--block"><!--:13ee5e43:--></div>
 <div id="MapFourchart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 <p>
-</p><p>The <em>Equal Earth</em> projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.</p>
-<p>The <em>Azimuthal Equal Area</em> projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on <strong>Europe</strong> will accurately display area relationships within and around <strong>Europe</strong> but may visually downplay emissions from continents such as <strong>South America</strong>, <strong>Africa</strong>, or <strong>Oceania</strong> due to their peripheral placement.
+The Equal Earth projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.
+</p><p>The Azimuthal Equal Area projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on Europe will accurately display area relationships within and around Europe but may visually downplay emissions from continents such as South America, Africa, or Oceania due to their peripheral placement.
 This distortion can lead to underestimating the contributions of these distant areas to global emissions. To effectively interpret this map, users should consider how the choice of center influences the visibility and perceived importance of emissions in various continents. Navigating the map to shift the center can help provide a more comprehensive understanding of emissions across different parts of the globe, reducing the potential for bias introduced by the fixed focus of static maps.</p>
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-29T11:16:42">Nov 29, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-29T18:03:48">Nov 29, 2024</a>.</div>
 </footer>
 </div>
 </body>
