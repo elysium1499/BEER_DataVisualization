@@ -10,7 +10,7 @@ const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").
 ```
 
 
-# Fossiv vs Land
+# Fossil 🆚 Land
 <br>
 
 ## How CO₂ emissions are split between Fossil Fuel and Land Use
@@ -241,7 +241,7 @@ On the left, continents are shown as the primary sources of emissions. **Asia** 
 
 In the center, the chart links continents to countries, emphasizing the top emitters. **China** and the **United States** lead, primarily due to their heavy reliance on fossil fuels. Emerging economies like **India** also feature prominently, reflecting growing industrialization and energy needs.
 
-On the right, emissions are divided into two categories: fossil fuel and land use. Fossil fuel emissions dominate globally, while land-use emissions, though smaller, are significant in regions like **South America** and **Africa**, where deforestation and agricultural practices play a key role.
+On the right, emissions are divided into two categories: fossil fuel and land use. Fossil fuel emissions dominate globally, while land-use emissions, though smaller, are significant in continents like **South America** and **Africa**, where deforestation and agricultural practices play a key role.
 
 </p>
 

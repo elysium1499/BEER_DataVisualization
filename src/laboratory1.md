@@ -20,15 +20,15 @@ const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").
 
 <!-- BarPlot that show the emission and the country in one year -->
 
-# CO₂ emissions
+# Comparing countries
 
 <br>
 
-## Exploring data
+## Country Comparison over the years
 
 <br>
 
-### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
+### Top 20 Countries with high CO₂ Emissions Per Capita over the Years 🌍
 
 ```js
 
@@ -97,7 +97,7 @@ Despite their small populations, **Trinidad and Tobago** and **New Caledonia** a
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
 <br>
 
-### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
+### Top 20 Countries with high CO₂ Emissions Per Capita in the nearest decade (2011 to 2022) 🌍
 
 ```js
 function EmissionsByCapital(data, { width = 800 } = {}) {
@@ -263,6 +263,7 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     width,
     height: 500,
     marginLeft: 100,
+    //marginRight: 250,
     marginBottom: 60,
     x: {
       label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
@@ -278,7 +279,9 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
     color: {
       domain: ["First Emitter", "Second Emitter", "Third Emitter"],
       range: colorPalette.slice(0, 3).concat("#303080"), // Usa i primi tre colori dell'array colorPalette e un colore per "Other Countries"
-      legend: true
+      legend: true,
+      labelAnchor: "center",
+      textAlign: "center"
     },
     marks: [
       Plot.barX(topCities, {
@@ -288,7 +291,14 @@ function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
         title: d => `${d.city}: ${d.co2Emissions.toFixed(4)} Billion Tons of CO₂`,
         tip: true
       })
-    ]
+    ],
+    style: {
+      legend: {
+        position: "top",   // Posiziona la legenda sopra il grafico
+        offset: 10,        // Regola la distanza tra la legenda e il grafico
+        textAlign: "center" // Centra la legenda orizzontalmente
+      }
+    }
   });
 }
 ```
@@ -706,12 +716,12 @@ function renderHeatmap(data, year) {
       paddingInner: 0.1 // Adjust spacing between rows for bigger cells
     },
     color: {
-      type: "linear",
-      domain: [-0.1, 0, 12], // Adjust the domain to handle negative values as well
-      range: ["green", "white", "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
+      type: "linear", //threshold
+      domain: [-0.1, 0, 4, 8, 12], // Adjust the domain to handle negative values as well
+      range: ["green", "white", "yellow" ,"orange" , "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
       label: "CO₂ Emissions (billion tons)",
       legend: true,
-      ticks: [-0.1, 0, 5, 10],//d3.scaleLinear().domain([globalMinEmissions, 0, globalMaxEmissions]).ticks(5) 
+      ticks: [-0.1, 0, 4, 8, 12],//d3.scaleLinear().domain([globalMinEmissions, 0, globalMaxEmissions]).ticks(5) 
       tickFormat: d3.format(".2f")
     },
     marks: [
