@@ -9,6 +9,7 @@ toc: true
 <br>
 
 <p>
+
 The following maps display the total CO₂ emissions of countries. While maps are a powerful tool for visualizing data, their interpretation requires caution. The choice of projection can mislead the user by overemphasizing or minimizing continents. This is especially true in cases like CO₂ emissions, where absolute emissions and per capita values paint different pictures of responsibility and impact.
 
 The legends illustrate the levels of CO₂ emissions through a gradual progression of colors. At the lower end of the scale, white represents continents with the least emissions. As emissions increase, the color transitions to yellow, symbolizing moderate levels of emissions. Finally, red marks the highest emission levels. 
@@ -34,10 +35,26 @@ const countryNameMapping = {
     "The Bahamas": "Bahamas"
 };
 
+function createTooltip(id) {
+  return d3.select("body").append("div")
+    .attr("id", id)
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background", "rgba(0, 0, 0, 0.7)")
+    .style("color", "white")
+    .style("padding", "5px 10px")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("pointer-events", "none")
+    .style("display", "none")
+    .style("z-index", "10"); 
+}
+
 import { geoMercator, geoEqualEarth, geoAzimuthalEqualArea, geoPath } from "d3-geo";
 import { scaleSequential, scaleQuantile } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { zoom } from "d3-zoom";
+
 
 async function getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping) {
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
@@ -66,26 +83,32 @@ async function getEmissionsData(co_emissions_per_capita) {
 function updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat) {
   const quantileBreaks = [minEmission, ...quantileValues, maxEmission];
 
-  // Remove any existing legend elements
   legendGroup.selectAll("*").remove();
 
-  // Draw the legend rectangles
+  // Calculate the number of columns based on width
+  const numColumns = Math.floor(width / (legendRectWidth + legendSpacing));
+  const numRows = Math.ceil(quantileBreaks.length / numColumns);
+
+  // Adjust legend position to make room for multiple rows
+  legendGroup.attr("transform", `translate(50, ${30})`);
+
+  // Create legend rectangles
   legendGroup.selectAll("rect")
     .data(quantileBreaks.slice(0, -1))
     .join("rect")
-    .attr("x", (d, i) => i * (legendRectWidth + legendSpacing))
-    .attr("y", 0)
-    .attr("width", legendRectWidth)
+    .attr("x", (d, i) => (i % numColumns) * (legendRectWidth + legendSpacing))
+    .attr("y", (d, i) => Math.floor(i / numColumns) * (legendRectHeight + 15))
+    .attr("width", legendRectWidth+10)
     .attr("height", legendRectHeight)
     .style("fill", (d, i) => colorScale(d));
 
-  // Add the text labels for each quantile
+  // Create legend text labels
   legendGroup.selectAll("text")
     .data(quantileBreaks.slice(0, -1))
     .join("text")
-    .attr("x", (d, i) => i * (legendRectWidth + legendSpacing) + legendRectWidth / 2) // Center the text below each rect
-    .attr("y", legendRectHeight + 15) // Move the text below the color box
-    .attr("text-anchor", "middle") // Center the text
+    .attr("x", (d, i) => (i % numColumns) * (legendRectWidth + legendSpacing) + legendRectWidth / 2 +5)
+    .attr("y", (d, i) => Math.floor(i / numColumns) * (legendRectHeight + 15) + legendRectHeight + 12)
+    .attr("text-anchor", "middle")
     .style("fill", "white")
     .style("font-size", "9px")
     .text((d, i) => {
@@ -96,22 +119,29 @@ function updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpac
 }
 
 function insertZoomHandler(mapGroup, height){
-  return zoom().scaleExtent([1, 8]).translateExtent([[-width, -height], [2 * width, 2 * height]]).on("zoom", (event) => {
+  return d3.zoom().scaleExtent([1, 8]).translateExtent([[-width, -height], [2 * width, 2 * height]]).on("zoom", (event) => {
     mapGroup.attr("transform", event.transform);
   });
 }
+
 ```
+
+
+
+
 
 ```js
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
-  const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
-  
+ const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
+
   const topEmissions = emissionsWithPopulation.sort((a, b) => (b.TotalEmissions || 0) - (a.TotalEmissions || 0));
+
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
+
   const emissionMap = new Map(topEmissions.map(d => [d.Entity, d.TotalEmissions]));
 
   const countriesWithEmissions = worldData.features.map(feature => {
@@ -124,28 +154,41 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
   });
 
   const container = d3.select("#" + containerId);
+
+  // Resize dynamically based on container
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
-  const projection = geoMercator().scale(100).translate([(width / 2), height / 1.5]);
-  const path = geoPath().projection(projection);
+  const projection = d3.geoMercator()
+    .scale(100)
+    .translate([width / 2, height / 1.5]);
+
+  const path = d3.geoPath().projection(projection);
 
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions || 0);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
-  const quantileValues = customPercentiles.map(p => d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p));
+  const quantileValues = customPercentiles.map(p =>
+    d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
+  );
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
+
   quantileValues.sort((a, b) => a - b);
 
-  const colorScale = scaleQuantile().domain(quantileValues).range([
-    "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
-    "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
-    "#c62828", "#b71c1c"
-  ]);
+  const colorScale = d3.scaleQuantile()
+    .domain(quantileValues)
+    .range([
+      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
+      "#c62828", "#b71c1c"
+    ]);
 
-  const svg = container.append("svg").attr("width", width).attr("height", height);
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
   const mapGroup = svg.append("g");
 
   function customFormat(value) {
@@ -176,19 +219,28 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   svg.call(insertZoomHandler(mapGroup, height));
 
-  // Create the legend group below the map (outside the chart area)
-  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(50, 30)`);
 
   const legendRectWidth = 70;
   const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  updateLegend(legendRectWidth, legendRectHeight, legendSpacing, legendGroup, minEmission, quantileValues, maxEmission, colorScale, customFormat);
+  // Initial legend rendering
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat);
+
+  // Handle window resizing
+  window.addEventListener("resize", () => {
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+    svg.attr("width", width).attr("height", height);
+    projection.translate([width / 2, height / 2]);
+    mapGroup.selectAll("path").attr("d", path);
+    updateLegend();
+  });
 }
 
-// Create the map
 createCO2EmissionsMapWorld("MapOnechart");
-
 
 ```
 <div id="MapOnechart" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
@@ -204,6 +256,10 @@ async function createCO2EmissionsMapEarth(containerId) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("data/region_entities_population2022.csv").csv({ typed: true });
 
+  // Transform the population dataset into a map
+  const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
+  // Calculate total emissions for each country
   const emissionsWithPopulation = await getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping);
 
   // Sort countries by total emissions
@@ -214,13 +270,11 @@ async function createCO2EmissionsMapEarth(containerId) {
   const quantileValues = customPercentiles.map(p =>
     d3.quantile(topEmissions.map(d => d.TotalEmissions).filter(d => d != null), p)
   );
-  
   const minEmission = d3.min(topEmissions, d => d.TotalEmissions);
   const maxEmission = d3.max(topEmissions, d => d.TotalEmissions);
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
-  quantileValues.sort((a, b) => a - b);
 
   const colorScale = d3.scaleQuantile()
     .domain(quantileValues)
@@ -252,7 +306,7 @@ async function createCO2EmissionsMapEarth(containerId) {
   const width = container.node().clientWidth;
   const height = container.node().clientHeight;
 
-  // Projection and path
+  // Projection and path (Mercator projection)
   const projection = d3.geoOrthographic()
     .scale(150)
     .translate([(width / 2), height / 2]);
@@ -275,7 +329,8 @@ async function createCO2EmissionsMapEarth(containerId) {
     }
   }
 
-  // Draw the map
+  const tooltip = createTooltip("tooltip2");
+
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -286,10 +341,19 @@ async function createCO2EmissionsMapEarth(containerId) {
     })
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
+    .on("mouseover", (event, d) => {
       const emissions = d.properties.totalEmission;
-      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+      tooltip.style("display","block")
+        .style("opacity", 1)
+        .html(`<strong>${d.properties.name}</strong><br>
+             Emissions: ${emissions ? customFormat(emissions) : "No data"}`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
     });
 
   // Drag interactions
@@ -313,27 +377,37 @@ async function createCO2EmissionsMapEarth(containerId) {
 
   svg.call(insertZoomHandler(mapGroup, height));
 
-  // Add the legend group
-  const legendRectWidth = 70;  // Width of the rectangles
-  const legendRectHeight = 20; // Height of the rectangles
+  const legendRectWidth = 70;
+  const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  const legendGroup = svg.append("g").attr("transform", `translate(50,30)`);
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(50,30)`);  // Move legend to the top
 
-  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat);
 
+  // Add event listener to handle window resizing
+  window.addEventListener("resize", () => {
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+    svg.attr("width", width).attr("height", height);
+    projection.translate([width / 2, height / 2]);
+    mapGroup.selectAll("path").attr("d", path);
+    updateLegend();
+  });
 }
 
-// Crea la mappa
+// Create the map
 createCO2EmissionsMapEarth("MapTwochart");
 
 ```
 <div id="MapTwochart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
-In the Mercator projection, northern countries like the USA, Russia, and Canada are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.
 
-On the other hand, the Orthographic projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to Mercator, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of Africa, South America, or Oceania. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO2 emissions.
+In the *Mercator* projection, northern countries like the **USA**, **Russia**, and **Canada** are represented with inflated sizes, giving a visual impression that these continents have a disproportionately large impact on emissions. This distortion occurs because the Mercator projection stretches areas farther from the equator to maintain angular accuracy, which is useful for navigation but misleading for visualizing data distribution.
+
+On the other hand, the *Orthographic* projection provides a more visually balanced representation by simulating a globe viewed from a specific perspective. While this projection reduces the distortion of landmass sizes compared to *Mercator*, it introduces its own biases. Central continents in the chosen perspective appear larger and more prominent, potentially drawing attention to their emissions while downplaying those from continents located at the periphery of the map, such as parts of **Africa**, **South America**, or **Oceania**. Understanding these projection biases is crucial when interpreting maps to avoid misjudging the relative contributions of different continents to CO₂ emissions.
 </p>
 
 <br>
@@ -347,7 +421,8 @@ These maps shift the focus from absolute values to emissions normalized per pers
 ```js
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
-  const emissionsData = await getEmissionsData(co_emissions_per_capita);
+
+  const emissionsData = await getEmissionsData(co_emissions_per_capita)
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
   const worldData = await fetch(url).then(response => response.json());
@@ -384,6 +459,7 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
+
   quantileValues.sort((a, b) => a - b);
 
   const colorScale = scaleQuantile()
@@ -404,6 +480,8 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     return value ? `${value.toFixed(2)} t` : "No data";
   }
 
+  const tooltip = createTooltip("tooltip3");
+
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -414,23 +492,41 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     })
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
+    .on("mouseover", (event, d) => {
       const emissions = d.properties.emission;
-      return `${d.properties.name}: ${customFormat(emissions)}`;
+      tooltip.style("display", "block")
+        .style("opacity", 1)
+        .html(`<strong>${d.properties.name}</strong><br>
+             Emissions: ${emissions ? customFormat(emissions) : "No data"}`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
     });
 
   svg.call(insertZoomHandler(mapGroup, height));
 
-
-  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(50, 30)`);
 
   const legendRectWidth = 70;
   const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat);
 
+  // Handle window resizing
+  window.addEventListener("resize", () => {
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+    svg.attr("width", width).attr("height", height);
+    projection.translate([width / 2, height / 2]);
+    mapGroup.selectAll("path").attr("d", path);
+    updateLegend();
+  });
 }
 
 createCO2EmissionsMapWorld("MapThreechart");
@@ -447,6 +543,7 @@ createCO2EmissionsMapWorld("MapThreechart");
 ```js
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("data/co-emissions-per-capita-filter.csv").csv({ typed: true });
+
   const emissionsData = await getEmissionsData(co_emissions_per_capita);
 
   const url = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
@@ -484,21 +581,28 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   quantileValues.unshift(minEmission);
   quantileValues.push(maxEmission);
+
   quantileValues.sort((a, b) => a - b);
 
-  const colorScale = scaleQuantile().domain(quantileValues).range([
-    "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
-    "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
-    "#c62828", "#b71c1c"
-  ]);
+  const colorScale = scaleQuantile()
+    .domain(quantileValues)
+    .range([ 
+      "#ffffe0", "#fffb80", "#fff566", "#ffed3e", "#ffdb2d", "#ffcc00",
+      "#ffaa00", "#ff8c00", "#ff7300", "#ff5722", "#e64a19", "#d32f2f",
+      "#c62828", "#b71c1c"
+    ]);
 
-  const svg = container.append("svg").attr("width", width).attr("height", height);
+  const svg = container.append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
   const mapGroup = svg.append("g");
 
   function customFormat(value) {
     return value ? `${value.toFixed(2)} t` : "No data";
   }
+
+  const tooltip = createTooltip("tooltip4");
 
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
@@ -510,12 +614,20 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     })
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
+    .on("mouseover", (event, d) => {
       const emissions = d.properties.emission;
-      return `${d.properties.name}: ${customFormat(emissions)}`;
+      tooltip.style("display","block")
+        .style("opacity", 1)
+        .html(`<strong>${d.properties.name}</strong><br>
+             Emissions: ${emissions ? customFormat(emissions) : "No data"}`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
     });
-
 
   // Drag interactions
   let lastX = 0;
@@ -538,14 +650,24 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
 
   svg.call(insertZoomHandler(mapGroup, height));
 
-
-  const legendGroup = svg.append("g").attr("transform", `translate(50, 30)`);
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(50, 30)`);
 
   const legendRectWidth = 70;
   const legendRectHeight = 20;
   const legendSpacing = 20;
 
-  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat)
+  updateLegend(legendRectWidth, legendRectHeight, legendGroup, legendSpacing, minEmission, quantileValues, maxEmission, colorScale, customFormat);
+
+  // Adjust the map and legend on window resize
+  window.addEventListener("resize", () => {
+    const width = container.node().clientWidth;
+    const height = container.node().clientHeight;
+    svg.attr("width", width).attr("height", height);
+    projection.translate([width / 2, height / 2]);
+    mapGroup.selectAll("path").attr("d", path);
+    updateLegend();
+  });
 }
 
 createCO2EmissionsMapWorld("MapFourchart");
@@ -553,8 +675,9 @@ createCO2EmissionsMapWorld("MapFourchart");
 <div id="MapFourchart" style="width: 100%; height: 500px; margin-bottom: 50px;"></div>
 
 <p>
-The Equal Earth projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.
 
-The Azimuthal Equal Area projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on Europe will accurately display area relationships within and around Europe but may visually downplay emissions from continents such as South America, Africa, or Oceania due to their peripheral placement.
+The *Equal Earth* projection is designed to maintain area accuracy globally, ensuring that countries and continents are displayed in true proportion to their actual landmass size. This makes it a valuable tool for visualizing emissions data in terms of spatial distribution. However, its focus on equal area can inadvertently understate the significance of emissions from smaller but densely populated continents, such as urban centers or island nations. These areas might contribute significantly to global emissions per capita or in total but appear visually minor on the map.
+
+The *Azimuthal Equal Area* projection, by contrast, ensures area equivalency within a localized context, making it ideal for accurately comparing the proportional size of continents. This projection allows users to center the map on a chosen focal point, which provides flexibility in focusing on specific areas. However, the choice of center inherently skews the perception of continents farther from this point. For example, a map centered on **Europe** will accurately display area relationships within and around **Europe** but may visually downplay emissions from continents such as **South America**, **Africa**, or **Oceania** due to their peripheral placement.
 This distortion can lead to underestimating the contributions of these distant areas to global emissions. To effectively interpret this map, users should consider how the choice of center influences the visibility and perceived importance of emissions in various continents. Navigating the map to shift the center can help provide a more comprehensive understanding of emissions across different parts of the globe, reducing the potential for bias introduced by the fixed focus of static maps.
 </p>
