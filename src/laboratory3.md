@@ -57,7 +57,9 @@ import { zoom } from "d3-zoom";
 
 
 async function getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping) {
+
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
@@ -201,6 +203,8 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     }
   }
 
+  const tooltip = createTooltip("tooltip3");
+  
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -211,10 +215,19 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     })
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
+    .on("mouseover", (event, d) => {
       const emissions = d.properties.emission;
-      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+      tooltip.style("display", "block")
+        .style("opacity", 1)
+        .html(`<strong>${d.properties.name}</strong><br>
+             Emissions: ${emissions ? customFormat(emissions) : "No data"}`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
     });
 
   svg.call(insertZoomHandler(mapGroup, height));

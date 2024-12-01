@@ -73,7 +73,7 @@ import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 registerFile("./data/co-emissions-per-capita-filter.csv", {"name":"./data/co-emissions-per-capita-filter.csv","mimeType":"text/csv","path":"./_file/data/co-emissions-per-capita-filter.9f9ae678.csv","lastModified":1731700104052,"size":179331});
 registerFile("./data/region_entities_population2022.csv", {"name":"./data/region_entities_population2022.csv","mimeType":"text/csv","path":"./_file/data/region_entities_population2022.444e37a4.csv","lastModified":1732613650930,"size":5854});
 
-define({id: "d0b27dd8", inputs: ["d3","width"], outputs: ["countryNameMapping","createTooltip","geoMercator","geoEqualEarth","geoAzimuthalEqualArea","geoPath","scaleSequential","scaleQuantile","interpolateYlOrRd","zoom","getEmissionsWithPopulation","getEmissionsData","updateLegend","insertZoomHandler"], body: async (d3,width) => {
+define({id: "2dfae63a", inputs: ["d3","width"], outputs: ["countryNameMapping","createTooltip","geoMercator","geoEqualEarth","geoAzimuthalEqualArea","geoPath","scaleSequential","scaleQuantile","interpolateYlOrRd","zoom","getEmissionsWithPopulation","getEmissionsData","updateLegend","insertZoomHandler"], body: async (d3,width) => {
 const [{geoMercator, geoEqualEarth, geoAzimuthalEqualArea, geoPath}, {scaleSequential, scaleQuantile}, {interpolateYlOrRd}, {zoom}] = await Promise.all([import("./_node/d3-geo@3.1.1/index.75f0ca91.js"), import("./_node/d3-scale@4.0.2/index.61617510.js"), import("./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js"), import("./_node/d3-zoom@3.0.0/index.0e732a91.js")]);
 const countryNameMapping = {
     "USA": "United States",
@@ -108,7 +108,9 @@ function createTooltip(id) {
 
 
 async function getEmissionsWithPopulation(co_emissions_per_capita, region_population, countryNameMapping) {
+
   const populationMap = new Map(region_population.map(d => [d.Entity, d.Population2022]));
+
   const emissionsWithPopulation = co_emissions_per_capita.filter(d => d.Year === 2022).map(d => {
     let countryName = d.Entity;
     countryName = countryNameMapping[countryName] || countryName;
@@ -178,7 +180,7 @@ function insertZoomHandler(mapGroup, height){
 return {countryNameMapping,createTooltip,geoMercator,geoEqualEarth,geoAzimuthalEqualArea,geoPath,scaleSequential,scaleQuantile,interpolateYlOrRd,zoom,getEmissionsWithPopulation,getEmissionsData,updateLegend,insertZoomHandler};
 }});
 
-define({id: "b009d113", inputs: ["FileAttachment","getEmissionsWithPopulation","countryNameMapping","d3","insertZoomHandler","updateLegend"], outputs: ["createCO2EmissionsMapWorld"], body: (FileAttachment,getEmissionsWithPopulation,countryNameMapping,d3,insertZoomHandler,updateLegend) => {
+define({id: "b1e195df", inputs: ["FileAttachment","getEmissionsWithPopulation","countryNameMapping","d3","createTooltip","insertZoomHandler","updateLegend"], outputs: ["createCO2EmissionsMapWorld"], body: (FileAttachment,getEmissionsWithPopulation,countryNameMapping,d3,createTooltip,insertZoomHandler,updateLegend) => {
 async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25, 0.5, 0.75, 0.95]) {
   const co_emissions_per_capita = await FileAttachment("./data/co-emissions-per-capita-filter.csv").csv({ typed: true });
   const region_population = await FileAttachment("./data/region_entities_population2022.csv").csv({ typed: true });
@@ -249,6 +251,8 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     }
   }
 
+  const tooltip = createTooltip("tooltip3");
+  
   mapGroup.selectAll("path")
     .data(countriesWithEmissions)
     .join("path")
@@ -259,10 +263,19 @@ async function createCO2EmissionsMapWorld(containerId, customPercentiles = [0.25
     })
     .attr("stroke", "white")
     .attr("stroke-width", 0.5)
-    .append("title")
-    .text(d => {
+    .on("mouseover", (event, d) => {
       const emissions = d.properties.emission;
-      return `${d.properties.name}: ${emissions ? customFormat(emissions) : "No data"}`;
+      tooltip.style("display", "block")
+        .style("opacity", 1)
+        .html(`<strong>${d.properties.name}</strong><br>
+             Emissions: ${emissions ? customFormat(emissions) : "No data"}`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 10) + "px")
+             .style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
     });
 
   svg.call(insertZoomHandler(mapGroup, height));
@@ -733,8 +746,8 @@ return {createCO2EmissionsMapWorld};
 <p></p>
 <h2 id="mercator-projection" tabindex="-1"><a class="observablehq-header-anchor" href="#mercator-projection">Mercator projection</a></h2>
 <br>
-<div class="observablehq observablehq--block"><!--:d0b27dd8:--></div>
-<div class="observablehq observablehq--block"><!--:b009d113:--></div>
+<div class="observablehq observablehq--block"><!--:2dfae63a:--></div>
+<div class="observablehq observablehq--block"><!--:b1e195df:--></div>
 <div id="MapOnechart" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
 <p>
 </p>
@@ -764,7 +777,7 @@ This distortion can lead to underestimating the contributions of these distant a
 <p></p></main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory2"><span>Fossil vs Land</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-11-30T12:15:37">Nov 30, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-01T20:08:50">Dec 1, 2024</a>.</div>
 </footer>
 </div>
 </body>
