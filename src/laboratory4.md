@@ -4,6 +4,12 @@ title: laboratorio 4
 toc: true
 ---
 
+```js
+const maxTemperatureTexas = await FileAttachment("data/MaxTemperatureTexas.csv").csv({ typed: true });
+const minTemperatureTexas = await FileAttachment("data/MinTemperatureTexas.csv").csv({ typed: true });
+const averageTemperatureTexas = await FileAttachment("data/AverageTemperatureTexas.csv").csv({ typed: true });
+```
+
 # Temperature 🌡️
 
 <br>
@@ -13,190 +19,100 @@ toc: true
 <br>
 
 ```js
-async function createAreaChart(containerId) {
-  const traffic = await FileAttachment("data/fileprova.csv").csv({ typed: true });
+const traffic = await FileAttachment("data/fileprova.csv").csv({ typed: true });
 
-  // Preparazione dei dati
-  const dates = Array.from(d3.group(traffic, d => +d.date).keys()).sort(d3.ascending);
-  const series = d3.groups(traffic, d => d.name).map(([name, values]) => {
-    const value = new Map(values.map(d => [+d.date, d.value]));
-    return { name, values: dates.map(d => value.get(d)) };
+function TrafficByDate(traffic, { width = 800, overlap = 4.5 } = {}) {
+  const uniqueNames = new Set(traffic.map(d => d.name));
+  const height = 40 + uniqueNames.size * 17;
+
+  // Definiamo una scala di colori basata sui nomi
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);  // Usa una palette di colori
+
+  return Plot.plot({
+    height: 40 + new Set(traffic.map(d => d.name)).size * 17,
+    width,
+    marginBottom: 1,
+    marginLeft: 120,
+    x: { axis: "top" },
+    y: { axis: null, range: [2.5 * 17 - 2, (2.5 - overlap) * 17 - 2] },
+    fy: { label: null, domain: traffic.map(d => d.name) }, // preserve input order
+    marks: [
+      d3.groups(traffic, d => d.name).map(([name, values]) => [
+        Plot.areaY(values, { 
+          x: "date", 
+          y: "value", 
+          fy: "name", 
+          curve: "basis", 
+          sort: "date", 
+          fill: colorScale(name) // Assegna un colore in base al nome
+        }),
+        Plot.lineY(values, { 
+          x: "date", 
+          y: "value", 
+          fy: "name", 
+          curve: "basis", 
+          sort: "date", 
+          strokeWidth: 1, 
+          stroke: colorScale(name) // Linea colorata in base al nome
+        })
+      ])
+    ]
   });
-
-  // Dimensioni del grafico
-  const overlap = 8;
-  const width = 928;
-  const height = series.length * 17;
-  const marginTop = 40;
-  const marginRight = 20;
-  const marginBottom = 30;
-  const marginLeft = 120;
-
-  // Scale
-  const x = d3.scaleTime()
-      .domain(d3.extent(dates))
-      .range([marginLeft, width - marginRight]);
-
-  const y = d3.scalePoint()
-      .domain(series.map(d => d.name))
-      .range([marginTop, height - marginBottom]);
-
-  const z = d3.scaleLinear()
-      .domain([0, d3.max(series, d => d3.max(d.values))]).nice()
-      .range([0, -overlap * y.step()]);
-
-  // Scala colori: Blu per valori bassi, Rosso per valori alti
-  const colorScale = d3.scaleLinear()
-      .domain([0, d3.max(series, d => d3.max(d.values))]) // Da minimo a massimo valore
-      .range(["blue", "red"]); // Da blu (basso) a rosso (alto)
-
-  // Area e linea
-  const area = d3.area()
-      .curve(d3.curveBasis)
-      .defined(d => !isNaN(d))
-      .x((d, i) => x(dates[i]))
-      .y0(0)
-      .y1(d => z(d));
-
-  const line = area.lineY1();
-
-  // Contenitore SVG
-  const container = d3.select("#" + containerId);
-
-  const svg = container.append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
-
-  // Assi
-  svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x)
-          .ticks(width / 80)
-          .tickSizeOuter(0));
-
-  svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(y).tickSize(0).tickPadding(4))
-      .call(g => g.select(".domain").remove());
-
-  // Onde colorate
-  const group = svg.append("g")
-      .selectAll("g")
-      .data(series)
-      .join("g")
-        .attr("transform", d => `translate(0,${y(d.name) + 1})`);
-
-  group.append("path")
-      .attr("fill", d => colorScale(d3.max(d.values)))
-      .attr("opacity", 0.8)
-      .attr("d", d => area(d.values));
-
-  group.append("path")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", 1.2)
-      .attr("d", d => line(d.values));
 }
 
-createAreaChart("Ridgeline");
 
 ```
-<div id="Ridgeline" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
+<div class="grid grid-cols-1">
+  <div class="card"> ${resize((width) => TrafficByDate(traffic, { width }))} </div>
+</div>
+
 
 
 
 ```js
-async function createMaxTemperatureChart(containerId) {
-  const data = await FileAttachment("data/MaxTemperatureTexas.csv").csv({ typed: true });
-
-  // Preparazione dei dati: Raggruppiamo per anno
-  const years = Array.from(new Set(data.map(d => d.Year))).sort(d3.ascending);
-  const series = d3.groups(data, d => d.Year).map(([year, values]) => {
-    const value = new Map(values.map(d => [+d.Mounth, d.Value]));
-    return { year, values: years.map(d => value.get(d)) };
-  });
-
-  // Dimensioni del grafico
-  const overlap = 8;
-  const width = 928;
-  const height = series.length * 17;
-  const marginTop = 40;
-  const marginRight = 20;
-  const marginBottom = 30;
-  const marginLeft = 120;
-
-  // Scale per asse X (temperatura) e Y (anno)
-  const x = d3.scaleLinear()
-      .domain([d3.min(data, d => d.Value), d3.max(data, d => d.Value)])
-      .range([marginLeft, width - marginRight]);
-
-  const y = d3.scalePoint()
-      .domain(years)
-      .range([marginTop, height - marginBottom]);
-
-  const z = d3.scaleLinear()
-      .domain([0, d3.max(series, d => d3.max(d.values))]).nice()
-      .range([0, -overlap * y.step()]);
-
-  // Scala per il colore: Blu per temperature basse, Rosso per temperature alte
-  const colorScale = d3.scaleLinear()
-      .domain([d3.min(data, d => d.Value), d3.max(data, d => d.Value)])
-      .range(["blue", "red"]);
-
-  // Generazione della curva area
-  const area = d3.area()
-      .curve(d3.curveBasis)
-      .defined(d => !isNaN(d))
-      .x(d => x(d)) // Valori di temperatura sull'asse X
-      .y0(0)
-      .y1(d => z(d));
-
-  const line = area.lineY1();
-
-  // Contenitore SVG
-  const container = d3.select("#" + containerId);
-  const svg = container.append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
-
-  // Aggiungi gli assi
-  svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x)
-          .ticks(width / 80)
-          .tickSizeOuter(0));
-
-  svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(y).tickSize(0).tickPadding(4))
-      .call(g => g.select(".domain").remove());
-
-  // Aggiungi le onde colorate
-  const group = svg.append("g")
-      .selectAll("g")
-      .data(series)
-      .join("g")
-      .attr("transform", d => `translate(0,${y(d.year) + 1})`);
-
-  group.append("path")
-      .attr("fill", d => colorScale(d3.max(d.values))) // Colore basato sulla temperatura massima
-      .attr("opacity", 0.8)
-      .attr("d", d => area(d.values));
-
-  group.append("path")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", 1.2)
-      .attr("d", d => line(d.values));
+function fahrenheitToCelsius(fahrenheit) {
+  return (fahrenheit - 32) * 5 / 9;
 }
 
-createMaxTemperatureChart("MaxTemperatureChart");
+function TemperatureByDate(maxTemperatureTexas, { width = 800, overlap = 4.5 } = {}) {
+  maxTemperatureTexas.forEach(d => {d.TemperatureCelsius = fahrenheitToCelsius(d.Value);});
+  const uniqueYears = new Set(maxTemperatureTexas.map(d => d.Year));
+  const height = 40 + uniqueYears.size * 17;
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
+  return Plot.plot({
+    height: height,
+    width,
+    marginBottom: 1,
+    marginLeft: 120,
+    x: { axis: "top" },
+    y: { axis: null, range: [2.5 * 17 - 2, (2.5 - overlap) * 17 - 2] },
+    fy: { label: null, domain: maxTemperatureTexas.map(d => d.Year) }, // Ordine in base agli anni
+    marks: [
+      d3.groups(maxTemperatureTexas, d => d.Year).map(([year, values]) => [
+        Plot.areaY(values, { 
+          x: "TemperatureCelsius",  // L'asse delle x sarà la temperatura in Celsius
+          y: "Year", 
+          fy: "Year", 
+          curve: "basis", 
+          sort: "TemperatureCelsius",  // Ordina per la temperatura
+          fill: colorScale(year) // Assegna un colore per ogni anno
+        }),
+        Plot.lineY(values, { 
+          x: "TemperatureCelsius",  // L'asse delle x sarà la temperatura in Celsius
+          y: "Year", 
+          fy: "Year", 
+          curve: "basis", 
+          sort: "TemperatureCelsius",  // Ordina per la temperatura
+          strokeWidth: 1, 
+          stroke: colorScale(year) // Linea colorata per ogni anno
+        })
+      ])
+    ]
+  });
+}
 
 ```
-<div id="MaxTemperatureChart" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
-
+<div class="grid grid-cols-1">
+  <div class="card"> ${resize((width) => TemperatureByDate(maxTemperatureTexas, { width }))} </div>
+</div>
