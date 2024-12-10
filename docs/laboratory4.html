@@ -53,6 +53,7 @@
 import {define} from "./_observablehq/client.7782eb36.js";
 import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
+registerFile("./data/MaxTemperatureTexas.csv", {"name":"./data/MaxTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MaxTemperatureTexas.a6f224ce.csv","lastModified":1733842000902,"size":5849});
 registerFile("./data/fileprova.csv", {"name":"./data/fileprova.csv","mimeType":"text/csv","path":"./_file/data/fileprova.cca8449b.csv","lastModified":1733390107574,"size":185565});
 
 define({id: "9c1e76be", inputs: ["FileAttachment","d3"], outputs: ["createAreaChart"], body: (FileAttachment,d3) => {
@@ -148,6 +149,98 @@ createAreaChart("Ridgeline");
 return {createAreaChart};
 }});
 
+define({id: "47e0bdd5", inputs: ["FileAttachment","d3"], outputs: ["createMaxTemperatureChart"], body: (FileAttachment,d3) => {
+async function createMaxTemperatureChart(containerId) {
+  const data = await FileAttachment("./data/MaxTemperatureTexas.csv").csv({ typed: true });
+
+  // Preparazione dei dati: Raggruppiamo per anno
+  const years = Array.from(new Set(data.map(d => d.Year))).sort(d3.ascending);
+  const series = d3.groups(data, d => d.Year).map(([year, values]) => {
+    const value = new Map(values.map(d => [+d.Mounth, d.Value]));
+    return { year, values: years.map(d => value.get(d)) };
+  });
+
+  // Dimensioni del grafico
+  const overlap = 8;
+  const width = 928;
+  const height = series.length * 17;
+  const marginTop = 40;
+  const marginRight = 20;
+  const marginBottom = 30;
+  const marginLeft = 120;
+
+  // Scale per asse X (temperatura) e Y (anno)
+  const x = d3.scaleLinear()
+      .domain([d3.min(data, d => d.Value), d3.max(data, d => d.Value)]) // Minimo e massimo dei valori di temperatura
+      .range([marginLeft, width - marginRight]);
+
+  const y = d3.scalePoint()
+      .domain(years)
+      .range([marginTop, height - marginBottom]);
+      
+  const z = d3.scaleLinear()
+      .domain([0, d3.max(series, d => d3.max(d.values))]).nice()
+      .range([0, -overlap * y.step()]);
+  // Scala per il colore: Blu per temperature basse, Rosso per temperature alte
+  const colorScale = d3.scaleLinear()
+      .domain([d3.min(data, d => d.Value), d3.max(data, d => d.Value)])
+      .range(["blue", "red"]);
+
+  // Generazione della curva area
+  const area = d3.area()
+      .curve(d3.curveBasis)
+      .defined(d => !isNaN(d))
+      .x(d => x(d)) // Valori di temperatura sull'asse X
+      .y0(0)
+      .y1(d => z(d));
+
+  const line = area.lineY1();
+
+  // Contenitore SVG
+  const container = d3.select("#" + containerId);
+  const svg = container.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;");
+
+  // Aggiungi gli assi
+  svg.append("g")
+      .attr("transform", `translate(0,${height - marginBottom})`)
+      .call(d3.axisBottom(x)
+          .ticks(width / 80)
+          .tickSizeOuter(0));
+
+  svg.append("g")
+      .attr("transform", `translate(${marginLeft},0)`)
+      .call(d3.axisLeft(y).tickSize(0).tickPadding(4))
+      .call(g => g.select(".domain").remove());
+
+  // Aggiungi le onde colorate
+  const group = svg.append("g")
+      .selectAll("g")
+      .data(series)
+      .join("g")
+      .attr("transform", d => `translate(0,${y(d.year) + 1})`);
+
+  group.append("path")
+      .attr("fill", d => colorScale(d3.max(d.values))) // Colore basato sulla temperatura massima
+      .attr("opacity", 0.8)
+      .attr("d", d => area(d.values));
+
+  group.append("path")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 1.2)
+      .attr("d", d => line(d.values));
+}
+
+createMaxTemperatureChart("MaxTemperatureChart");
+
+
+return {createMaxTemperatureChart};
+}});
+
 </script>
 </head>
 <body>
@@ -182,10 +275,12 @@ return {createAreaChart};
 <br>
 <div class="observablehq observablehq--block"><!--:9c1e76be:--></div>
 <div id="Ridgeline" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
+<div class="observablehq observablehq--block"><!--:47e0bdd5:--></div>
+<div id="MaxTemperatureChart" style="width: 100%; height: 650px; margin-bottom: 50px;"></div>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-05T10:57:12">Dec 5, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-10T16:07:33">Dec 10, 2024</a>.</div>
 </footer>
 </div>
 </body>
