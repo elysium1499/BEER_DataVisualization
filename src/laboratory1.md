@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Section 1
+title: Comparing countries
 toc: true
 ---
 
@@ -20,15 +20,15 @@ const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").
 
 <!-- BarPlot that show the emission and the country in one year -->
 
-# CO₂ emissions
+# Comparing countries
 
 <br>
 
-## Exploring data
+## Country Comparison over the years
 
 <br>
 
-### Top 20 Countries with high CO₂ Emissions Per Capita in the Years 🌍
+### Top 20 Countries with high CO₂ Emissions Per Capita over the Years 🌍
 
 ```js
 
@@ -46,30 +46,12 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
     .sort((a, b) => b.co2Emissions - a.co2Emissions)
     .slice(0, 20);
 
-    const colorPalette = [
-        "#FFDFBA", // Light Apricot
-        "#FFD700", // Gold
-        "#FF8C00", // Dark Orange
-        "#FF4500", // Orange Red
-        "#6B8E23", // Olive Drab
-        "#3CB371", // Medium Sea Green
-        "#2E8B57", // Sea Green
-        "#20B2AA", // Light Sea Green
-        "#4682B4", // Steel Blue
-        "#4169E1", // Royal Blue
-        "#6A5ACD", // Slate Blue
-        "#8A2BE2", // Blue Violet
-        "#7B68EE", // Medium Slate Blue
-        "#A0522D", // Sienna
-        "#D2691E", // Chocolate
-        "#B22222", // Firebrick
-        "#696969", // Dim Gray
-        "#A9A9A9", // Dark Gray
-    ];
+    const colorPalette = "#2E8B57";
+
 
     const coloredData = filteredData.map((cityData, index) => ({
         ...cityData,
-        color: colorPalette[index % colorPalette.length]
+        color: colorPalette
     }));
 
     return Plot.plot({
@@ -85,7 +67,8 @@ function EmissionsByCapitalYear(data, year, { width = 800 } = {}) {
         },
         y: {
             label: "Annual CO₂ Emissions (per capita) - Billion tons",
-            grid: true
+            grid: true, 
+            tickFormat: d => `${d} BT`
         },
         marks: [
             Plot.barY(coloredData, { 
@@ -114,7 +97,7 @@ Despite their small populations, **Trinidad and Tobago** and **New Caledonia** a
 <!-- BarPlot that show the emission and the country in one decade (2011 to 2022) -->
 <br>
 
-### Top 20 Countries with high CO₂ Emissions Per Capita in nearest decade (2011 to 2022) 🌍
+### Top 20 Countries with high CO₂ Emissions Per Capita in the nearest decade (2011 to 2022) 🌍
 
 ```js
 function EmissionsByCapital(data, { width = 800 } = {}) {
@@ -137,30 +120,11 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
 
     const uniqueEmissions = [...new Set(topCities.map(d => d.co2Emissions))];
 
-    const colorPalette = [
-        "#FFE5B4", // Light Apricot
-        "#FFD700", // Gold
-        "#FF8C00", // Dark Orange
-        "#FF4500", // Orange Red
-        "#6B8E23", // Olive Drab
-        "#3CB371", // Medium Sea Green
-        "#2E8B57", // Sea Green
-        "#20B2AA", // Light Sea Green
-        "#4682B4", // Steel Blue
-        "#4169E1", // Royal Blue
-        "#6A5ACD", // Slate Blue
-        "#8A2BE2", // Blue Violet
-        "#7B68EE", // Medium Slate Blue
-        "#A0522D", // Sienna
-        "#D2691E", // Chocolate
-        "#B22222", // Firebrick
-        "#696969", // Dim Gray
-        "#A9A9A9", // Dark Gray
-    ];
+    const colorPalette = "#4682B4";
 
     const emissionColorMap = {};
     uniqueEmissions.forEach((emission, index) => {
-        emissionColorMap[emission] = colorPalette[index % colorPalette.length];
+        emissionColorMap[emission] = colorPalette;
     });
 
     const coloredCities = topCities.map(cityData => ({
@@ -176,7 +140,8 @@ function EmissionsByCapital(data, { width = 800 } = {}) {
         x: {
             label: "Total CO₂ Emissions (per capita) - Billion Tons",
             grid: true,
-            nice: true
+            nice: true, 
+            tickFormat: d => `${d} BT`
         },
         y: {
             label: "Country",
@@ -214,11 +179,11 @@ Overall, the data highlights a clear link between fossil fuel reliance, industri
 
 <br>
 
-## Country Comparison per Region in 2022
+## Country Comparison per continent in 2022
 
 <br>
 
-### Region with high CO₂ Emissions 🌍
+### Continent with high CO₂ Emissions 🌍
 
 ```js
 function prepareStackedData(data, regionsData) {
@@ -238,21 +203,21 @@ function prepareStackedData(data, regionsData) {
 function EmissionsByRegionStacked(data, regionsData, { width = 800 } = {}) {
   const preparedData = prepareStackedData(data, regionsData);
   const totalEmissionsByEntity = preparedData.reduce((acc, d) => {
-  if (!acc[d.city]) {
-    acc[d.city] = { co2Emissions: 0, region: d.region };
-  }
+    if (!acc[d.city]) {
+      acc[d.city] = { co2Emissions: 0, region: d.region };
+    }
     acc[d.city].co2Emissions += d.co2Emissions;
     return acc;
   }, {});
 
-const topCities = Object.values(
-  Object.entries(totalEmissionsByEntity)
-    .reduce((acc, [city, { co2Emissions, region }]) => {
-      if (!acc[region]) acc[region] = [];
-      acc[region].push({ city, co2Emissions, region });
-      return acc;
-    }, {})
-).map(citiesInRegion => {
+  const topCities = Object.values(
+    Object.entries(totalEmissionsByEntity)
+      .reduce((acc, [city, { co2Emissions, region }]) => {
+        if (!acc[region]) acc[region] = [];
+        acc[region].push({ city, co2Emissions, region });
+        return acc;
+      }, {})
+  ).map(citiesInRegion => {
     const sortedCities = citiesInRegion.sort((a, b) => b.co2Emissions - a.co2Emissions);
     const top5Cities = sortedCities.slice(0, 5);
     const otherCitiesSum = sortedCities.slice(5).reduce((sum, city) => sum + city.co2Emissions, 0);
@@ -298,6 +263,7 @@ const topCities = Object.values(
     width,
     height: 500,
     marginLeft: 100,
+    //marginRight: 250,
     marginBottom: 60,
     x: {
       label: "Total Annual CO₂ Emissions (per capita) - Billion Tons",
@@ -306,9 +272,16 @@ const topCities = Object.values(
       tickFormat: d => `${d} BT`
     },
     y: {
-      label: "Region",
+      label: "Continent",
       domain: finalData.map(d => d.region),
       labelPosition: "top"
+    },
+    color: {
+      domain: ["First Emitter", "Second Emitter", "Third Emitter"],
+      range: colorPalette.slice(0, 3).concat("#303080"), // Usa i primi tre colori dell'array colorPalette e un colore per "Other Countries"
+      legend: true,
+      labelAnchor: "center",
+      textAlign: "center"
     },
     marks: [
       Plot.barX(topCities, {
@@ -318,11 +291,16 @@ const topCities = Object.values(
         title: d => `${d.city}: ${d.co2Emissions.toFixed(4)} Billion Tons of CO₂`,
         tip: true
       })
-    ]
+    ],
+    style: {
+      legend: {
+        position: "top",   // Posiziona la legenda sopra il grafico
+        offset: 10,        // Regola la distanza tra la legenda e il grafico
+        textAlign: "center" // Centra la legenda orizzontalmente
+      }
+    }
   });
-
 }
-
 ```
 <div class="grid grid-cols-1">
   <div class="card"> ${resize((width) => EmissionsByRegionStacked(dataset, RegionDataset, { width }))} </div>
@@ -331,7 +309,7 @@ const topCities = Object.values(
 
 <p>
 
-In 2022, global CO₂ emissions were dominated by key countries across regions.
+In 2022, global CO₂ emissions were dominated by key countries across continents.
 **China** remains the world’s largest emitter, largely due to its vast manufacturing sector, reliance on coal, and the energy demands of its massive population. **India**, while having a lower per capita emission than China, continues to see rapid industrial growth and energy consumption, particularly in urban areas.
 
 In North America, **the USA** continues to be a major emitter with emissions largely driven by energy consumption, transportation, and industrial sectors. **Canada**, with its vast landmass and reliance on energy-intensive industries like oil extraction, also ranks high in emissions per capita.
@@ -347,7 +325,7 @@ In South America, **Brazil**’s emissions are shaped by deforestation, agricult
 </p>
 <br>
 
-### Top 3 CO₂ emitters per capita per region 🌍
+### Top 3 CO₂ emitters per capita per continent 🌍
 
 
 ```js
@@ -472,7 +450,7 @@ function createSubplot(data, orderedRegions, label, width, height, showYAxisLabe
         },
         y: {
             domain: orderedRegions,
-            label: showYAxisLabels ? "Region" : null,
+            label: showYAxisLabels ? "Continent" : null,
             labelPosition: "top",
             ticks: showYAxisLabels ? orderedRegions : [],
         },
@@ -552,18 +530,18 @@ function EmissionsByRegionStackedMultiple(data, regionsData, { width = 1600, hei
 
 <p>
 
-In the previous chart we can visualize the top three CO₂ emitters from each region in 2022, highlighting key trends in energy consumption and industrialization. 
+In the previous chart we can visualize the top three CO₂ emitters from each continent in 2022, highlighting key trends in energy consumption and industrialization. 
 
-In the top emitters per region, the **USA** stands out as the largest emitter globally, with its massive industrial base, transportation sector, and high energy consumption. Following closely, **India** and **Germany** are the second largest emitters in their respective regions, driven by industrial activities and energy demands. **Japan** and the **UK** round out the third positions, reflecting their energy-intensive economies and reliance on fossil fuels, though Japan's emissions remain high due to its significant manufacturing sector.
+In the top emitters per continent, the **USA** stands out as the largest emitter globally, with its massive industrial base, transportation sector, and high energy consumption. Following closely, **India** and **Germany** are the second largest emitters in their respective continents, driven by industrial activities and energy demands. **Japan** and the **UK** round out the third positions, reflecting their energy-intensive economies and reliance on fossil fuels, though Japan's emissions remain high due to its significant manufacturing sector.
 
-This analysis suggests that **Asia** and **Europe** are the regions with the largest concentrations of emissions, with major contributors like the **USA**, **India**, and **Germany** leading the way. Their high emissions stem from a mix of industrialization, transportation, and energy production needs, showing a clear pattern where both population size and industrial output play crucial roles in regional CO₂ emissions.
+This analysis suggests that **Asia** and **Europe** are the continents with the largest concentrations of emissions, with major contributors like the **USA**, **India**, and **Germany** leading the way. Their high emissions stem from a mix of industrialization, transportation, and energy production needs, showing a clear pattern where both population size and industrial output play crucial roles in continental CO₂ emissions.
 </p>
 
 <br>
 
 <!-- Percentage of first graph rappresentation-->
 
-### Region with high CO₂ Percentage Emissions 🌍
+### Continent with high CO₂ Percentage Emissions 🌍
 
 ```js
 
@@ -646,12 +624,12 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
     marginLeft: 100,
     marginBottom: 60,
     x: {
-        label: "Percentage of Total Regional CO₂ Emissions",
+        label: "Percentage of Total continental CO₂ Emissions",
         tickSpacing: 50,
         tickFormat: d => `${d}%`
     },
     y: {
-      label: "Region",
+      label: "Continent",
       domain: finalData.map(d => d.region),
       labelPosition: "top"
     },
@@ -675,9 +653,9 @@ function EmissionsByRegionStackedPercentage(data, regionsData, { width = 800 } =
 
 <p>
 
-In Asia, **China** is responsible for 52.18% of the region's CO₂ emissions, highlighting its role as the largest emitter in the world. In **North America**, the **USA** accounts for a staggering 80.27% of emissions, driven by its high energy consumption, transportation sector, and industrial activities. In **Europe**, **Russia** contributes 32.57% of emissions, with **Germany** following at 13.26%, reflecting their large industrial bases and energy needs. 
+In Asia, **China** is responsible for 52.18% of the continent's CO₂ emissions, highlighting its role as the largest emitter in the world. In **North America**, the **USA** accounts for a staggering 80.27% of emissions, driven by its high energy consumption, transportation sector, and industrial activities. In **Europe**, **Russia** contributes 32.57% of emissions, with **Germany** following at 13.26%, reflecting their large industrial bases and energy needs. 
 
-In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egypt** contributes 17.45%. **Brazil** accounts for 44.39% of **South America's** emissions, with **Argentina** contributing 17.96%. In **Oceania**, **Australia** dominates, responsible for 89.06% of the region's emissions.
+In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egypt** contributes 17.45%. **Brazil** accounts for 44.39% of **South America's** emissions, with **Argentina** contributing 17.96%. In **Oceania**, **Australia** dominates, responsible for 89.06% of the continent's emissions.
 
 </p>
 
@@ -691,10 +669,7 @@ In **Africa**, **South Africa** is the leading emitter with 29.19%, while **Egyp
 
 
 ```js
-// Prepare the data for the heatmap based on the selected year and top countries
-const globalMinEmissions = 0; // Assuming CO₂ emissions can't be negative
-const globalMaxEmissions = d3.max(datasetFossil, d => +d["Annual CO₂ emissions"]) / 1e9;
-
+// Prepare the data for the selected year and top countries
 function prepareDataForYear(data, year) {
   return data
     .filter(d => d.Year === year)
@@ -702,8 +677,8 @@ function prepareDataForYear(data, year) {
       country: d.Entity,
       region: d.Region,
       year,
-      fossilEmissions: +d["Annual CO₂ emissions from fossil fuel"] / 1e9,       // Normalizing to million tons
-      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to million tons
+      fossilEmissions: +d["Annual CO₂ emissions from fossil fuel"] / 1e9,       // Normalizing to billion tons
+      landUseEmissions: +d["Annual CO₂ emissions from land-use change"] / 1e9, // Normalizing to billion tons
       totalEmissions: +d["Annual CO₂ emissions"] / 1e9 // Total emissions
     }))
     .sort((a, b) => b.totalEmissions - a.totalEmissions) // Sort by total emissions
@@ -741,11 +716,13 @@ function renderHeatmap(data, year) {
       paddingInner: 0.1 // Adjust spacing between rows for bigger cells
     },
     color: {
-      type: "linear",
-      domain: [globalMinEmissions, globalMaxEmissions], // Use global domain for fixed legend
-      scheme: "reds",
+      type: "linear", //threshold
+      domain: [-0.1, 0, 4, 8, 12], // Adjust the domain to handle negative values as well
+      range: ["green", "white", "yellow" ,"orange" , "red"], // Using a diverging color scheme: green for negative, white for zero, red for positive
       label: "CO₂ Emissions (billion tons)",
-      legend: true
+      legend: true,
+      ticks: [-0.1, 0, 4, 8, 12],//d3.scaleLinear().domain([globalMinEmissions, 0, globalMaxEmissions]).ticks(5) 
+      tickFormat: d3.format(".2f")
     },
     marks: [
       Plot.rect(heatmapData, { 
@@ -762,7 +739,6 @@ function renderHeatmap(data, year) {
   document.getElementById("heatmap-container").innerHTML = ""; // Clear previous plot
   document.getElementById("heatmap-container").appendChild(heatmap); // Append new plot
 }
-
 
 // Initialize the dropdown menu and initial heatmap
 function initializeDropdown(data) {
@@ -821,6 +797,7 @@ document.getElementById("auto-play-button").onclick = () => toggleAutoPlay(datas
 
 // Call the initialize function with the dataset
 initializeDropdown(datasetFossil);
+
 ```
 
 <div class="grid grid-cols-1"> 
@@ -836,12 +813,11 @@ initializeDropdown(datasetFossil);
 
 <p>
 
-The heatmap visually represents the share of CO₂ emissions coming from *fossil fuels* versus *land-use changes* across different countries. In this heatmap, regions where *fossil fuel emissions* dominate are shown with deeper shades of red, indicating a higher contribution to total emissions from industries such as energy production, transportation, and manufacturing. On the other hand, areas where *land-use emissions*, such as deforestation and agriculture, play a larger role are highlighted in shades of green, indicating their significant impact on global CO₂ levels due to land transformation and vegetation loss.
+The heatmap visually represents the share of CO₂ emissions coming from *fossil fuels* versus *land-use changes* across different countries. In this heatmap, continents where *fossil fuel emissions* dominate are shown with deeper shades of red, indicating a higher contribution to total emissions from industries such as energy production, transportation, and manufacturing. On the other hand, areas where *land-use emissions*, such as deforestation and agriculture, play a larger role are highlighted in shades of green, indicating their significant impact on global CO₂ levels due to land transformation and vegetation loss.
 
 Countries with large industrial economies and high energy consumption, such as the **USA**, **China**, and **India**, dominate the red spectrum. These nations rely heavily on fossil fuels for electricity, heating, transportation, and manufacturing, driving the bulk of their emissions from these sources. **Europe** also shows significant fossil fuel emissions, particularly in industrialized nations like **Germany** and **Russia**.
   
 Countries with significant land-use emissions are those with large agricultural sectors or high rates of deforestation. **Brazil** stands out in South America, where deforestation of the Amazon contributes massively to carbon emissions. Similarly, **Indonesia** also shows strong land-use emissions. These emissions primarily result from agricultural practices, land clearing for agriculture, and changes in forest cover.
 
-This heatmap reveals a global landscape where **fossil fuel consumption** is the dominant source of emissions in highly industrialized countries, whereas **land-use changes** emerge as a major source in regions with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.
+This heatmap reveals a global landscape where **fossil fuel consumption** is the dominant source of emissions in highly industrialized countries, whereas **land-use changes** emerge as a major source in continents with extensive agricultural practices or deforestation. Understanding the distribution of these emission types is crucial for shaping climate policies, as addressing fossil fuel emissions may require different strategies than tackling emissions from land-use changes.
 </p>
-

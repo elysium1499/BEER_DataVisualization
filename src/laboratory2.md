@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Section 2
+title: Fossil vs Land
 toc: true
 ---
 
@@ -10,10 +10,10 @@ const datasetFossil = await FileAttachment("data/co2-fossil-plus-land-use.csv").
 ```
 
 
-# Alluvial
+# Fossil 🆚 Land
 <br>
 
-## Data and Chart Setup
+## How CO₂ emissions are split between Fossil Fuel and Land Use
 
 ```js
 // Import necessary D3 libraries
@@ -24,17 +24,17 @@ const [d3, { sankey, sankeyLinkHorizontal }] = await Promise.all([
 
 
 // Filter data for the year 2000 and select top 30 countries by CO₂ emissions
-const dataYear2000 = datasetFossil
-  .filter(d => d.Year === 2000)  // Filter for the year 2000
+const dataYear2022 = datasetFossil
+  .filter(d => d.Year === 2022)  // Filter for the year 2000
   .sort((a, b) => b["Annual CO₂ emissions"] - a["Annual CO₂ emissions"])  // Sort by emissions, descending
   .slice(0, 30);  // Select top 30 countries
-console.log("Data for year 2000:", dataYear2000);  // Check filtered data
+console.log("Data for year 2000:", dataYear2022);  // Check filtered data
 
 // Define the chart function to connect continents to countries and countries to emission types
 function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
   const continentNodes = [];  // Layer 1: Continent nodes
   const countryNodes = [];    // Layer 2: Country nodes
-  const typeNodes = [{ name: "Fossil Use" }, { name: "Land Use" }];  // Layer 3: Emission types
+  const typeNodes = [{ name: "Fossil Fuel" }, { name: "Land Use" }];  // Layer 3: Emission types
   const links = [];
 
   // Step 1: Create unique continent nodes
@@ -69,7 +69,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     if (d["Annual CO₂ emissions from fossil fuel"] > 0) {
       links.push({
         source: countryName,
-        target: "Fossil Use",
+        target: "Fossil Fuel",
         value: d["Annual CO₂ emissions from fossil fuel"]
       });
     }
@@ -93,7 +93,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
   const { nodes: sankeyNodes, links: sankeyLinks } = sankey()
     .nodeWidth(30)
     .nodePadding(7)
-    .extent([[1, 1], [width - 1, height - 6]])({
+    .extent([[1, 1], [width - 30, height + 60]])({
       nodes: nodes.map(d => ({ ...d })),
       links: links.map(d => ({
         source: nodes.findIndex(n => n.name === d.source),
@@ -104,9 +104,9 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
 
   // Create an SVG element
   const svg = d3.create("svg")
-    .attr("viewBox", [-30, -30, width , height])
-    .attr("width", width -50)
-    .attr("height", height)
+    .attr("viewBox", [-60, -60, width , height + 150])
+    .attr("width", width -70)
+    .attr("height", height )
     .style("min-height", "640px")
     .style("font", "10px sans-serif");
 
@@ -182,7 +182,7 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     .style("font-weight", "bold")
     .style("fill", "white")
     .style("font-size", "16px")
-    .text("Region");
+    .text("Continent");
 
   svg.append("text")
     .attr("x", width * 0.5)
@@ -202,30 +202,46 @@ function ContinentCountryEmissionSankeyChart(data, width, height = 600) {
     .style("font-size", "16px")
     .text("Emission");
 
+svg.append("g")
+  .selectAll("text")
+  .data(sankeyNodes.filter(d => 
+    continentNodes.some(node => node.name === d.name) || 
+    typeNodes.some(node => node.name === d.name)        
+  ))
+  .join("text")
+  .attr("x", d => d.x0 < width / 2 ? d.x0 - 5 : d.x1 + 5) 
+  .attr("y", d => (d.y0 + d.y1) / 2) 
+  .attr("dy", "0.35em") 
+  .attr("text-anchor", d => d.x0 < width / 2 ? "end" : "start") 
+  .attr("transform", d => {
+    const x = d.x0 < width / 2 ? d.x0 - 5 : d.x1 + 5; 
+    const y = (d.y0 + d.y1) / 2;                 
+    return `rotate(0, ${x}, ${y})`;               
+  })
+  .style("fill", "white")
+  .style("font-size", "13px")
+  .text(d => d.name);
+
+
   return svg.node();
 
 }
 
 ```
 
-<div class="grid grid-cols-1"> 
-  <div class="card"> ${resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2000, width))}</div> 
+<div class="grid grid-cols-1"  style="width: 100%; max-width: 1400px;"> 
+  <div class="card"> ${resize((width) =>ContinentCountryEmissionSankeyChart(dataYear2022, width))}</div> 
 </div>
 
 <p>
 
 This chart offers a detailed visualization of CO₂ emissions for the year 2022, providing valuable insights into the primary sources of global CO₂ emissions.
 
-Each continent’s total CO₂ emissions are represented by flows, with larger flows indicating greater emissions.
+On the left, continents are shown as the primary sources of emissions. **Asia** dominates, driven by substantial industrial activity and energy demand in countries like **China** and **India**. **North America**, led by the **United States**, also contributes significantly, while **Europe** reflects a more moderate share, likely due to its adoption of renewable energy and stricter climate policies.
 
-Emission flows split further to individual countries. More significant flows indicate higher national emissions.
-Major emitters like the **United States**, **China**, and **Brazil** dominate the chart, reflecting their status as some of the largest contributors to global CO₂ emissions.
+In the center, the chart links continents to countries, emphasizing the top emitters. **China** and the **United States** lead, primarily due to their heavy reliance on fossil fuels. Emerging economies like **India** also feature prominently, reflecting growing industrialization and energy needs.
 
-The chart divides emissions into two primary categories on the right: **Fossil Fuel Use** and **Land Use**.
-Countries such as the **United States** and **China** show significant flows linked to **Fossil Fuel Use**, highlighting their dependence on coal, oil, and natural gas.
-In contrast, nations like **Brazil** and other countries in South America exhibit stronger connections to **Land Use** emissions, reflecting the impact of deforestation and land management practices.
-
-**Indonesia** and **Russia** also contribute significantly to global emissions, though their flows are smaller compared to top emitters like the U.S. and China.
+On the right, emissions are divided into two categories: fossil fuel and land use. Fossil fuel emissions dominate globally, while land-use emissions, though smaller, are significant in continents like **South America** and **Africa**, where deforestation and agricultural practices play a key role.
 
 </p>
 
