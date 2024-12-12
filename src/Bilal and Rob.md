@@ -84,7 +84,7 @@ async function createCO2EmissionsMap(containerId, mapType, aggregation_type = "a
 if (mapType === "conicEquidistant") {
     svg.append("ellipse")
         .attr("cx", width / 2) // Horizontal center
-        .attr("cy", height / 2 - 150) // Adjust vertical center
+        .attr("cy", height / 2 - 155) // Adjust vertical center
         .attr("rx", Math.min(width, height) / 1.5) // Scaled horizontal radius
         .attr("ry", Math.min(width, height) / 1.5) // Scaled vertical radius
         .attr("fill", "#A6D8FF") // Ocean color
