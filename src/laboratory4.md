@@ -18,6 +18,84 @@ function fahrenheitToCelsius(f) {
 ## LINECHART
 <br>
 
+```js
+const selectedYear = view(Inputs.select(
+  [...new Set(TemperatureTexas.map(d => d.Date.toString().slice(0, 4)))].sort((a, b) => b - a), 
+  {label: "📅 Select a Year"})
+);
+
+function LineChartForYear(data, selectedYear, { width = 800 } = {}) {
+  const filteredData = data.filter(d => {
+    const year = String(d["Date"]).slice(0, 4);
+    return year === String(selectedYear);
+  });
+
+  return Plot.plot({
+    marginLeft: 100,
+    width,
+    y: {
+      grid: true,
+      label: "Temperature (°C)"
+    },
+    x: {
+      grid: true,
+      label: "Month",
+    },
+    marks: [
+      Plot.ruleY([0]),
+
+      // Linea Massima
+      Plot.lineY(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Maximum"]),
+        stroke: "red"
+      }),
+      Plot.dot(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Maximum"]),
+        fill: "red",
+        r: 3,
+        tip: true, // Tooltip immediato e interattivo
+        title: d => `🔴 Maximum: ${fahrenheitToCelsius(d["Maximum"]).toFixed(2)}°C`
+      }),
+
+      // Linea Minima
+      Plot.lineY(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Minimum"]),
+        stroke: "blue"
+      }),
+      Plot.dot(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Minimum"]),
+        fill: "blue",
+        r: 3,
+        tip: true, // Tooltip immediato e interattivo
+        title: d => `🔵 Minimum: ${fahrenheitToCelsius(d["Minimum"]).toFixed(2)}°C`
+      }),
+
+      // Linea Media (tratteggiata)
+      Plot.lineY(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Average"]),
+        stroke: "green",
+        strokeDasharray: "4,4"
+      }),
+      Plot.dot(filteredData, {
+        x: d => String(d["Date"]).slice(4, 6),
+        y: d => fahrenheitToCelsius(d["Average"]),
+        fill: "green",
+        r: 3,
+        tip: true, // Tooltip immediato e interattivo
+        title: d => `🟢 Average: ${fahrenheitToCelsius(d["Average"]).toFixed(2)}°C`
+      })
+    ]
+  });
+}
+```
+<div class="grid grid-cols-1">
+  <div class="card"> ${resize((width) => LineChartForYear(TemperatureTexas, selectedYear, { width }))} </div>
+</div>
 
 <br>
 
@@ -269,175 +347,130 @@ updateRadarChart(years[0]);
 <br>
 
 ```js
-const traffic = await FileAttachment("data/fileprova.csv").csv({ typed: true });
+const selectedMod = view(Inputs.select(
+  ["Line", "Filled Area"], {label: "📊 Select Plot Type"}
+));
 
-function createRidgelineChart(traffic, config = {}) {
-  // Configurazione opzionale
-  const {
-    overlap = 8,
-    width = 928,
-    marginTop = 40,
-    marginRight = 20,
-    marginBottom = 30,
-    marginLeft = 120,
-  } = config;
+function RidgelinePlot(temperatureData, selectedMod,{ width = 800, overlap = 3 } = {}) {
+  const parsedData = temperatureData.map(d => ({
+    year: Math.floor(d.Date / 100).toString(), 
+    month: d.Date % 100,
+    average: +fahrenheitToCelsius(d.Average),
+    maximum: +fahrenheitToCelsius(d.Maximum),
+    minimum: +fahrenheitToCelsius(d.Minimum)
+  }));
 
-  // Prepara le serie di dati
-  const dates = Array.from(d3.group(traffic, d => +d.date).keys()).sort(d3.ascending);
-  const series = d3.groups(traffic, d => d.name).map(([name, values]) => {
-    const value = new Map(values.map(d => [+d.date, d.value]));
-    return { name, values: dates.map(d => value.get(d)) };
-  });
+  const groupedData = d3.groups(parsedData, d => d.year);
 
-  // Dimensioni del grafico
-  const height = series.length * 17;
+  // Definire l'intervallo fisso delle temperature da -50 a +50°C
+  const temperatureRange = [-50, 50];
 
-  // Crea le scale
-  const x = d3.scaleTime()
-      .domain(d3.extent(dates))
-      .range([marginLeft, width - marginRight]);
+  // Creazione delle distribuzioni in un'unica variabile
+  const allDistributions = groupedData.map(([year, data]) => {
+    const bin = d3.bin()
+      .domain(temperatureRange)
+      .thresholds(30);
 
-  const y = d3.scalePoint()
-      .domain(series.map(d => d.name))
-      .range([marginTop, height - marginBottom]);
-
-  const z = d3.scaleLinear()
-      .domain([0, d3.max(series, d => d3.max(d.values))]).nice()
-      .range([0, -overlap * y.step()]);
-
-  // Generatore di aree e linee
-  const area = d3.area()
-      .curve(d3.curveBasis)
-      .defined(d => !isNaN(d))
-      .x((d, i) => x(dates[i]))
-      .y0(0)
-      .y1(d => z(d));
-
-  const line = area.lineY1();
-
-  // Crea il contenitore SVG
-  const svg = d3.create("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
-
-  // Aggiunge gli assi
-  svg.append("g")
-      .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(d3.axisBottom(x)
-          .ticks(width / 80)
-          .tickSizeOuter(0));
-
-  svg.append("g")
-      .attr("transform", `translate(${marginLeft},0)`)
-      .call(d3.axisLeft(y).tickSize(0).tickPadding(4))
-      .call(g => g.select(".domain").remove());
-
-  // Aggiunge i livelli per ogni serie
-  const group = svg.append("g")
-    .selectAll("g")
-    .data(series)
-    .join("g")
-      .attr("transform", d => `translate(0,${y(d.name) + 1})`);
-
-  group.append("path")
-      .attr("fill", "#ddd")
-      .attr("d", d => area(d.values));
-
-  group.append("path")
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("d", d => line(d.values));
-
-  return svg.node();
-}
-
-
-
-
-
-function TrafficByDate(traffic, { width = 800, overlap = 4.5 } = {}) {
-  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-  return Plot.plot({
-    height: 40 + new Set(traffic.map(d => d.name)).size * 17,
-    width,
-    marginBottom: 1,
-    marginLeft: 120,
-    x: { axis: "top" },
-    y: { axis: null, range: [2.5 * 17 - 2, (2.5 - overlap) * 17 - 2] },
-    fy: { label: null, domain: traffic.map(d => d.name) },
-    marks: [
-      d3.groups(traffic, d => d.name).map(([name, values]) => [
-        Plot.areaY(values, { 
-          x: "date", 
-          y: "value", 
-          fy: "name", 
-          curve: "basis", 
-          sort: "date", 
-          fill: colorScale(name) // Assegna un colore in base al nome
-        }),
-        Plot.lineY(values, { 
-          x: "date", 
-          y: "value", 
-          fy: "name", 
-          curve: "basis", 
-          sort: "date", 
-          strokeWidth: 1, 
-          stroke: colorScale(name) // Linea colorata in base al nome
-        })
-      ])
-    ]
-  });
-}
-```
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => TrafficByDate(traffic, { width }))} </div>
-</div>
-
-<div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => createRidgelineChart(traffic))} </div>
-</div>
-
-
-```js
-function RidgelinePlot(temperatureData, { width = 800, overlap = 3 } = {}) {
-  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-  const temperature = d3.groups(temperatureData, d => d.year).map(([year, values]) => {
-    return {
+    const minBins = bin(data.map(d => d.minimum)).map(bin => ({
       year,
-      data: values.map(d => d.Data),
-      averages: values.map(d => d.average),
-      maximums: values.map(d => d.maximum),
-      minimums: values.map(d => d.minimum)
-    };
-  });
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'min'
+    }));
 
-  return Plot.plot({
-    height: 40 + new Set(temperature.map(d => d.year)).size * 17,
-    width,
-    marginBottom: 1,
-    marginLeft: 120,
-    x: { axis: "top" },
-    y: { axis: null, range: [2.5 * 17 - 2, (2.5 - overlap) * 17 - 2] },
-    fy: { label: null, domain: temperature.map(d => d.year) },
-    marks: [
-      d3.groups(temperature, d => d.Date).map(([year, values]) => [
-        Plot.lineY(values, { 
-          x: "date", 
-          y: "average", 
-          fy: "year", 
-          curve: "basis", 
-          sort: "date", 
+    const avgBins = bin(data.map(d => d.average)).map(bin => ({
+      year,
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'avg'
+    }));
+
+    const maxBins = bin(data.map(d => d.maximum)).map(bin => ({
+      year,
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'max'
+    }));
+
+    return [...minBins, ...avgBins, ...maxBins];
+  }).flat();
+
+  if(selectedMod == "Line"){
+    return Plot.plot({
+      height: 40 + groupedData.length * 65,
+      width,
+      marginBottom: 50,
+      marginLeft: 70,
+      x: { axis: "bottom", label: "Temperature (°C)" },
+      y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+      fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+      marks: [
+        Plot.lineY(allDistributions.filter(d => d.type === 'min'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          curve: "basis",
           strokeWidth: 1, 
-          stroke: colorScale(Date)
+          stroke: "#1f77b4"
+        }),
+        Plot.lineY(allDistributions.filter(d => d.type === 'avg'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          curve: "basis",
+          strokeWidth: 1, 
+          stroke: "#2ca02c"
+        }),
+        Plot.lineY(allDistributions.filter(d => d.type === 'max'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          curve: "basis",
+          strokeWidth: 1, 
+          stroke: "#d62728"
         })
-      ])
-    ]
-  });
+      ],
+    });
+  }
+  else{
+    return Plot.plot({
+      height: 40 + groupedData.length * 65,
+      width,
+      marginBottom: 50,
+      marginLeft: 70,
+      x: { axis: "bottom", label: "Temperature (°C)" },
+      y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+      fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+      marks: [
+        Plot.areaY(allDistributions.filter(d => d.type === 'min'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          fill: "#1f77b4",
+          curve: "basis",
+          opacity: 0.6,
+        }),
+        Plot.areaY(allDistributions.filter(d => d.type === 'avg'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          fill: "#2ca02c", // Colore per le medie
+          curve: "basis",
+          opacity: 0.6,
+        }),
+        Plot.areaY(allDistributions.filter(d => d.type === 'max'), {
+          x: "temperature",
+          y: "count",
+          fy: "year",
+          fill: "#d62728", // Colore per le massime
+          curve: "basis",
+          opacity: 0.6,
+        })
+      ],
+    });
+  }
 }
 ```
 <div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => RidgelinePlot(TemperatureTexas, { width }))} </div>
+  <div class="card"> ${resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))} </div>
 </div>
