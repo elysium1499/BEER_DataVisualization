@@ -97,16 +97,12 @@ import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
 
 registerFile("./data/Temp.csv", {"name":"./data/Temp.csv","mimeType":"text/csv","path":"./_file/data/Temp.002d2f25.csv","lastModified":1734037630529,"size":22801});
 
-define({id: "bb157e6f", inputs: ["FileAttachment"], outputs: ["TemperatureTexas","fahrenheitToCelsius"], body: async (FileAttachment) => {
+define({id: "27fd0919", inputs: ["FileAttachment"], outputs: ["TemperatureTexas"], body: async (FileAttachment) => {
 const TemperatureTexas = await FileAttachment("./data/Temp.csv").csv({ typed: true });
-
-function fahrenheitToCelsius(f) {
-  return ((f - 32) * 5) / 9;
-}
-return {TemperatureTexas,fahrenheitToCelsius};
+return {TemperatureTexas};
 }});
 
-define({id: "018143e9", inputs: ["view","Inputs","TemperatureTexas","Plot","fahrenheitToCelsius"], outputs: ["selectedYear","LineChartForYear"], body: (view,Inputs,TemperatureTexas,Plot,fahrenheitToCelsius) => {
+define({id: "ae3cf343", inputs: ["view","Inputs","TemperatureTexas","Plot"], outputs: ["selectedYear","LineChartForYear"], body: (view,Inputs,TemperatureTexas,Plot) => {
 const selectedYear = view(Inputs.select(
   [...new Set(TemperatureTexas.map(d => d.Date.toString().slice(0, 4)))].sort((a, b) => b - a), 
   {label: "📅 Select a Year"})
@@ -119,63 +115,67 @@ function LineChartForYear(data, selectedYear, { width = 800 } = {}) {
   });
 
   return Plot.plot({
-    marginLeft: 100,
+    marginLeft: 50,
+    marginTop: 50,
+    marginBottom: 50,
     width,
     y: {
       grid: true,
-      label: "Temperature (°C)"
+      label: "Temperature (°C)",
+      tickFormat: d => `${d}°C`
     },
     x: {
       grid: true,
       label: "Month",
+      tickFormat: d => new Date(2000, d - 1).toLocaleString("default", { month: "short" })
     },
     marks: [
       Plot.ruleY([0]),
 
       // Linea Massima
       Plot.lineY(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Maximum"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Maximum"],
         stroke: "red"
       }),
       Plot.dot(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Maximum"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Maximum"],
         fill: "red",
         r: 3,
-        tip: true, // Tooltip immediato e interattivo
-        title: d => `🔴 Maximum: ${fahrenheitToCelsius(d["Maximum"]).toFixed(2)}°C`
+        tip: true,
+        title: d => `🔴 Maximum: ${d["Maximum"].toFixed(2)}°C`
       }),
 
       // Linea Minima
       Plot.lineY(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Minimum"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Minimum"],
         stroke: "blue"
       }),
       Plot.dot(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Minimum"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Minimum"],
         fill: "blue",
         r: 3,
-        tip: true, // Tooltip immediato e interattivo
-        title: d => `🔵 Minimum: ${fahrenheitToCelsius(d["Minimum"]).toFixed(2)}°C`
+        tip: true,
+        title: d => `🔵 Minimum: ${d["Minimum"].toFixed(2)}°C`
       }),
 
       // Linea Media (tratteggiata)
       Plot.lineY(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Average"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Average"],
         stroke: "green",
         strokeDasharray: "4,4"
       }),
       Plot.dot(filteredData, {
-        x: d => String(d["Date"]).slice(4, 6),
-        y: d => fahrenheitToCelsius(d["Average"]),
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Average"],
         fill: "green",
         r: 3,
-        tip: true, // Tooltip immediato e interattivo
-        title: d => `🟢 Average: ${fahrenheitToCelsius(d["Average"]).toFixed(2)}°C`
+        tip: true,
+        title: d => `🟢 Average: ${d["Average"].toFixed(2)}°C`
       })
     ]
   });
@@ -418,18 +418,18 @@ updateRadarChart(years[0]);
 return {d3,getResponsiveDimensions,datasetTemp,parseDataset,processedData,groupDataByYear,dataByYear,allYearsMean,width,height,margin,radius,svg,angleSlice,rScale,tooltip,years,dropdown,updateRadarChart,resizeChart,playButton,animationInterval,currentYearIndex,stopButton};
 }});
 
-define({id: "26256f5c", inputs: ["view","Inputs","fahrenheitToCelsius","d3","Plot"], outputs: ["selectedMod","RidgelinePlot"], body: (view,Inputs,fahrenheitToCelsius,d3,Plot) => {
+define({id: "44402f52", inputs: ["view","Inputs","d3","Plot"], outputs: ["selectedMod","RidgelinePlot"], body: (view,Inputs,d3,Plot) => {
 const selectedMod = view(Inputs.select(
   ["Line", "Filled Area"], {label: "📊 Select Plot Type"}
 ));
 
-function RidgelinePlot(temperatureData, selectedMod,{ width = 800, overlap = 3 } = {}) {
+function RidgelinePlot(temperatureData, selectedMod, { width = 800, overlap = 3 } = {}) {
   const parsedData = temperatureData.map(d => ({
-    year: Math.floor(d.Date / 100).toString(), 
+    year: Math.floor(d.Date / 100).toString(),
     month: d.Date % 100,
-    average: +fahrenheitToCelsius(d.Average),
-    maximum: +fahrenheitToCelsius(d.Maximum),
-    minimum: +fahrenheitToCelsius(d.Minimum)
+    average: +d.Average,
+    maximum: +d.Maximum,
+    minimum: +d.Minimum,
   }));
 
   const groupedData = d3.groups(parsedData, d => d.year);
@@ -447,101 +447,134 @@ function RidgelinePlot(temperatureData, selectedMod,{ width = 800, overlap = 3 }
       year,
       temperature: (bin.x0 + bin.x1) / 2,
       count: bin.length,
-      type: 'min'
+      type: 'min',
     }));
 
     const avgBins = bin(data.map(d => d.average)).map(bin => ({
       year,
       temperature: (bin.x0 + bin.x1) / 2,
       count: bin.length,
-      type: 'avg'
+      type: 'avg',
     }));
 
     const maxBins = bin(data.map(d => d.maximum)).map(bin => ({
       year,
       temperature: (bin.x0 + bin.x1) / 2,
       count: bin.length,
-      type: 'max'
+      type: 'max',
     }));
 
     return [...minBins, ...avgBins, ...maxBins];
   }).flat();
 
-  if(selectedMod == "Line"){
-    return Plot.plot({
-      height: 40 + groupedData.length * 65,
-      width,
-      marginBottom: 50,
-      marginLeft: 70,
-      x: { axis: "bottom", label: "Temperature (°C)" },
-      y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
-      fy: { label: "Year", domain: groupedData.map(([year]) => year) },
-      marks: [
-        Plot.lineY(allDistributions.filter(d => d.type === 'min'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          curve: "basis",
-          strokeWidth: 1, 
-          stroke: "#1f77b4"
-        }),
-        Plot.lineY(allDistributions.filter(d => d.type === 'avg'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          curve: "basis",
-          strokeWidth: 1, 
-          stroke: "#2ca02c"
-        }),
-        Plot.lineY(allDistributions.filter(d => d.type === 'max'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          curve: "basis",
-          strokeWidth: 1, 
-          stroke: "#d62728"
-        })
-      ],
-    });
-  }
-  else{
-    return Plot.plot({
-      height: 40 + groupedData.length * 65,
-      width,
-      marginBottom: 50,
-      marginLeft: 70,
-      x: { axis: "bottom", label: "Temperature (°C)" },
-      y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
-      fy: { label: "Year", domain: groupedData.map(([year]) => year) },
-      marks: [
-        Plot.areaY(allDistributions.filter(d => d.type === 'min'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          fill: "#1f77b4",
-          curve: "basis",
-          opacity: 0.6,
-        }),
-        Plot.areaY(allDistributions.filter(d => d.type === 'avg'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          fill: "#2ca02c", // Colore per le medie
-          curve: "basis",
-          opacity: 0.6,
-        }),
-        Plot.areaY(allDistributions.filter(d => d.type === 'max'), {
-          x: "temperature",
-          y: "count",
-          fy: "year",
-          fill: "#d62728", // Colore per le massime
-          curve: "basis",
-          opacity: 0.6,
-        })
-      ],
-    });
-  }
+  const plot = selectedMod === "Line"
+    ? Plot.plot({
+        height: 40 + groupedData.length * 65,
+        width,
+        marginBottom: 50,
+        marginLeft: 50,
+        x: { 
+          axis: "bottom", 
+          label: "Temperature (°C)", 
+          ticks: 20,
+        },
+        y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+        fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+        marks: [
+          Plot.lineY(allDistributions.filter(d => d.type === 'min'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#1f77b4",
+          }),
+          Plot.lineY(allDistributions.filter(d => d.type === 'avg'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#2ca02c",
+          }),
+          Plot.lineY(allDistributions.filter(d => d.type === 'max'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#d62728",
+          }),
+        ],
+      })
+    : Plot.plot({
+        height: 40 + groupedData.length * 65,
+        width,
+        marginBottom: 50,
+        marginLeft: 50,
+        x: { 
+          axis: "bottom", 
+          label: "Temperature (°C)", 
+          ticks: d3.range(-50, 51, 5), // Tacche ogni 5°C
+        },
+        y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+        fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+        marks: [
+          Plot.areaY(allDistributions.filter(d => d.type === 'min'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#1f77b4",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+          Plot.areaY(allDistributions.filter(d => d.type === 'avg'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#2ca02c",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+          Plot.areaY(allDistributions.filter(d => d.type === 'max'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#d62728",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+        ],
+      });
+
+  // Creazione della legenda
+  const legend = d3.create("div")
+    .attr("class", "legend")
+    .style("position", "absolute")
+    .style("top", "10px")
+    .style("left", "10px")
+    .style("display", "flex")
+    .style("gap", "20px");
+
+  const categories = [
+    { label: "Minimum", color: "#1f77b4" },
+    { label: "Average", color: "#2ca02c" },
+    { label: "Maximum", color: "#d62728" },
+  ];
+
+  categories.forEach(category => {
+    const legendItem = legend.append("div").style("display", "flex").style("align-items", "center").style("gap", "5px");
+    legendItem.append("div").style("width", "20px").style("height", "20px").style("background-color", category.color);
+    legendItem.append("span").text(category.label);
+  });
+
+  // Contenitore principale
+  const container = d3.create("div").style("position", "relative");
+  container.append(() => plot);
+  container.append(() => legend.node());
+  return container.node();
 }
+
 return {selectedMod,RidgelinePlot};
 }});
 
@@ -581,16 +614,15 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
-<div class="observablehq observablehq--block"><!--:bb157e6f:--></div>
+<div class="observablehq observablehq--block"><!--:27fd0919:--></div>
 <h1 id="temperature" tabindex="-1"><a class="observablehq-header-anchor" href="#temperature">Temperature 🌡️</a></h1>
 <br>
 <h2 id="linechart" tabindex="-1"><a class="observablehq-header-anchor" href="#linechart">LINECHART</a></h2>
-<br>
-<div class="observablehq observablehq--block"><!--:018143e9:--></div>
+<div class="observablehq observablehq--block"><!--:ae3cf343:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:faec645e:--> </div>
 </div>
-<br>
+<p><br><br></p>
 <h2 id="radarchart" tabindex="-1"><a class="observablehq-header-anchor" href="#radarchart">RADARCHART</a></h2>
 <div class="observablehq observablehq--block"><!--:7a00714d:--></div>
 <div id="radar-chart-container" style="width: 100%; max-width: 750px; margin: 100px auto; padding: 1px; border: 0.2px solid rgba(59, 55, 55, 0.7); border-radius: 10px; background-color: rgba(31, 29, 29, 0.7); text-align: center;">
@@ -604,16 +636,16 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
     </div>
     <div id="heatmap-container"></div>
 </div>
-<h2 id="ridgeline" tabindex="-1"><a class="observablehq-header-anchor" href="#ridgeline">RIDGELINE</a></h2>
 <br>
-<div class="observablehq observablehq--block"><!--:26256f5c:--></div>
+<h2 id="ridgeline" tabindex="-1"><a class="observablehq-header-anchor" href="#ridgeline">RIDGELINE</a></h2>
+<div class="observablehq observablehq--block"><!--:44402f52:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:6d97dc6c:--> </div>
 </div>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-22T23:52:07">Dec 22, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-23T13:12:02">Dec 23, 2024</a>.</div>
 </footer>
 </div>
 </body>
