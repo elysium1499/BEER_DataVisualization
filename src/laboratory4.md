@@ -451,7 +451,7 @@ updateRadarChart(years[0]);
     <div id="heatmap-container"></div>
 </div>
 
-
+<br>
 
 ## RIDGELINE
 

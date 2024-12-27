@@ -110,7 +110,7 @@ const averageTemperatureTexas = await FileAttachment("./data/AverageTemperatureT
 return {datasetTemp,TemperatureTexas,maxTemperatureTexas,minTemperatureTexas,averageTemperatureTexas};
 }});
 
-define({id: "ffcc3e56", inputs: ["view","Inputs","TemperatureTexas","Plot"], outputs: ["selectedYear","LineChartForYear"], body: (view,Inputs,TemperatureTexas,Plot) => {
+define({id: "cbe55717", inputs: ["view","Inputs","TemperatureTexas","Plot","d3"], outputs: ["selectedYear","LineChartForYear","LineChartForYearWithLegend"], body: (view,Inputs,TemperatureTexas,Plot,d3) => {
 const selectedYear = view(Inputs.select(
   [...new Set(TemperatureTexas.map(d => d.Date.toString().slice(0, 4)))].sort((a, b) => b - a), 
   {label: "📅 Select a Year"}
@@ -196,12 +196,49 @@ function LineChartForYear(data, selectedYear, { width = 800 } = {}) {
   });
 }
 
-return {selectedYear,LineChartForYear};
+function LineChartForYearWithLegend(data, selectedYear, { width = 800 } = {}) {
+  // Creazione del grafico originale
+  const plot = LineChartForYear(data, selectedYear, { width });
+
+  // Creazione del contenitore per la legenda
+  const legend = d3.create("div")
+    .attr("class", "legend")
+    .style("position", "absolute")
+    .style("top", "10px")
+    .style("right", "10px") // Posizionata a destra
+    .style("display", "flex")
+    .style("flex-direction", "column")
+    .style("gap", "5px"); // Nessuno sfondo o bordo
+
+  // Aggiunta degli elementi della legenda
+  const categories = [
+    { label: "Maximum", color: "red" },
+    { label: "Minimum", color: "blue" },
+    { label: "Average", color: "green" }
+  ];
+
+  categories.forEach(category => {
+    const legendItem = legend.append("div").style("display", "flex").style("align-items", "center").style("gap", "5px");
+    legendItem.append("div")
+      .style("width", "15px")
+      .style("height", "15px")
+      .style("background-color", category.color)
+      .style("border-radius", "50%");
+    legendItem.append("span").text(category.label);
+  });
+
+  // Contenitore principale
+  const container = d3.create("div").style("position", "relative");
+  container.append(() => plot); // Aggiunta del grafico
+  container.append(() => legend.node()); // Aggiunta della legenda
+  return container.node();
+}
+return {selectedYear,LineChartForYear,LineChartForYearWithLegend};
 }});
 
-define({id: "faec645e", mode: "inline", inputs: ["resize","LineChartForYear","TemperatureTexas","selectedYear","display"], body: async (resize,LineChartForYear,TemperatureTexas,selectedYear,display) => {
+define({id: "9198d7e7", mode: "inline", inputs: ["resize","LineChartForYearWithLegend","TemperatureTexas","selectedYear","display"], body: async (resize,LineChartForYearWithLegend,TemperatureTexas,selectedYear,display) => {
 display(await(
-resize((width) => LineChartForYear(TemperatureTexas, selectedYear, { width }))
+resize((width) => LineChartForYearWithLegend(TemperatureTexas, selectedYear, { width }))
 ))
 }});
 
@@ -698,9 +735,9 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
 <h1 id="temperature" tabindex="-1"><a class="observablehq-header-anchor" href="#temperature">Temperature 🌡️</a></h1>
 <br>
 <h2 id="linechart" tabindex="-1"><a class="observablehq-header-anchor" href="#linechart">LINECHART</a></h2>
-<div class="observablehq observablehq--block"><!--:ffcc3e56:--></div>
+<div class="observablehq observablehq--block"><!--:cbe55717:--></div>
 <div class="grid grid-cols-1">
-  <div class="card"> <observablehq-loading></observablehq-loading><!--:faec645e:--> </div>
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:9198d7e7:--> </div>
 </div>
 <p><br><br></p>
 <h2 id="radarchart" tabindex="-1"><a class="observablehq-header-anchor" href="#radarchart">RADARCHART</a></h2>
@@ -716,6 +753,7 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
     </div>
     <div id="heatmap-container"></div>
 </div>
+<br>
 <h2 id="ridgeline" tabindex="-1"><a class="observablehq-header-anchor" href="#ridgeline">RIDGELINE</a></h2>
 <div class="observablehq observablehq--block"><!--:1fda0a94:--></div>
 <div class="grid grid-cols-1">
@@ -727,7 +765,7 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-27T19:01:53">Dec 27, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-27T20:39:35">Dec 27, 2024</a>.</div>
 </footer>
 </div>
 </body>
