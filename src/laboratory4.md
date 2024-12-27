@@ -107,9 +107,46 @@ function LineChartForYear(data, selectedYear, { width = 800 } = {}) {
   });
 }
 
+function LineChartForYearWithLegend(data, selectedYear, { width = 800 } = {}) {
+  // Creazione del grafico originale
+  const plot = LineChartForYear(data, selectedYear, { width });
+
+  // Creazione del contenitore per la legenda
+  const legend = d3.create("div")
+    .attr("class", "legend")
+    .style("position", "absolute")
+    .style("top", "10px")
+    .style("right", "10px") // Posizionata a destra
+    .style("display", "flex")
+    .style("flex-direction", "column")
+    .style("gap", "5px"); // Nessuno sfondo o bordo
+
+  // Aggiunta degli elementi della legenda
+  const categories = [
+    { label: "Maximum", color: "red" },
+    { label: "Minimum", color: "blue" },
+    { label: "Average", color: "green" }
+  ];
+
+  categories.forEach(category => {
+    const legendItem = legend.append("div").style("display", "flex").style("align-items", "center").style("gap", "5px");
+    legendItem.append("div")
+      .style("width", "15px")
+      .style("height", "15px")
+      .style("background-color", category.color)
+      .style("border-radius", "50%");
+    legendItem.append("span").text(category.label);
+  });
+
+  // Contenitore principale
+  const container = d3.create("div").style("position", "relative");
+  container.append(() => plot); // Aggiunta del grafico
+  container.append(() => legend.node()); // Aggiunta della legenda
+  return container.node();
+}
 ```
 <div class="grid grid-cols-1">
-  <div class="card"> ${resize((width) => LineChartForYear(TemperatureTexas, selectedYear, { width }))} </div>
+  <div class="card"> ${resize((width) => LineChartForYearWithLegend(TemperatureTexas, selectedYear, { width }))} </div>
 </div>
 
 <br><br>
