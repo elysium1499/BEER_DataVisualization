@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.13.0">
+<title>laboratorio 4 | CO₂ emissions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
+<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
+<link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
+<link rel="modulepreload" href="./_node/d3@7.9.0/index.e21134d2.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_node/d3-array@3.2.4/index.f89e3560.js">
+<link rel="modulepreload" href="./_node/d3-axis@3.0.0/index.34ded868.js">
+<link rel="modulepreload" href="./_node/d3-brush@3.0.0/index.1c3fc471.js">
+<link rel="modulepreload" href="./_node/d3-chord@3.0.1/index.9b04aad8.js">
+<link rel="modulepreload" href="./_node/d3-color@3.1.0/index.e8c126ff.js">
+<link rel="modulepreload" href="./_node/d3-contour@4.0.2/index.0d0783e1.js">
+<link rel="modulepreload" href="./_node/d3-delaunay@6.0.4/index.1771ba9f.js">
+<link rel="modulepreload" href="./_node/d3-dispatch@3.0.1/index.be49ca5f.js">
+<link rel="modulepreload" href="./_node/d3-drag@3.0.0/index.8e5f73cc.js">
+<link rel="modulepreload" href="./_node/d3-dsv@3.0.1/index.a1fe4c7b.js">
+<link rel="modulepreload" href="./_node/d3-ease@3.0.1/index.09153f73.js">
+<link rel="modulepreload" href="./_node/d3-fetch@3.0.1/index.e91238ad.js">
+<link rel="modulepreload" href="./_node/d3-force@3.0.0/index.952bd793.js">
+<link rel="modulepreload" href="./_node/d3-format@3.1.0/index.75f84505.js">
+<link rel="modulepreload" href="./_node/d3-geo@3.1.1/index.75f0ca91.js">
+<link rel="modulepreload" href="./_node/d3-hierarchy@3.1.2/index.0a013d9a.js">
+<link rel="modulepreload" href="./_node/d3-interpolate@3.0.1/index.7ed7c7fe.js">
+<link rel="modulepreload" href="./_node/d3-path@3.1.0/index.c2b3c473.js">
+<link rel="modulepreload" href="./_node/d3-polygon@3.0.1/index.b64a6d51.js">
+<link rel="modulepreload" href="./_node/d3-quadtree@3.0.1/index.e9fed2eb.js">
+<link rel="modulepreload" href="./_node/d3-random@3.0.1/index.fd2cc361.js">
+<link rel="modulepreload" href="./_node/d3-scale@4.0.2/index.61617510.js">
+<link rel="modulepreload" href="./_node/d3-scale-chromatic@3.1.0/index.7961cbed.js">
+<link rel="modulepreload" href="./_node/d3-selection@3.0.0/index.13204b25.js">
+<link rel="modulepreload" href="./_node/d3-shape@3.2.0/index.b551bc1c.js">
+<link rel="modulepreload" href="./_node/d3-time@3.1.0/index.8fcc123e.js">
+<link rel="modulepreload" href="./_node/d3-time-format@4.1.0/index.20c5f3ca.js">
+<link rel="modulepreload" href="./_node/d3-timer@3.0.1/index.0ee6092b.js">
+<link rel="modulepreload" href="./_node/d3-transition@3.0.1/index.d140d658.js">
+<link rel="modulepreload" href="./_node/d3-zoom@3.0.0/index.0e732a91.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_node/internmap@2.0.3/index.4106013c.js">
+<link rel="modulepreload" href="./_node/delaunator@5.0.1/index.70ae1478.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_node/robust-predicates@3.0.2/index.bdc459cc.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
+<script type="module">
+
+import {define} from "./_observablehq/client.7782eb36.js";
+import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
+
+registerFile("./data/AverageTemperatureTexas.csv", {"name":"./data/AverageTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/AverageTemperatureTexas.20c59594.csv","lastModified":1735322079564,"size":6194});
+registerFile("./data/MaxTemperatureTexas.csv", {"name":"./data/MaxTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MaxTemperatureTexas.001e4521.csv","lastModified":1735322079564,"size":6186});
+registerFile("./data/MinTemperatureTexas.csv", {"name":"./data/MinTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MinTemperatureTexas.1d7caa6a.csv","lastModified":1735322079568,"size":6179});
+registerFile("./data/Temp.csv", {"name":"./data/Temp.csv","mimeType":"text/csv","path":"./_file/data/Temp.002d2f25.csv","lastModified":1734037630529,"size":22801});
+
+define({id: "07bf46b2", inputs: ["FileAttachment"], outputs: ["datasetTemp","TemperatureTexas","maxTemperatureTexas","minTemperatureTexas","averageTemperatureTexas"], body: async (FileAttachment) => {
+// Load datasets
+const datasetTemp = await FileAttachment("./data/Temp.csv").csv({ typed: true });
+const TemperatureTexas = await FileAttachment("./data/Temp.csv").csv({ typed: true });
+const maxTemperatureTexas = await FileAttachment("./data/MaxTemperatureTexas.csv").csv({ typed: true });
+const minTemperatureTexas = await FileAttachment("./data/MinTemperatureTexas.csv").csv({ typed: true });
+const averageTemperatureTexas = await FileAttachment("./data/AverageTemperatureTexas.csv").csv({ typed: true });
+return {datasetTemp,TemperatureTexas,maxTemperatureTexas,minTemperatureTexas,averageTemperatureTexas};
+}});
+
+define({id: "ffcc3e56", inputs: ["view","Inputs","TemperatureTexas","Plot"], outputs: ["selectedYear","LineChartForYear"], body: (view,Inputs,TemperatureTexas,Plot) => {
+const selectedYear = view(Inputs.select(
+  [...new Set(TemperatureTexas.map(d => d.Date.toString().slice(0, 4)))].sort((a, b) => b - a), 
+  {label: "📅 Select a Year"}
+));
+
+function LineChartForYear(data, selectedYear, { width = 800 } = {}) {
+  const filteredData = data.filter(d => {
+    const year = String(d["Date"]).slice(0, 4);
+    return year === String(selectedYear);
+  });
+
+  return Plot.plot({
+    marginLeft: 50,
+    marginTop: 50,
+    marginBottom: 50,
+    width,
+    y: {
+      grid: true,
+      label: "Temperature (°C)",
+      tickFormat: d => `${d}°C`
+    },
+    x: {
+      grid: true,
+      label: "Month",
+      tickFormat: d => new Date(2000, d - 1).toLocaleString("en-US", { month: "short" })
+    },
+    marks: [
+      Plot.ruleY([0]),
+
+      // Linea Massima
+      Plot.lineY(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Maximum"],
+        stroke: "red"
+      }),
+      Plot.dot(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Maximum"],
+        fill: "red",
+        r: 3,
+        tip: true,
+        title: d => `🔴 Maximum: ${d["Maximum"].toFixed(2)}°C`
+      }),
+
+      // Linea Minima
+      Plot.lineY(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Minimum"],
+        stroke: "blue"
+      }),
+      Plot.dot(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Minimum"],
+        fill: "blue",
+        r: 3,
+        tip: true,
+        title: d => `🔵 Minimum: ${d["Minimum"].toFixed(2)}°C`
+      }),
+
+      // Linea Media (tratteggiata)
+      Plot.lineY(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Average"],
+        stroke: "green",
+        strokeDasharray: "4,4"
+      }),
+      Plot.dot(filteredData, {
+        x: d => +String(d["Date"]).slice(4, 6),
+        y: d => d["Average"],
+        fill: "green",
+        r: 3,
+        tip: true,
+        title: d => `🟢 Average: ${d["Average"].toFixed(2)}°C`
+      }),
+
+      // Legenda personalizzata come testo
+      Plot.text([
+        { x: 12, y: 50, text: "🔴 Maximum", fontSize: 12, fill: "red" },
+        { x: 12, y: 70, text: "🔵 Minimum", fontSize: 12, fill: "blue" },
+        { x: 12, y: 90, text: "🟢 Average", fontSize: 12, fill: "green" }
+      ])
+    ]
+  });
+}
+
+return {selectedYear,LineChartForYear};
+}});
+
+define({id: "faec645e", mode: "inline", inputs: ["resize","LineChartForYear","TemperatureTexas","selectedYear","display"], body: async (resize,LineChartForYear,TemperatureTexas,selectedYear,display) => {
+display(await(
+resize((width) => LineChartForYear(TemperatureTexas, selectedYear, { width }))
+))
+}});
+
+define({id: "53074070", inputs: ["FileAttachment"], outputs: ["d3","getResponsiveDimensions","datasetTemp","parseDataset","processedData","groupDataByYear","dataByYear","allYearsMean","width","height","margin","radius","svg","angleSlice","rScale","tooltip","years","dropdown","updateRadarChart","resizeChart","playButton","animationInterval","currentYearIndex","stopButton"], body: async (FileAttachment) => {
+const d3 = await import("./_node/d3@7.9.0/index.e21134d2.js");
+// Import D3
+
+// Funzione per calcolare dimensioni responsive
+function getResponsiveDimensions() {
+  const container = document.querySelector("#radar-chart-container");
+  const width = container.clientWidth;
+  const height = Math.min(width, 600); // Manteniamo un'altezza massima
+  const margin = 35;
+  const radius = Math.min(width, height) / 2 - margin;
+  return { width, height, margin, radius };
+}
+
+// Load datasets
+const datasetTemp = await FileAttachment("./data/Temp.csv").csv({ typed: true });
+
+// Parse dataset
+function parseDataset(dataset) {
+  return dataset.map(row => {
+    const dateString = String(row.Date);
+    const year = parseInt(dateString.slice(0, 4), 10);
+    const month = parseInt(dateString.slice(4, 6), 10);
+    return {
+      year,
+      month,
+      mean: +row.Average,
+      min: +row.Minimum,
+      max: +row.Maximum,
+    };
+  });
+}
+
+const processedData = parseDataset(datasetTemp);
+
+// Group data by year
+function groupDataByYear(data) {
+  return d3.group(data, d => d.year);
+}
+
+const dataByYear = groupDataByYear(processedData);
+
+// Calcola la media di tutti gli anni
+const allYearsMean = Array.from({ length: 12 }, (_, month) => {
+  const monthlyData = processedData.filter(d => d.month === month + 1);
+  const avg = d3.mean(monthlyData, d => d.mean);
+  return avg || 0;
+});
+
+// Dati iniziali
+let { width, height, margin, radius } = getResponsiveDimensions();
+
+// Creazione del contenitore SVG
+let svg = d3
+  .select("#radar-chart")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .style("margin", "0 auto") // Centro all'interno del div
+  .append("g")
+  .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+// Radar chart scales
+const angleSlice = (Math.PI * 2) / 12; // 12 months
+const rScale = d3
+  .scaleLinear()
+  .domain([0, d3.max(processedData, d => d.max)])
+  .range([0, radius]);
+
+// Tooltip
+const tooltip = d3
+  .select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("display", "none")
+  .style("position", "absolute")
+  .style("background", "black")
+  .style("border", "1px solid #ccc")
+  .style("padding", "5px")
+  .style("border-radius", "5px")
+  .style("font-size", "12px");
+
+// Anni per il dropdown
+const years = Array.from(dataByYear.keys());
+const dropdown = d3.select("#year-dropdown");
+
+// Aggiunta opzioni dropdown
+dropdown
+  .selectAll("option")
+  .data(years)
+  .enter()
+  .append("option")
+  .attr("value", d => d)
+  .text(d => d);
+
+// Funzione per aggiornare il radar chart
+function updateRadarChart(year) {
+  svg.selectAll(".chart-elements").remove();
+
+  const yearData = dataByYear.get(year) || [];
+  const monthlyMin = Array(12).fill(0);
+  const monthlyMean = Array(12).fill(0);
+  const monthlyMax = Array(12).fill(0);
+
+  yearData.forEach(d => {
+    monthlyMin[d.month - 1] = d.min;
+    monthlyMean[d.month - 1] = d.mean;
+    monthlyMax[d.month - 1] = d.max;
+  });
+
+  const datasets = [
+    { name: "Min Temp", data: [...monthlyMin, monthlyMin[0]], color: "steelblue" },
+    { name: "Avg Temp", data: [...monthlyMean, monthlyMean[0]], color: "green" },
+    { name: "Max Temp", data: [...monthlyMax, monthlyMax[0]], color: "red" },
+    { name: "All Years Avg", data: [...allYearsMean, allYearsMean[0]], color: "orange" },
+  ];
+
+
+  // Create the legend
+  const legend = d3.select("#chart-legend").selectAll(".legend-item").data(datasets);
+
+  // Remove old legend items
+  legend.exit().remove();
+
+  // Add new legend items
+  const legendItems = legend
+    .enter()
+    .append("div")
+    .attr("class", "legend-item")
+    .style("display", "inline-flex")
+    .style("align-items", "center")
+    .style("margin", "5px");
+
+  // Add color box
+  legendItems
+    .append("div")
+    .style("width", "20px")
+    .style("height", "20px")
+    .style("background-color", d => d.color)
+    .style("margin-right", "10px");
+
+  // Add label
+  legendItems
+    .append("span")
+    .text(d => d.name)
+    .style("color", "#fff")
+    .style("font-size", "14px");
+
+
+  // Griglia e assi
+  const gridLevels = 4;
+  for (let i = 1; i <= gridLevels; i++) {
+    const radiusAtLevel = (i / gridLevels) * radius;
+
+    svg
+      .append("circle")
+      .attr("class", "chart-elements")
+      .attr("r", radiusAtLevel)
+      .attr("fill", "none")
+      .attr("stroke", "#ccc");
+
+    svg
+      .append("text")
+      .attr("class", "chart-elements")
+      .attr("x", radiusAtLevel)
+      .attr("y", 0)
+      .attr("text-anchor", "middle")
+      .text(Math.round((i / gridLevels) * d3.max(processedData, d => d.max)))
+      .style("font-size", "12px")
+      .style("fill", "#fff");
+  }
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const axesGroup = svg.append("g").classed("chart-elements", true);
+
+  months.forEach((month, i) => {
+    const x = radius * Math.cos(angleSlice * i - Math.PI / 2);
+    const y = radius * Math.sin(angleSlice * i - Math.PI / 2);
+
+    axesGroup
+      .append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", x)
+      .attr("y2", y)
+      .attr("stroke", "#ccc");
+
+    axesGroup
+      .append("text")
+      .attr("x", x * 1.08)
+      .attr("y", y * 1.08)
+      .attr("text-anchor", "middle")
+      .text(month)
+      .style("font-size", "14px")
+      .style("fill", "#fff");
+  });
+
+  datasets.forEach(dataset => {
+    const line = d3
+      .lineRadial()
+      .radius((d, i) => rScale(d))
+      .angle((_, i) => i * angleSlice);
+
+    svg
+      .append("path")
+      .attr("class", "chart-elements")
+      .datum(dataset.data)
+      .attr("d", line)
+      .attr("fill", "none")
+      .attr("stroke", dataset.color)
+      .attr("stroke-width", 2);
+  
+  
+    svg
+      .selectAll(`.points-${dataset.name}`)
+      .data(dataset.data)
+      .enter()
+      .append("circle")
+      .attr("class", "chart-elements")
+      .attr("cx", (d, i) => rScale(d) * Math.cos(angleSlice * i - Math.PI / 2))
+      .attr("cy", (d, i) => rScale(d) * Math.sin(angleSlice * i - Math.PI / 2))
+      .attr("r", 4)
+      .attr("fill", dataset.color)
+      .on("mouseover", function (event, d) {
+        tooltip.style("display", "block").html(`${dataset.name}: ${d.toFixed(2)}°C`);
+      })
+      .on("mousemove", function (event) {
+        tooltip.style("top", (event.pageY + 5) + "px").style("left", (event.pageX + 5) + "px");
+      })
+      .on("mouseout", function () {
+        tooltip.style("display", "none");
+      })
+      .on("touchstart", function (event, d) { // Mobile touch event
+        tooltip.style("display", "block").html(`${dataset.name}: ${d.toFixed(2)}°C`);
+        tooltip.style("top", (event.touches[0].pageY + 5) + "px").style("left", (event.touches[0].pageX + 5) + "px");
+      })
+      .on("touchend", function () {
+        tooltip.style("display", "none");
+      });
+  });
+}
+
+// Funzione per ridimensionare il grafico
+function resizeChart() {
+  const dimensions = getResponsiveDimensions();
+  width = dimensions.width;
+  height = dimensions.height;
+  margin = dimensions.margin;
+  radius = dimensions.radius;
+
+  svg
+    .attr("width", width)
+    .attr("height", height)
+    .select("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  rScale.range([0, radius]);
+  updateRadarChart(years[0]);
+}
+
+// Autoplay button
+const playButton = d3.select("#auto-play-button");
+let animationInterval;
+let currentYearIndex = 0;
+
+// Play button functionality
+playButton.on("click", () => {
+  clearInterval(animationInterval);
+  animationInterval = setInterval(() => {
+    updateRadarChart(years[currentYearIndex]);
+    dropdown.property("value", years[currentYearIndex]);
+    currentYearIndex = (currentYearIndex + 1) % years.length; // Loop back to first year
+  }, 1000); // Set interval to 1 second
+});
+
+const stopButton = d3.select("#stop-button");
+
+// Stop button functionality
+stopButton.on("click", () => {
+  clearInterval(animationInterval);
+});
+
+window.addEventListener("resize", resizeChart);
+updateRadarChart(years[0]);
+
+return {d3,getResponsiveDimensions,datasetTemp,parseDataset,processedData,groupDataByYear,dataByYear,allYearsMean,width,height,margin,radius,svg,angleSlice,rScale,tooltip,years,dropdown,updateRadarChart,resizeChart,playButton,animationInterval,currentYearIndex,stopButton};
+}});
+
+define({id: "1fda0a94", inputs: ["view","Inputs","d3","Plot"], outputs: ["selectedMod","selectedYears","RidgelinePlot"], body: (view,Inputs,d3,Plot) => {
+const selectedMod = view(Inputs.select(
+  ["Line", "Filled Area"], {label: "📊 Select Plot Type"}
+));
+
+const selectedYears = ["2023", "2018", "2013", "2008", "2003", "1998", "1993", "1988", "1983", "1978"];  // Anni fissi da mostrare
+
+function RidgelinePlot(temperatureData, selectedMod, { width = 800, overlap = 3 } = {}) {
+  const parsedData = temperatureData.map(d => ({
+    year: Math.floor(d.Date / 100).toString(),
+    month: d.Date % 100,
+    average: +d.Average,
+    maximum: +d.Maximum,
+    minimum: +d.Minimum,
+  }));
+
+  const filteredData = parsedData.filter(d => selectedYears.includes(d.year));
+
+  const groupedData = d3.groups(filteredData, d => d.year);
+  //const groupedData = d3.groups(parsedData, d => d.year);
+
+  // Definire l'intervallo fisso delle temperature da -15 a +50°C
+  const temperatureRange = [-15, 50];
+
+  // Creazione delle distribuzioni in un'unica variabile
+  const allDistributions = groupedData.map(([year, data]) => {
+    const bin = d3.bin()
+      .domain(temperatureRange)
+      .thresholds(30);
+
+    const minBins = bin(data.map(d => d.minimum)).map(bin => ({
+      year,
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'min',
+    }));
+
+    const avgBins = bin(data.map(d => d.average)).map(bin => ({
+      year,
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'avg',
+    }));
+
+    const maxBins = bin(data.map(d => d.maximum)).map(bin => ({
+      year,
+      temperature: (bin.x0 + bin.x1) / 2,
+      count: bin.length,
+      type: 'max',
+    }));
+
+    return [...minBins, ...avgBins, ...maxBins];
+  }).flat();
+
+  const plot = selectedMod === "Line"
+    ? Plot.plot({
+        height: 40 + groupedData.length * 65,
+        width,
+        marginBottom: 50,
+        marginLeft: 50,
+        x: { 
+          axis: "bottom", 
+          label: "Temperature (°C)", 
+          ticks: 20,
+        },
+        y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+        fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+        marks: [
+          Plot.lineY(allDistributions.filter(d => d.type === 'min'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#1f77b4",
+          }),
+          Plot.lineY(allDistributions.filter(d => d.type === 'avg'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#2ca02c",
+          }),
+          Plot.lineY(allDistributions.filter(d => d.type === 'max'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            curve: "basis",
+            strokeWidth: 1,
+            stroke: "#d62728",
+          }),
+        ],
+      })
+    : Plot.plot({
+        height: 40 + groupedData.length * 65,
+        width,
+        marginBottom: 50,
+        marginLeft: 50,
+        x: { 
+          axis: "bottom", 
+          label: "Temperature (°C)", 
+          ticks: d3.range(-30, 51, 10), // Tacche ogni 10°C
+        },
+        y: { axis: null, range: [2.5 * 25 - 2, (2.5 - overlap) * 25 - 2] },
+        fy: { label: "Year", domain: groupedData.map(([year]) => year) },
+        marks: [
+          Plot.areaY(allDistributions.filter(d => d.type === 'min'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#1f77b4",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+          Plot.areaY(allDistributions.filter(d => d.type === 'avg'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#2ca02c",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+          Plot.areaY(allDistributions.filter(d => d.type === 'max'), {
+            x: "temperature",
+            y: "count",
+            fy: "year",
+            fill: "#d62728",
+            curve: "basis",
+            opacity: 0.6,
+          }),
+        ],
+      });
+
+  // Creazione della legenda
+  const legend = d3.create("div")
+    .attr("class", "legend")
+    .style("position", "absolute")
+    .style("top", "10px")
+    .style("left", "10px")
+    .style("display", "flex")
+    .style("gap", "20px");
+
+  const categories = [
+    { label: "Min Temp", color: "#1f77b4" },
+    { label: "Avg Temp", color: "#2ca02c" },
+    { label: "Max Temp", color: "#d62728" },
+  ];
+
+  categories.forEach(category => {
+    const legendItem = legend.append("div").style("display", "flex").style("align-items", "center").style("gap", "5px");
+    legendItem.append("div").style("width", "20px").style("height", "20px").style("background-color", category.color);
+    legendItem.append("span").text(category.label);
+  });
+
+  // Contenitore principale
+  const container = d3.create("div").style("position", "relative");
+  container.append(() => plot);
+  container.append(() => legend.node());
+  return container.node();
+}
+
+return {selectedMod,selectedYears,RidgelinePlot};
+}});
+
+define({id: "6d97dc6c", mode: "inline", inputs: ["resize","RidgelinePlot","TemperatureTexas","selectedMod","display"], body: async (resize,RidgelinePlot,TemperatureTexas,selectedMod,display) => {
+display(await(
+resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
+))
+}});
+
+</script>
+</head>
+<body>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">CO₂ emissions</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link"><a href="./laboratory1">Comparing countries</a></li>
+    <li class="observablehq-link"><a href="./laboratory2">Fossil vs Land</a></li>
+    <li class="observablehq-link"><a href="./laboratory3">Don&#x27;t get confused by maps</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory4">laboratorio 4</a></li>
+  </ol>
+</nav>
+<script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<aside id="observablehq-toc" data-selector="h1:not(:first-of-type)[id], h2:first-child[id], :not(h1) + h2[id]">
+<nav>
+<div>Contents</div>
+<ol>
+<li class="observablehq-secondary-link"><a href="#linechart">LINECHART</a></li>
+<li class="observablehq-secondary-link"><a href="#radarchart">RADARCHART</a></li>
+<li class="observablehq-secondary-link"><a href="#ridgeline">RIDGELINE</a></li>
+</ol>
+</nav>
+</aside>
+<main id="observablehq-main" class="observablehq">
+<div class="observablehq observablehq--block"><!--:07bf46b2:--></div>
+<h1 id="temperature" tabindex="-1"><a class="observablehq-header-anchor" href="#temperature">Temperature 🌡️</a></h1>
+<br>
+<h2 id="linechart" tabindex="-1"><a class="observablehq-header-anchor" href="#linechart">LINECHART</a></h2>
+<div class="observablehq observablehq--block"><!--:ffcc3e56:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:faec645e:--> </div>
+</div>
+<p><br><br></p>
+<h2 id="radarchart" tabindex="-1"><a class="observablehq-header-anchor" href="#radarchart">RADARCHART</a></h2>
+<div class="observablehq observablehq--block"><!--:53074070:--></div>
+<div id="radar-chart-container" style="width: 100%; max-width: 750px; margin: 20px auto; padding: 1px; border: 0.2px solid rgba(59, 55, 55, 0.7); border-radius: 10px; background-color: rgba(31, 29, 29, 0.7); text-align: center;">
+    <div id="radar-chart" style="width: 100%; height: auto; margin-bottom: 30px;"></div>
+    <div id="chart-legend" style="margin-bottom: 20px;"></div>
+    <div id="dropdown-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <span>📅 Select a Year:</span>
+        <select id="year-dropdown"></select>
+        <button id="auto-play-button">Auto Play</button>
+        <button id="stop-button">Stop</button>
+    </div>
+    <div id="heatmap-container"></div>
+</div>
+<h2 id="ridgeline" tabindex="-1"><a class="observablehq-header-anchor" href="#ridgeline">RIDGELINE</a></h2>
+<div class="observablehq observablehq--block"><!--:1fda0a94:--></div>
+<div class="grid grid-cols-1">
+  <div class="card"> <observablehq-loading></observablehq-loading><!--:6d97dc6c:--> </div>
+</div>
+<p>
+</p><p>This chart offers a detailed visualization of CO₂ emissions for the year 2022, providing valuable insights into the primary sources of global CO₂ emissions.</p>
+<p></p>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-27T19:01:53">Dec 27, 2024</a>.</div>
+</footer>
+</div>
+</body>
+</html>
