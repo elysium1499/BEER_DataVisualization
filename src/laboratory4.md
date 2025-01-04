@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: laboratorio 4
+title: Tempeatures in Texas
 toc: true
 ---
 
@@ -14,12 +14,19 @@ const averageTemperatureTexas = await FileAttachment("data/AverageTemperatureTex
 ```
 
 
-# Temperature 🌡️
+# Temperatures in Texas 🌡️
+<br>
+<p>
+How has the evolution of monthly temperatures in Texas from 1978 to 2023 influenced regional climate patterns, and what broader implications does this trend have for global climate change?
+
+Texas, with its diverse climate ranging from arid regions in the west to humid areas in the east, provides a compelling case study for understanding regional temperature trends and their broader impacts.
+The visualizations explore temperature trends through three unique perspectives: temporal patterns, dimensional comparisons, and distribution analysis.
+</p>
 
 <br>
 
 
-## LINECHART
+## Temporal patterns
 
 ```js
 const selectedYear = view(Inputs.select(
@@ -149,9 +156,20 @@ function LineChartForYearWithLegend(data, selectedYear, { width = 800 } = {}) {
   <div class="card"> ${resize((width) => LineChartForYearWithLegend(TemperatureTexas, selectedYear, { width }))} </div>
 </div>
 
+<p>
+
+This graph provides a clear visualization of the seasonal temperature patterns in Texas, capturing the fluctuations in **maximum**, **minimum**, and **average** temperatures over the course of a year. The three distinct curves — **red** for maximum, **blue** for minimum, and **green** for average temperatures — highlight how temperatures rise and fall as the seasons progress, offering insights into the region’s climatic behavior.  
+
+When examining the temperature trends in Texas over the past 45 years, it becomes evident that while the general seasonal pattern, with warm summers and cooler winters—has remained consistent, the absolute temperature values have shown a steady upward shift over time. This observation suggests that the cyclical nature of temperature fluctuations tied to the changing seasons persists, but the baseline temperatures for each season have been steadily increasing.  
+ 
+Visualizing temperature plots for earlier years we observe curves with similar shapes, gradually rising temperatures from January to August, peaking in summer, and then declining toward December. However, these older graphs feature lower maximums and minimums, with summer highs staying below 35°C and winter lows frequently dipping closer to freezing levels.  
+
+These incremental increases in temperature across all months suggest a warming trend that is consistent with global climate change patterns.  
+
+</p>
 <br><br>
 
-## RADARCHART
+## Dimensional comparisons
 
 ```js
 // Import D3
@@ -451,9 +469,31 @@ updateRadarChart(years[0]);
     <div id="heatmap-container"></div>
 </div>
 
+<p>
+
+This radar chart provides a visually striking representation of how temperatures in Texas fluctuate throughout the year, capturing seasonal patterns through multiple data layers. Each axis corresponds to a month, while the concentric circles indicate temperature levels, allowing us to observe variations in **maximum**, **minimum**, and **average** temperatures. The chart offers an intuitive way to compare the seasonal rhythms and assess whether temperature extremes are becoming more pronounced over time.  
+
+The **red line**, which traces the **maximum temperatures**, forms an expansive, outward-facing shape, peaking during the summer months of June, July, and August. This outward spread highlights the intense heat typical of Texas summers, where maximum temperatures push toward the upper limits recorded.  
+
+In contrast, the **blue line** represents the **minimum temperatures** and forms a smaller, more inward curve. It reaches its lowest points during the winter months of December, January, and February, reflecting the cooler but still relatively mild conditions characteristic of Texas winters.  
+
+The **green line**, representing **average temperatures**, falls between the extremes, smoothing out the fluctuations captured by the maximum and minimum values. Its position relative to the other lines provides context, showing how the general temperature trend follows the same seasonal pattern while offering a less dramatic view of variability.  
+
+Finally, the **orange line**, which represents the mean temperature for all years within a 45-year range, lies between the extremes. This line gives a long-term context by reflecting the average conditions across a longer period, smoothing out individual yearly fluctuations and giving insight into broader temperature trends over the decades.
+
+
+Looking at the chart’s structure, we can see a **cyclical pattern** that mirrors the annual progression of the seasons. The graph widens significantly in summer, particularly between June and August, when maximum temperatures reach their highest points. This outward expansion signals the impact of prolonged heatwaves, an increasingly common phenomenon associated with climate change.  
+
+By contrast, the winter months show a lower variability and relatively stable conditions. However, even in these months, the minimum temperatures (blue) do not drop sharply, indicating that winters in Texas tend to remain mild rather than experiencing frequent freezing events.  
+
+Examining also temperatures from earlier decades, such as the 1980s or 1990s, the overall shapes remain similar, reflecting the regular **seasonal cycles**. However, the outermost edges of the chart, particularly in the red line for maximum temperatures,are closer to the center, suggesting that maximum temperatures have gradually risen over the past few decades.  
+
+This subtle but consistent upward shift implies that while the fundamental seasonal rhythm persists, the baseline temperature levels have increased year after year, a hallmark of **global warming**. 
+
+</p>
 <br>
 
-## RIDGELINE
+## Distribution analysis
 
 ```js
 const selectedMod = view(Inputs.select(
@@ -626,7 +666,21 @@ function RidgelinePlot(temperatureData, selectedMod, { width = 800, overlap = 3 
 
 
 <p>
+The Ridgeline Plot focuses on the distribution of temperatures, illustrating density curves for each month. It reveals how temperatures are distributed within specific periods, showing variations in their spread and central tendencies. This visualization is useful for observing shifts in temperature distributions over time, as well as identifying months with greater variability or more extreme temperature ranges.
 
-This chart offers a detailed visualization of CO₂ emissions for the year 2022, providing valuable insights into the primary sources of global CO₂ emissions.
+
+This final chart offers a compelling way to visualize the distribution of temperature data across multiple years, providing a deeper sense of how temperature patterns fluctuate year-to-year while maintaining a clear view of the broader trends over time. In the context of Texas' temperature dynamics, this type of chart offers an engaging, intuitive representation of temperature distributions, showing how years vary in terms of both maximum and minimum temperatures across seasons.
+
+Each line corresponds to a single year's temperature profile, with the **maximum, minimum, and average temperatures** clearly visible as distinct peaks, valleys, and smooth curves. By aligning multiple years in this vertical format, we gain the ability to immediately compare the shape and intensity of seasonal variations across different years, making it easy to observe both regular patterns and notable anomalies.
+
+The **summer months** often rise dramatically as the maximum temperatures soar, particularly in the middle of the chart during June, July, and August, reflecting the familiar intensity of Texas summers. The lines for **winter months** dip lower, with a sharper narrowing of data points for December, January, and February, showcasing the relative mildness of the winters. However, the chart also reveals variations in how extreme these dips and peaks become from year to year, helping to highlight particularly hot or cool years.
+
+The visual comparison across 15 years also emphasizes **trends over time**. Recent lines appear more expansive in the summer (with the peaks of the maximum temperatures pushed outward) and more subdued in the winter (with higher minimums during the colder months), it is a clear sign that the region is experiencing a warming trend, typical of climate change. By examining the line for each year, one can trace how summer extremes may have shifted toward higher temperatures and how winter lows have increasingly remained milder.
+
+This stacked ridgeline format also brings out outliers or **anomalous years**. For instance, a particularly hot year has a sharply higher summer peak, extending beyond the typical range of maximum temperatures. Conversely, a year with a milder summer could be visibly "compressed," indicating that the seasonal temperature rhythm was tempered that year.
+
+From a broader perspective, the ridgeline chart provides a visual rhythm for understanding **temperature cycles**. Each year’s curve, when viewed in sequence, reflects the continuous cycle of heat and cold, offering a direct representation of how consistent or variable these patterns have been over time. The chart allows us to observe that Texas' seasonal rhythm is shifting, with maximum temperatures progressively pushing higher.
+
+Ultimately, the ridgeline chart offers an intuitive and striking way to explore the complexities of climate data over time. By stacking the ridgelines of 15 different years, we gain insight into both the cyclical nature of temperature patterns and the subtle gradual shifts that signal broader climatic changes. It's a powerful visualization tool for anyone looking to grasp the rhythm of Texas' climate and how it is evolving in response to global warming.
 
 </p>

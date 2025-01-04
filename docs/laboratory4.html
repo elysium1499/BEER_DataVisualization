@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="generator" content="Observable Framework v1.13.0">
-<title>laboratorio 4 | CO₂ emissions</title>
+<title>Tempeatures in Texas | CO₂ emissions</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
@@ -12,11 +12,11 @@
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.db1cdf55.css">
 <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css">
-<link rel="modulepreload" href="./_observablehq/client.7782eb36.js">
+<link rel="modulepreload" href="./_observablehq/client.a4b43747.js">
 <link rel="modulepreload" href="./_observablehq/runtime.9393ab6d.js">
-<link rel="modulepreload" href="./_observablehq/stdlib.3ee9cb94.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.95bfbf7e.js">
 <link rel="modulepreload" href="./_node/d3@7.9.0/index.e21134d2.js">
-<link rel="modulepreload" href="./_observablehq/stdlib/inputs.7e044bdc.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.d397b6a8.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/e828d8c8.js">
 <link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
 <link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
@@ -92,13 +92,13 @@
 <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32">
 <script type="module">
 
-import {define} from "./_observablehq/client.7782eb36.js";
-import {registerFile} from "./_observablehq/stdlib.3ee9cb94.js";
+import {define} from "./_observablehq/client.a4b43747.js";
+import {registerFile} from "./_observablehq/stdlib.95bfbf7e.js";
 
-registerFile("./data/AverageTemperatureTexas.csv", {"name":"./data/AverageTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/AverageTemperatureTexas.20c59594.csv","lastModified":1735322079564,"size":6194});
-registerFile("./data/MaxTemperatureTexas.csv", {"name":"./data/MaxTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MaxTemperatureTexas.001e4521.csv","lastModified":1735322079564,"size":6186});
-registerFile("./data/MinTemperatureTexas.csv", {"name":"./data/MinTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MinTemperatureTexas.1d7caa6a.csv","lastModified":1735322079568,"size":6179});
-registerFile("./data/Temp.csv", {"name":"./data/Temp.csv","mimeType":"text/csv","path":"./_file/data/Temp.002d2f25.csv","lastModified":1734037630529,"size":22801});
+registerFile("./data/AverageTemperatureTexas.csv", {"name":"./data/AverageTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/AverageTemperatureTexas.7bb2c7bc.csv","lastModified":1733994688159,"size":5857});
+registerFile("./data/MaxTemperatureTexas.csv", {"name":"./data/MaxTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MaxTemperatureTexas.a6f224ce.csv","lastModified":1733994696738,"size":5849});
+registerFile("./data/MinTemperatureTexas.csv", {"name":"./data/MinTemperatureTexas.csv","mimeType":"text/csv","path":"./_file/data/MinTemperatureTexas.eff49839.csv","lastModified":1733994700851,"size":5842});
+registerFile("./data/Temp.csv", {"name":"./data/Temp.csv","mimeType":"text/csv","path":"./_file/data/Temp.002d2f25.csv","lastModified":1735292171716,"size":22801});
 
 define({id: "07bf46b2", inputs: ["FileAttachment"], outputs: ["datasetTemp","TemperatureTexas","maxTemperatureTexas","minTemperatureTexas","averageTemperatureTexas"], body: async (FileAttachment) => {
 // Load datasets
@@ -715,7 +715,7 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
     <li class="observablehq-link"><a href="./laboratory1">Comparing countries</a></li>
     <li class="observablehq-link"><a href="./laboratory2">Fossil vs Land</a></li>
     <li class="observablehq-link"><a href="./laboratory3">Don&#x27;t get confused by maps</a></li>
-    <li class="observablehq-link observablehq-link-active"><a href="./laboratory4">laboratorio 4</a></li>
+    <li class="observablehq-link observablehq-link-active"><a href="./laboratory4">Tempeatures in Texas</a></li>
   </ol>
 </nav>
 <script>{const e=document.querySelector("#observablehq-sidebar"),t=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?t.checked=r==="true":t.indeterminate=!0;for(const o of document.querySelectorAll("#observablehq-sidebar summary")){const s=o.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${o.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
@@ -724,23 +724,35 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
 <nav>
 <div>Contents</div>
 <ol>
-<li class="observablehq-secondary-link"><a href="#linechart">LINECHART</a></li>
-<li class="observablehq-secondary-link"><a href="#radarchart">RADARCHART</a></li>
-<li class="observablehq-secondary-link"><a href="#ridgeline">RIDGELINE</a></li>
+<li class="observablehq-secondary-link"><a href="#temporal-patterns">Temporal patterns</a></li>
+<li class="observablehq-secondary-link"><a href="#dimensional-comparisons">Dimensional comparisons</a></li>
+<li class="observablehq-secondary-link"><a href="#distribution-analysis">Distribution analysis</a></li>
 </ol>
 </nav>
 </aside>
 <main id="observablehq-main" class="observablehq">
 <div class="observablehq observablehq--block"><!--:07bf46b2:--></div>
-<h1 id="temperature" tabindex="-1"><a class="observablehq-header-anchor" href="#temperature">Temperature 🌡️</a></h1>
+<h1 id="temperatures-in-texas" tabindex="-1"><a class="observablehq-header-anchor" href="#temperatures-in-texas">Temperatures in Texas 🌡️</a></h1>
 <br>
-<h2 id="linechart" tabindex="-1"><a class="observablehq-header-anchor" href="#linechart">LINECHART</a></h2>
+<p>
+How has the evolution of monthly temperatures in Texas from 1978 to 2023 influenced regional climate patterns, and what broader implications does this trend have for global climate change?
+</p><p>Texas, with its diverse climate ranging from arid regions in the west to humid areas in the east, provides a compelling case study for understanding regional temperature trends and their broader impacts.
+The visualizations explore temperature trends through three unique perspectives: temporal patterns, dimensional comparisons, and distribution analysis.</p>
+<p></p>
+<br>
+<h2 id="temporal-patterns" tabindex="-1"><a class="observablehq-header-anchor" href="#temporal-patterns">Temporal patterns</a></h2>
 <div class="observablehq observablehq--block"><!--:cbe55717:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:9198d7e7:--> </div>
 </div>
-<p><br><br></p>
-<h2 id="radarchart" tabindex="-1"><a class="observablehq-header-anchor" href="#radarchart">RADARCHART</a></h2>
+<p>
+</p><p>This graph provides a clear visualization of the seasonal temperature patterns in Texas, capturing the fluctuations in <strong>maximum</strong>, <strong>minimum</strong>, and <strong>average</strong> temperatures over the course of a year. The three distinct curves — <strong>red</strong> for maximum, <strong>blue</strong> for minimum, and <strong>green</strong> for average temperatures — highlight how temperatures rise and fall as the seasons progress, offering insights into the region’s climatic behavior.</p>
+<p>When examining the temperature trends in Texas over the past 45 years, it becomes evident that while the general seasonal pattern, with warm summers and cooler winters—has remained consistent, the absolute temperature values have shown a steady upward shift over time. This observation suggests that the cyclical nature of temperature fluctuations tied to the changing seasons persists, but the baseline temperatures for each season have been steadily increasing.</p>
+<p>Visualizing temperature plots for earlier years we observe curves with similar shapes, gradually rising temperatures from January to August, peaking in summer, and then declining toward December. However, these older graphs feature lower maximums and minimums, with summer highs staying below 35°C and winter lows frequently dipping closer to freezing levels.</p>
+<p>These incremental increases in temperature across all months suggest a warming trend that is consistent with global climate change patterns.</p>
+<p></p>
+<br><br>
+<h2 id="dimensional-comparisons" tabindex="-1"><a class="observablehq-header-anchor" href="#dimensional-comparisons">Dimensional comparisons</a></h2>
 <div class="observablehq observablehq--block"><!--:53074070:--></div>
 <div id="radar-chart-container" style="width: 100%; max-width: 750px; margin: 20px auto; padding: 1px; border: 0.2px solid rgba(59, 55, 55, 0.7); border-radius: 10px; background-color: rgba(31, 29, 29, 0.7); text-align: center;">
     <div id="radar-chart" style="width: 100%; height: auto; margin-bottom: 30px;"></div>
@@ -753,19 +765,37 @@ resize((width) => RidgelinePlot(TemperatureTexas, selectedMod, { width }))
     </div>
     <div id="heatmap-container"></div>
 </div>
+<p>
+</p><p>This radar chart provides a visually striking representation of how temperatures in Texas fluctuate throughout the year, capturing seasonal patterns through multiple data layers. Each axis corresponds to a month, while the concentric circles indicate temperature levels, allowing us to observe variations in <strong>maximum</strong>, <strong>minimum</strong>, and <strong>average</strong> temperatures. The chart offers an intuitive way to compare the seasonal rhythms and assess whether temperature extremes are becoming more pronounced over time.</p>
+<p>The <strong>red line</strong>, which traces the <strong>maximum temperatures</strong>, forms an expansive, outward-facing shape, peaking during the summer months of June, July, and August. This outward spread highlights the intense heat typical of Texas summers, where maximum temperatures push toward the upper limits recorded.</p>
+<p>In contrast, the <strong>blue line</strong> represents the <strong>minimum temperatures</strong> and forms a smaller, more inward curve. It reaches its lowest points during the winter months of December, January, and February, reflecting the cooler but still relatively mild conditions characteristic of Texas winters.</p>
+<p>The <strong>green line</strong>, representing <strong>average temperatures</strong>, falls between the extremes, smoothing out the fluctuations captured by the maximum and minimum values. Its position relative to the other lines provides context, showing how the general temperature trend follows the same seasonal pattern while offering a less dramatic view of variability.</p>
+<p>Finally, the <strong>orange line</strong>, which represents the mean temperature for all years within a 45-year range, lies between the extremes. This line gives a long-term context by reflecting the average conditions across a longer period, smoothing out individual yearly fluctuations and giving insight into broader temperature trends over the decades.</p>
+<p>Looking at the chart’s structure, we can see a <strong>cyclical pattern</strong> that mirrors the annual progression of the seasons. The graph widens significantly in summer, particularly between June and August, when maximum temperatures reach their highest points. This outward expansion signals the impact of prolonged heatwaves, an increasingly common phenomenon associated with climate change.</p>
+<p>By contrast, the winter months show a lower variability and relatively stable conditions. However, even in these months, the minimum temperatures (blue) do not drop sharply, indicating that winters in Texas tend to remain mild rather than experiencing frequent freezing events.</p>
+<p>Examining also temperatures from earlier decades, such as the 1980s or 1990s, the overall shapes remain similar, reflecting the regular <strong>seasonal cycles</strong>. However, the outermost edges of the chart, particularly in the red line for maximum temperatures,are closer to the center, suggesting that maximum temperatures have gradually risen over the past few decades.</p>
+<p>This subtle but consistent upward shift implies that while the fundamental seasonal rhythm persists, the baseline temperature levels have increased year after year, a hallmark of <strong>global warming</strong>.</p>
+<p></p>
 <br>
-<h2 id="ridgeline" tabindex="-1"><a class="observablehq-header-anchor" href="#ridgeline">RIDGELINE</a></h2>
+<h2 id="distribution-analysis" tabindex="-1"><a class="observablehq-header-anchor" href="#distribution-analysis">Distribution analysis</a></h2>
 <div class="observablehq observablehq--block"><!--:1fda0a94:--></div>
 <div class="grid grid-cols-1">
   <div class="card"> <observablehq-loading></observablehq-loading><!--:6d97dc6c:--> </div>
 </div>
 <p>
-</p><p>This chart offers a detailed visualization of CO₂ emissions for the year 2022, providing valuable insights into the primary sources of global CO₂ emissions.</p>
+The Ridgeline Plot focuses on the distribution of temperatures, illustrating density curves for each month. It reveals how temperatures are distributed within specific periods, showing variations in their spread and central tendencies. This visualization is useful for observing shifts in temperature distributions over time, as well as identifying months with greater variability or more extreme temperature ranges.
+</p><p>This final chart offers a compelling way to visualize the distribution of temperature data across multiple years, providing a deeper sense of how temperature patterns fluctuate year-to-year while maintaining a clear view of the broader trends over time. In the context of Texas' temperature dynamics, this type of chart offers an engaging, intuitive representation of temperature distributions, showing how years vary in terms of both maximum and minimum temperatures across seasons.</p>
+<p>Each line corresponds to a single year's temperature profile, with the <strong>maximum, minimum, and average temperatures</strong> clearly visible as distinct peaks, valleys, and smooth curves. By aligning multiple years in this vertical format, we gain the ability to immediately compare the shape and intensity of seasonal variations across different years, making it easy to observe both regular patterns and notable anomalies.</p>
+<p>The <strong>summer months</strong> often rise dramatically as the maximum temperatures soar, particularly in the middle of the chart during June, July, and August, reflecting the familiar intensity of Texas summers. The lines for <strong>winter months</strong> dip lower, with a sharper narrowing of data points for December, January, and February, showcasing the relative mildness of the winters. However, the chart also reveals variations in how extreme these dips and peaks become from year to year, helping to highlight particularly hot or cool years.</p>
+<p>The visual comparison across 15 years also emphasizes <strong>trends over time</strong>. Recent lines appear more expansive in the summer (with the peaks of the maximum temperatures pushed outward) and more subdued in the winter (with higher minimums during the colder months), it is a clear sign that the region is experiencing a warming trend, typical of climate change. By examining the line for each year, one can trace how summer extremes may have shifted toward higher temperatures and how winter lows have increasingly remained milder.</p>
+<p>This stacked ridgeline format also brings out outliers or <strong>anomalous years</strong>. For instance, a particularly hot year has a sharply higher summer peak, extending beyond the typical range of maximum temperatures. Conversely, a year with a milder summer could be visibly "compressed," indicating that the seasonal temperature rhythm was tempered that year.</p>
+<p>From a broader perspective, the ridgeline chart provides a visual rhythm for understanding <strong>temperature cycles</strong>. Each year’s curve, when viewed in sequence, reflects the continuous cycle of heat and cold, offering a direct representation of how consistent or variable these patterns have been over time. The chart allows us to observe that Texas' seasonal rhythm is shifting, with maximum temperatures progressively pushing higher.</p>
+<p>Ultimately, the ridgeline chart offers an intuitive and striking way to explore the complexities of climate data over time. By stacking the ridgelines of 15 different years, we gain insight into both the cyclical nature of temperature patterns and the subtle gradual shifts that signal broader climatic changes. It's a powerful visualization tool for anyone looking to grasp the rhythm of Texas' climate and how it is evolving in response to global warming.</p>
 <p></p>
 </main>
 <footer id="observablehq-footer">
 <nav><a rel="prev" href="./laboratory3"><span>Don&#x27;t get confused by maps</span></a></nav>
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2024-12-27T20:39:35">Dec 27, 2024</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-01-04T19:38:37">Jan 4, 2025</a>.</div>
 </footer>
 </div>
 </body>

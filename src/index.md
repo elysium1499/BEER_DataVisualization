@@ -16,6 +16,11 @@ toc: false
 </div>
 
 <style>
+  body {
+  background-color: #121212; /* Sfondo scuro */
+  color: #ffffff;           /* Testo chiaro */
+  }
+
   .cards-container {
     display: flex;
     gap: 1rem;
